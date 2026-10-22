@@ -192,9 +192,9 @@
             <!-- TAB 2: COFRE -->
             <section id="tab-cofre" class="space-y-4 hidden">
                 <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm text-center">
-                    <!-- IMAGEN REAL Y OFICIAL DE COFRE DE TESORO -->
-                    <div class="w-24 h-24 mx-auto mb-2 relative">
-                        <img src="https://images.fineartamerica.com/images/artworkimages/mediumlarge/3/treasure-chest-vector-design-illustration-graphic-v-3.jpg" alt="Cofre de Tesoro" class="w-full h-full object-contain rounded-xl drop-shadow-md animate-bounce-slow">
+                    <!-- FOTO REAL Y CLARA DE COFRE DE TESORO -->
+                    <div class="w-24 h-24 mx-auto mb-2 bg-amber-50 rounded-2xl flex items-center justify-center p-2 border border-amber-200 shadow-inner">
+                        <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=300&q=80" alt="Cofre de Tesoro" class="w-full h-full object-cover rounded-xl shadow-md animate-bounce-slow">
                     </div>
                     <h3 class="text-lg font-extrabold text-slate-800">Cofre Misterioso Vortex</h3>
                     <p class="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
@@ -363,7 +363,6 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        // TODAS LAS IMÁGENES SON EXCLUSIVAMENTE CASAS EN ESCALA DE VALOR PROGRESIVA
         const LEVELS = [
             { id: 1, name: 'Producto 1', cost: 16000, duration: 15, daily: 1666.67, total: 25000, img: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80' },
             { id: 2, name: 'Producto 2', cost: 35000, duration: 30, daily: 1500.00, total: 45000, img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
@@ -464,8 +463,27 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="pt-2 border-t border-slate-100 flex justify-end">
+                        <button onclick="buyLevel(${level.id})" class="px-4 py-2 bg-vortex-red hover:bg-vortex-darkRed text-white font-bold text-xs rounded-xl shadow-sm transition-all active:scale-95">
+                            Invertir $${level.cost.toLocaleString('es-AR')}
+                        </button>
+                    </div>
                 </div>
             `).join('');
+        }
+
+        function buyLevel(levelId) {
+            const level = LEVELS.find(l => l.id === levelId);
+            if (appState.balance < level.cost) {
+                alert(`Saldo insuficiente. Necesitas $${level.cost.toLocaleString('es-AR')} ARS.`);
+                switchTab('cargar');
+                return;
+            }
+
+            appState.balance -= level.cost;
+            alert(`\u00A1Inversi\u00F3n exitosa en ${level.name}!`);
+            updateUI();
         }
 
         function claimDailyCheckin() {
