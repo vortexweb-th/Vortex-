@@ -192,7 +192,7 @@
             <!-- TAB 2: COFRE -->
             <section id="tab-cofre" class="space-y-4 hidden">
                 <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm text-center">
-                    <!-- FOTO REAL Y CLARA DE COFRE DE TESORO -->
+                    <!-- FOTO FIJA Y REAL DE COFRE DE TESORO CLÁSICO -->
                     <div class="w-24 h-24 mx-auto mb-2 bg-amber-50 rounded-2xl flex items-center justify-center p-2 border border-amber-200 shadow-inner">
                         <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=300&q=80" alt="Cofre de Tesoro" class="w-full h-full object-cover rounded-xl shadow-md animate-bounce-slow">
                     </div>
@@ -378,7 +378,8 @@
             balance: 0,
             keys: 0,
             lastCheckinTime: null,
-            referrals: []
+            referrals: [],
+            registeredUsers: {} // Base de datos simulada de usuarios
         };
 
         let checkinTimerInterval = null;
@@ -409,7 +410,14 @@
         }
 
         function handleLoginDirect() {
-            const phone = document.getElementById('loginPhone').value || "Inversor";
+            const phone = document.getElementById('loginPhone').value.trim();
+            const pin = document.getElementById('loginPin').value.trim();
+
+            if (!phone || !pin) {
+                alert('Por favor completa todos los campos.');
+                return;
+            }
+
             appState.currentUser = phone;
             document.getElementById('authModal').classList.add('hidden');
             document.getElementById('profilePhone').innerText = phone;
@@ -418,21 +426,38 @@
         }
 
         function handleRegisterDirect() {
-            const phone = document.getElementById('regPhone').value || "Nuevo Inversor";
-            const refCode = document.getElementById('regRefCode').value;
+            const phone = document.getElementById('regPhone').value.trim();
+            const pin = document.getElementById('regPin').value.trim();
+            const refCode = document.getElementById('regRefCode').value.trim();
 
+            if (!phone || !pin) {
+                alert('Por favor ingresa un teléfono y contraseña.');
+                return;
+            }
+
+            // Validar si el usuario ya existe
+            if (appState.registeredUsers[phone]) {
+                alert('⚠️ Este número de teléfono ya se encuentra registrado. Por favor inicia sesión.');
+                toggleAuthTab('login');
+                document.getElementById('loginPhone').value = phone;
+                return;
+            }
+
+            // Registrar nuevo usuario
+            appState.registeredUsers[phone] = { pin: pin };
             appState.currentUser = phone;
             appState.balance += 5000;
             
-            if (refCode.trim() !== '') {
+            if (refCode !== '') {
                 appState.keys += 1;
+                appState.referrals.push({ phone: phone });
             }
 
             document.getElementById('authModal').classList.add('hidden');
             document.getElementById('profilePhone').innerText = phone;
             document.getElementById('refLinkInput').value = `https://vortex.app/ref?id=${phone}`;
 
-            alert("\u00A1Cuenta creada con \u00E9xito! Te hemos acreditado $5.000 ARS de Bono de Bienvenida.");
+            alert("¡Cuenta creada con éxito! Te hemos acreditado $5.000 ARS de Bono de Bienvenida.");
             updateUI();
         }
 
