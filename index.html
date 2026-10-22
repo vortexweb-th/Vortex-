@@ -164,14 +164,16 @@
 
             <!-- TAB 1: INICIO -->
             <section id="tab-inicio" class="space-y-4">
+                <!-- BANNER CHECK-IN CON RELOJ DIGITAL 24H -->
                 <div class="bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-2xl p-4 shadow-lg flex items-center justify-between relative overflow-hidden">
                     <div class="relative z-10">
                         <span class="bg-vortex-red/30 text-vortex-lightRed text-[10px] font-bold px-2 py-0.5 rounded-full uppercase border border-vortex-red/40">Premio Diario</span>
                         <h3 class="text-base font-extrabold mt-1">Recompensa Asistencia</h3>
                         <p class="text-xs text-slate-300">Cobra +$100 ARS cada 24 horas</p>
                     </div>
-                    <button id="checkinBtn" onclick="claimDailyCheckin()" class="relative z-10 px-4 py-2.5 bg-vortex-red text-white font-bold text-xs rounded-xl shadow-md transition-all active:scale-95">
-                        Cobrar $100
+                    <button id="checkinBtn" onclick="claimDailyCheckin()" class="relative z-10 px-4 py-2.5 bg-vortex-red text-white font-bold text-xs rounded-xl shadow-md transition-all active:scale-95 flex items-center gap-1.5">
+                        <i class="fa-solid fa-clock"></i>
+                        <span id="checkinBtnText">Cobrar $100</span>
                     </button>
                     <i class="fa-solid fa-calendar-check absolute -right-3 -bottom-3 text-7xl text-white/5 pointer-events-none"></i>
                 </div>
@@ -190,9 +192,9 @@
             <!-- TAB 2: COFRE -->
             <section id="tab-cofre" class="space-y-4 hidden">
                 <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm text-center">
-                    <!-- IMAGEN REAL DE COFRE MISTERIOSO -->
+                    <!-- IMAGEN REAL Y OFICIAL DE COFRE DE TESORO -->
                     <div class="w-24 h-24 mx-auto mb-2 relative">
-                        <img src="https://cdn-icons-png.flaticon.com/512/2822/2822384.png" alt="Cofre Misterioso" class="w-full h-full object-contain drop-shadow-md animate-bounce-slow">
+                        <img src="https://images.fineartamerica.com/images/artworkimages/mediumlarge/3/treasure-chest-vector-design-illustration-graphic-v-3.jpg" alt="Cofre de Tesoro" class="w-full h-full object-contain rounded-xl drop-shadow-md animate-bounce-slow">
                     </div>
                     <h3 class="text-lg font-extrabold text-slate-800">Cofre Misterioso Vortex</h3>
                     <p class="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
@@ -215,6 +217,7 @@
                     </div>
                 </div>
 
+                <!-- TU ENLACE DE REFERIDO -->
                 <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
                     <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
                         <i class="fa-solid fa-share-nodes text-vortex-red"></i>
@@ -225,6 +228,17 @@
                         <button onclick="copyRefLink()" class="px-4 py-2 bg-slate-800 text-white font-bold text-xs rounded-xl">
                             Copiar
                         </button>
+                    </div>
+                </div>
+
+                <!-- LISTA DE REFERIDOS REGISTRADOS ABAJO -->
+                <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+                    <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-users text-vortex-red"></i>
+                        Mis Referidos Registrados
+                    </h4>
+                    <div id="referralsList" class="space-y-2 text-xs">
+                        <!-- Renderizado en JS -->
                     </div>
                 </div>
             </section>
@@ -277,7 +291,6 @@
                         </div>
                     </div>
 
-                    <!-- FORMULARIO DE RETIRO COMPLETO -->
                     <form onsubmit="handleWithdrawSubmit(event)" class="space-y-3">
                         <div>
                             <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Monto a Retirar (ARS)</label>
@@ -350,7 +363,7 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        // TABLA EXACTA DE PRODUCTOS CON IMÁGENES DE CASAS Y GANANCIA TOTAL INCLUIDA
+        // TODAS LAS IMÁGENES SON EXCLUSIVAMENTE CASAS EN ESCALA DE VALOR PROGRESIVA
         const LEVELS = [
             { id: 1, name: 'Producto 1', cost: 16000, duration: 15, daily: 1666.67, total: 25000, img: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80' },
             { id: 2, name: 'Producto 2', cost: 35000, duration: 30, daily: 1500.00, total: 45000, img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
@@ -364,12 +377,17 @@
         let appState = {
             currentUser: null,
             balance: 0,
-            keys: 0
+            keys: 0,
+            lastCheckinTime: null,
+            referrals: []
         };
+
+        let checkinTimerInterval = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             renderLevels();
             updateUI();
+            startCheckinTimer();
         });
 
         function toggleAuthTab(mode) {
@@ -402,9 +420,15 @@
 
         function handleRegisterDirect() {
             const phone = document.getElementById('regPhone').value || "Nuevo Inversor";
+            const refCode = document.getElementById('regRefCode').value;
+
             appState.currentUser = phone;
             appState.balance += 5000;
             
+            if (refCode.trim() !== '') {
+                appState.keys += 1;
+            }
+
             document.getElementById('authModal').classList.add('hidden');
             document.getElementById('profilePhone').innerText = phone;
             document.getElementById('refLinkInput').value = `https://vortex.app/ref?id=${phone}`;
@@ -421,6 +445,7 @@
         function updateUI() {
             document.getElementById('userBalanceText').innerText = `$${appState.balance.toLocaleString('es-AR')}`;
             document.getElementById('userKeysText').innerText = `${appState.keys} Llaves`;
+            renderReferralsList();
         }
 
         function renderLevels() {
@@ -444,9 +469,46 @@
         }
 
         function claimDailyCheckin() {
+            const now = Date.now();
+            const cooldownMs = 24 * 60 * 60 * 1000;
+
+            if (appState.lastCheckinTime && (now - appState.lastCheckinTime < cooldownMs)) {
+                return;
+            }
+
             appState.balance += 100;
-            alert("\u00A1Recompensa diaria de $100 ARS cobrada!");
+            appState.lastCheckinTime = now;
+            alert("\u00A1Recompensa diaria de $100 ARS acreditada!");
             updateUI();
+            startCheckinTimer();
+        }
+
+        function startCheckinTimer() {
+            if (checkinTimerInterval) clearInterval(checkinTimerInterval);
+
+            const btn = document.getElementById('checkinBtn');
+            const textSpan = document.getElementById('checkinBtnText');
+            const cooldownMs = 24 * 60 * 60 * 1000;
+
+            checkinTimerInterval = setInterval(() => {
+                const now = Date.now();
+                if (!appState.lastCheckinTime || (now - appState.lastCheckinTime >= cooldownMs)) {
+                    btn.disabled = false;
+                    textSpan.innerText = 'Cobrar $100';
+                    btn.className = "relative z-10 px-4 py-2.5 bg-vortex-red text-white font-bold text-xs rounded-xl shadow-md transition-all active:scale-95 flex items-center gap-1.5";
+                    clearInterval(checkinTimerInterval);
+                } else {
+                    btn.disabled = true;
+                    btn.className = "relative z-10 px-4 py-2.5 bg-slate-700 text-slate-300 font-bold text-xs rounded-xl border border-slate-600 cursor-not-allowed flex items-center gap-1.5";
+                    
+                    const diff = cooldownMs - (now - appState.lastCheckinTime);
+                    const hrs = Math.floor(diff / (1000 * 60 * 60));
+                    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+                    textSpan.innerText = `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                }
+            }, 1000);
         }
 
         function openChest() {
@@ -467,6 +529,24 @@
 
         function closeRewardModal() {
             document.getElementById('rewardModal').classList.add('hidden');
+        }
+
+        function renderReferralsList() {
+            const container = document.getElementById('referralsList');
+            if (appState.referrals.length === 0) {
+                container.innerHTML = '<p class="text-slate-400 text-center py-2">A&uacute;n no tienes referidos registrados.</p>';
+                return;
+            }
+
+            container.innerHTML = appState.referrals.map((ref, idx) => `
+                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 bg-vortex-lightRed text-vortex-red rounded-full flex items-center justify-center font-bold text-[10px]">${idx + 1}</span>
+                        <strong class="text-slate-800">${ref.phone}</strong>
+                    </div>
+                    <span class="text-emerald-600 font-bold text-[10px]">+1 Llave</span>
+                </div>
+            `).join('');
         }
 
         function handleWithdrawSubmit(e) {
