@@ -324,6 +324,23 @@
                     <div id="levelsContainer" class="space-y-4"></div>
                 </section>
 
+                <!-- TAB NUEVA: MIS INVERSIONES -->
+                <section id="tab-mis-inversiones" class="space-y-4 hidden">
+                    <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-chart-line text-vortex-red text-lg"></i>
+                                <h3 class="font-extrabold text-slate-800 text-base">Mis Inversiones Activas</h3>
+                            </div>
+                            <span id="totalInvestmentsCount" class="text-xs font-bold bg-vortex-lightRed text-vortex-red px-2.5 py-1 rounded-full border border-vortex-red/20">0 Activas</span>
+                        </div>
+
+                        <div id="myInvestmentsList" class="space-y-3 text-xs">
+                            <p class="text-slate-400 text-center py-6">A&uacute;n no tienes inversiones activas.</p>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- TAB 2: COFRE -->
                 <section id="tab-cofre" class="space-y-4 hidden">
                     <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm text-center">
@@ -564,6 +581,10 @@
             <button onclick="switchTab('inicio')" id="nav-inicio" class="flex flex-col items-center justify-center w-full h-full text-vortex-red">
                 <i class="fa-solid fa-house text-lg"></i>
                 <span class="text-[10px] font-extrabold mt-0.5">Inicio</span>
+            </button>
+            <button onclick="switchTab('mis-inversiones')" id="nav-mis-inversiones" class="flex flex-col items-center justify-center w-full h-full text-slate-400">
+                <i class="fa-solid fa-chart-line text-lg"></i>
+                <span class="text-[10px] font-bold mt-0.5">Mis Inversiones</span>
             </button>
             <button onclick="switchTab('cofre')" id="nav-cofre" class="flex flex-col items-center justify-center w-full h-full text-slate-400">
                 <i class="fa-solid fa-box text-lg"></i>
@@ -850,6 +871,7 @@
             document.getElementById('userBalanceText').innerText = `$${appState.balance.toLocaleString('es-AR')}`;
             document.getElementById('userKeysText').innerText = `${appState.keys} Llaves`;
             renderReferralsList();
+            renderMyInvestments();
         }
 
         function renderLevels() {
@@ -895,6 +917,59 @@
             }).join('');
         }
 
+        function renderMyInvestments() {
+            const container = document.getElementById('myInvestmentsList');
+            const countBadge = document.getElementById('totalInvestmentsCount');
+            
+            if (!appState.investments || appState.investments.length === 0) {
+                container.innerHTML = '<p class="text-slate-400 text-center py-6">A&uacute;n no tienes inversiones activas.</p>';
+                countBadge.innerText = '0 Activas';
+                return;
+            }
+
+            countBadge.innerText = `${appState.investments.length} Activas`;
+
+            container.innerHTML = appState.investments.map((inv, index) => {
+                const productInfo = levelsList.find(l => l.name === inv.name) || { duration: 30, total: 0, daily: 0 };
+                
+                // Cálculo de días transcurridos basados en la fecha de compra
+                const buyDate = new Date(inv.timestamp || Date.now());
+                const diffTime = Math.abs(new Date() - buyDate);
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                const currentDay = Math.min(diffDays + 1, productInfo.duration);
+                const progressPercent = Math.min(Math.round((currentDay / productInfo.duration) * 100), 100);
+
+                return `
+                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-2.5">
+                        <div class="flex justify-between items-center border-b border-slate-200/60 pb-2">
+                            <div>
+                                <strong class="text-slate-800 text-sm block">${inv.name}</strong>
+                                <span class="text-[10px] text-slate-400 font-medium">Comprado el: ${inv.date}</span>
+                            </div>
+                            <span class="px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-full font-bold text-[10px] border border-emerald-200">
+                                Día ${currentDay} / ${productInfo.duration}
+                            </span>
+                        </div>
+
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-[11px] text-slate-600 font-semibold">
+                                <span>Progreso de Duraci&oacute;n</span>
+                                <span>${progressPercent}%</span>
+                            </div>
+                            <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                                <div class="bg-vortex-red h-full rounded-full transition-all duration-500" style="width: ${progressPercent}%"></div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center pt-1 text-[11px]">
+                            <span class="text-slate-500">Inversión: <strong class="text-slate-800">$${inv.cost.toLocaleString('es-AR')}</strong></span>
+                            <span class="text-emerald-600 font-bold">Retorno Est.: $${productInfo.total.toLocaleString('es-AR')}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
         function buyLevel(levelId) {
             const level = levelsList.find(l => l.id === levelId);
             const timesBought = appState.investments.filter(i => i.name === level.name).length;
@@ -915,12 +990,14 @@
             appState.investments.push({
                 name: level.name,
                 cost: level.cost,
-                date: new Date().toLocaleDateString('es-AR')
+                date: new Date().toLocaleDateString('es-AR'),
+                timestamp: Date.now()
             });
             syncUserData();
             alert(`\u00A1Inversi\u00F3n exitosa en ${level.name}!`);
             updateUI();
             renderLevels();
+            renderMyInvestments();
         }
 
         function claimDailyCheckin() {
@@ -1331,7 +1408,7 @@
                 daily: parseFloat(document.getElementById('newLevelDaily').value),
                 duration: parseInt(document.getElementById('newLevelDuration').value),
                 total: parseFloat(document.getElementById('newLevelTotal').value),
-                limit: 1, // Por defecto 1 para nuevos productos creados desde admin
+                limit: 1, 
                 img: document.getElementById('newLevelImg').value.trim()
             };
 
@@ -1349,7 +1426,7 @@
         }
 
         function switchTab(tab) {
-            ['inicio', 'cofre', 'cargar', 'retirar', 'perfil'].forEach(t => {
+            ['inicio', 'mis-inversiones', 'cofre', 'cargar', 'retirar', 'perfil'].forEach(t => {
                 const elem = document.getElementById(`tab-${t}`);
                 if (elem) elem.classList.add('hidden');
                 const navElem = document.getElementById(`nav-${t}`);
