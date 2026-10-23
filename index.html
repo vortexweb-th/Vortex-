@@ -10,6 +10,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDK (Compat Version) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -87,7 +92,7 @@
                 <div id="loginForm" class="space-y-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Tel&eacute;fono M&oacute;vil</label>
-                        <input type="tel" id="loginPhone" placeholder="Ej: 1122334455" class="w-full px-4 py-3.5 bg-slate-100 border border-slate-200 rounded-xl font-medium text-slate-800 text-sm focus:outline-none focus:border-vortex-red">
+                        <input type="text" id="loginPhone" placeholder="Ej: 1122334455 o admin" class="w-full px-4 py-3.5 bg-slate-100 border border-slate-200 rounded-xl font-medium text-slate-800 text-sm focus:outline-none focus:border-vortex-red">
                     </div>
 
                     <div>
@@ -134,7 +139,7 @@
 
         <!-- BARRA SUPERIOR HEADER -->
         <header class="bg-white border-b border-slate-100 p-4 sticky top-0 z-30 flex items-center justify-between shadow-sm">
-            <div class="flex items-center gap-3 cursor-pointer select-none" id="adminTriggerLogo">
+            <div class="flex items-center gap-3 cursor-pointer select-none">
                 <div class="w-10 h-10 bg-vortex-red rounded-xl flex items-center justify-center text-white font-black text-xl shadow-md">
                     V
                 </div>
@@ -192,7 +197,6 @@
             <!-- TAB 2: COFRE -->
             <section id="tab-cofre" class="space-y-4 hidden">
                 <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm text-center">
-                    <!-- FOTO FIJA Y REAL DE COFRE DE TESORO CLÁSICO -->
                     <div class="w-24 h-24 mx-auto mb-2 bg-amber-50 rounded-2xl flex items-center justify-center p-2 border border-amber-200 shadow-inner">
                         <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=300&q=80" alt="Cofre de Tesoro" class="w-full h-full object-cover rounded-xl shadow-md animate-bounce-slow">
                     </div>
@@ -231,15 +235,13 @@
                     </div>
                 </div>
 
-                <!-- LISTA DE REFERIDOS REGISTRADOS ABAJO -->
+                <!-- LISTA DE REFERIDOS REGISTRADOS -->
                 <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
                     <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
                         <i class="fa-solid fa-users text-vortex-red"></i>
                         Mis Referidos Registrados
                     </h4>
-                    <div id="referralsList" class="space-y-2 text-xs">
-                        <!-- Renderizado en JS -->
-                    </div>
+                    <div id="referralsList" class="space-y-2 text-xs"></div>
                 </div>
             </section>
 
@@ -278,7 +280,7 @@
                 </div>
             </section>
 
-            <!-- TAB 4: RETIRAR FONDOS COMPLETO -->
+            <!-- TAB 4: RETIRAR -->
             <section id="tab-retirar" class="space-y-4 hidden">
                 <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
                     <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
@@ -321,12 +323,70 @@
             <!-- TAB 5: PERFIL -->
             <section id="tab-perfil" class="space-y-4 hidden">
                 <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm text-center space-y-3">
-                    <div id="adminTriggerProfile" class="w-20 h-20 bg-vortex-red text-white rounded-full flex items-center justify-center text-3xl mx-auto shadow-lg glow-red font-black">
+                    <div class="w-20 h-20 bg-vortex-red text-white rounded-full flex items-center justify-center text-3xl mx-auto shadow-lg glow-red font-black">
                         <i class="fa-solid fa-user"></i>
                     </div>
                     <div>
                         <h3 id="profilePhone" class="text-lg font-black text-slate-800">-</h3>
                         <p class="text-xs text-vortex-red font-bold uppercase tracking-wider">Inversor Verificado Vortex</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 6: PANEL DE ADMINISTRACIÓN (SOLO ADMIN) -->
+            <section id="tab-admin" class="space-y-4 hidden">
+                <div class="bg-slate-900 text-white rounded-2xl p-5 shadow-xl space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-user-gear text-vortex-red text-xl"></i>
+                            <h3 class="font-black text-base">Panel de Control Admin</h3>
+                        </div>
+                        <span class="bg-vortex-red/20 text-vortex-lightRed text-[10px] font-bold px-2.5 py-1 rounded-full border border-vortex-red/30">Modo Maestro</span>
+                    </div>
+
+                    <!-- BUSCADOR DE USUARIOS -->
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-slate-400 uppercase">Buscar / Modificar Usuario</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="adminUserSearchInput" placeholder="N&uacute;mero de Tel&eacute;fono" class="flex-1 px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-white focus:outline-none focus:border-vortex-red">
+                            <button onclick="adminSearchUser()" class="px-4 py-2 bg-vortex-red text-white font-bold text-xs rounded-xl shadow-md">
+                                Buscar
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- DETALLES Y EDICIÓN DEL USUARIO ENCONTRADO -->
+                    <div id="adminUserDetail" class="hidden bg-slate-800/80 p-4 rounded-xl border border-slate-700 space-y-3 text-xs">
+                        <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                            <span class="text-slate-400">Usuario:</span>
+                            <strong id="adminTargetPhone" class="text-white font-bold">-</strong>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[10px] text-slate-400 mb-1">Saldo (ARS)</label>
+                                <input type="number" id="adminTargetBalance" class="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-white font-bold">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-slate-400 mb-1">Llaves</label>
+                                <input type="number" id="adminTargetKeys" class="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-white font-bold">
+                            </div>
+                        </div>
+
+                        <button onclick="adminSaveUserChanges()" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg shadow-md transition-all">
+                            Guardar Cambios del Usuario
+                        </button>
+                    </div>
+                </div>
+
+                <!-- LISTA DE SOLICITUDES DE RETIRO PENDIENTES -->
+                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-3">
+                    <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left text-vortex-red"></i>
+                        Solicitudes de Retiro Pendientes
+                    </h4>
+                    <div id="adminWithdrawalsList" class="space-y-2 text-xs">
+                        <p class="text-slate-400 text-center py-2">No hay retiros pendientes.</p>
                     </div>
                 </div>
             </section>
@@ -357,12 +417,35 @@
                 <i class="fa-solid fa-user text-lg"></i>
                 <span class="text-[10px] font-bold mt-0.5">Perfil</span>
             </button>
+            <!-- BOTÓN PANEL ADMIN (SOLO VISIBLE SI ES ADMIN) -->
+            <button onclick="switchTab('admin')" id="nav-admin" class="flex flex-col items-center justify-center w-full h-full text-amber-500 hidden">
+                <i class="fa-solid fa-user-shield text-lg"></i>
+                <span class="text-[10px] font-extrabold mt-0.5">Admin</span>
+            </button>
         </nav>
 
     </div>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- JAVASCRIPT LOGIC CON FIREBASE REAL -->
     <script>
+        // CONFIGURACIÓN DE FIREBASE OFICIAL
+        const firebaseConfig = {
+            apiKey: "AIzaSyDt6V_LuY4FfNezNEnaNp_vGBIh4_k4r0E",
+            authDomain: "vortexweb-2a41e.firebaseapp.com",
+            projectId: "vortexweb-2a41e",
+            storageBucket: "vortexweb-2a41e.firebasestorage.app",
+            messagingSenderId: "867279303363",
+            appId: "1:867279303363:web:be4c81fde1533e6b332876",
+            measurementId: "G-4335XYH7PW"
+        };
+
+        // Inicialización
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // TELÉFONOS IDENTIFICADOS COMO ADMINISTRADORES
+        const ADMIN_PHONES = ['admin', '1122334455'];
+
         const LEVELS = [
             { id: 1, name: 'Producto 1', cost: 16000, duration: 15, daily: 1666.67, total: 25000, img: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80' },
             { id: 2, name: 'Producto 2', cost: 35000, duration: 30, daily: 1500.00, total: 45000, img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
@@ -378,8 +461,7 @@
             balance: 0,
             keys: 0,
             lastCheckinTime: null,
-            referrals: [],
-            registeredUsers: {} // Base de datos simulada de usuarios
+            referrals: []
         };
 
         let checkinTimerInterval = null;
@@ -409,23 +491,8 @@
             }
         }
 
-        function handleLoginDirect() {
-            const phone = document.getElementById('loginPhone').value.trim();
-            const pin = document.getElementById('loginPin').value.trim();
-
-            if (!phone || !pin) {
-                alert('Por favor completa todos los campos.');
-                return;
-            }
-
-            appState.currentUser = phone;
-            document.getElementById('authModal').classList.add('hidden');
-            document.getElementById('profilePhone').innerText = phone;
-            document.getElementById('refLinkInput').value = `https://vortex.app/ref?id=${phone}`;
-            updateUI();
-        }
-
-        function handleRegisterDirect() {
+        // REGISTRO PERSISTENTE EN FIREBASE
+        async function handleRegisterDirect() {
             const phone = document.getElementById('regPhone').value.trim();
             const pin = document.getElementById('regPin').value.trim();
             const refCode = document.getElementById('regRefCode').value.trim();
@@ -435,34 +502,132 @@
                 return;
             }
 
-            // Validar si el usuario ya existe
-            if (appState.registeredUsers[phone]) {
-                alert('⚠️ Este número de teléfono ya se encuentra registrado. Por favor inicia sesión.');
-                toggleAuthTab('login');
-                document.getElementById('loginPhone').value = phone;
+            try {
+                const userRef = db.collection('usuarios').doc(phone);
+                const doc = await userRef.get();
+
+                if (doc.exists) {
+                    alert('⚠️ Este número de teléfono ya está registrado. Por favor inicia sesión.');
+                    toggleAuthTab('login');
+                    document.getElementById('loginPhone').value = phone;
+                    return;
+                }
+
+                let initialKeys = 0;
+
+                if (refCode !== '') {
+                    initialKeys = 1;
+                    const refUserRef = db.collection('usuarios').doc(refCode);
+                    const refDoc = await refUserRef.get();
+                    if (refDoc.exists) {
+                        const refData = refDoc.data();
+                        const updatedRefs = refData.referrals || [];
+                        updatedRefs.push({ phone: phone });
+                        await refUserRef.update({
+                            keys: firebase.firestore.FieldValue.increment(1),
+                            referrals: updatedRefs
+                        });
+                    }
+                }
+
+                const newUser = {
+                    phone,
+                    pin,
+                    balance: 5000,
+                    keys: initialKeys,
+                    referrals: [],
+                    lastCheckinTime: null
+                };
+
+                await userRef.set(newUser);
+
+                appState.currentUser = phone;
+                appState.balance = newUser.balance;
+                appState.keys = newUser.keys;
+                appState.referrals = newUser.referrals;
+
+                document.getElementById('authModal').classList.add('hidden');
+                document.getElementById('profilePhone').innerText = phone;
+                document.getElementById('refLinkInput').value = `https://vortex.app/ref?id=${phone}`;
+
+                checkAdminStatus();
+                alert("¡Cuenta creada exitosamente en Firebase! Se han acreditado $5.000 ARS.");
+                updateUI();
+            } catch (error) {
+                alert("Error de conexión con la base de datos.");
+            }
+        }
+
+        // LOGIN DESDE FIREBASE
+        async function handleLoginDirect() {
+            const phone = document.getElementById('loginPhone').value.trim();
+            const pin = document.getElementById('loginPin').value.trim();
+
+            if (!phone || !pin) {
+                alert('Por favor completa todos los campos.');
                 return;
             }
 
-            // Registrar nuevo usuario
-            appState.registeredUsers[phone] = { pin: pin };
-            appState.currentUser = phone;
-            appState.balance += 5000;
-            
-            if (refCode !== '') {
-                appState.keys += 1;
-                appState.referrals.push({ phone: phone });
+            try {
+                const userRef = db.collection('usuarios').doc(phone);
+                const doc = await userRef.get();
+
+                if (!doc.exists) {
+                    alert('Este número no está registrado. Por favor crea una cuenta.');
+                    return;
+                }
+
+                const userData = doc.data();
+                if (userData.pin !== pin) {
+                    alert('Contraseña incorrecta.');
+                    return;
+                }
+
+                appState.currentUser = phone;
+                appState.balance = userData.balance;
+                appState.keys = userData.keys;
+                appState.referrals = userData.referrals || [];
+                appState.lastCheckinTime = userData.lastCheckinTime;
+
+                document.getElementById('authModal').classList.add('hidden');
+                document.getElementById('profilePhone').innerText = phone;
+                document.getElementById('refLinkInput').value = `https://vortex.app/ref?id=${phone}`;
+
+                checkAdminStatus();
+                updateUI();
+                startCheckinTimer();
+                alert('¡Sesión iniciada correctamente!');
+            } catch (error) {
+                alert("Error al intentar iniciar sesión.");
             }
+        }
 
-            document.getElementById('authModal').classList.add('hidden');
-            document.getElementById('profilePhone').innerText = phone;
-            document.getElementById('refLinkInput').value = `https://vortex.app/ref?id=${phone}`;
+        function checkAdminStatus() {
+            const adminNavBtn = document.getElementById('nav-admin');
+            if (ADMIN_PHONES.includes(appState.currentUser)) {
+                adminNavBtn.classList.remove('hidden');
+                loadPendingWithdrawals();
+            } else {
+                adminNavBtn.classList.add('hidden');
+            }
+        }
 
-            alert("¡Cuenta creada con éxito! Te hemos acreditado $5.000 ARS de Bono de Bienvenida.");
-            updateUI();
+        async function syncUserData() {
+            if (!appState.currentUser) return;
+            try {
+                await db.collection('usuarios').doc(appState.currentUser).update({
+                    balance: appState.balance,
+                    keys: appState.keys,
+                    lastCheckinTime: appState.lastCheckinTime
+                });
+            } catch (e) {
+                console.error("Error sincronizando:", e);
+            }
         }
 
         function logout() {
             appState.currentUser = null;
+            document.getElementById('nav-admin').classList.add('hidden');
             document.getElementById('authModal').classList.remove('hidden');
         }
 
@@ -507,6 +672,7 @@
             }
 
             appState.balance -= level.cost;
+            syncUserData();
             alert(`\u00A1Inversi\u00F3n exitosa en ${level.name}!`);
             updateUI();
         }
@@ -521,6 +687,7 @@
 
             appState.balance += 100;
             appState.lastCheckinTime = now;
+            syncUserData();
             alert("\u00A1Recompensa diaria de $100 ARS acreditada!");
             updateUI();
             startCheckinTimer();
@@ -565,6 +732,7 @@
             const reward = prizes[Math.floor(Math.random() * prizes.length)];
             
             appState.balance += reward;
+            syncUserData();
             document.getElementById('rewardAmountText').innerText = `$${reward.toLocaleString('es-AR')} ARS`;
             document.getElementById('rewardModal').classList.remove('hidden');
             updateUI();
@@ -576,7 +744,7 @@
 
         function renderReferralsList() {
             const container = document.getElementById('referralsList');
-            if (appState.referrals.length === 0) {
+            if (!appState.referrals || appState.referrals.length === 0) {
                 container.innerHTML = '<p class="text-slate-400 text-center py-2">A&uacute;n no tienes referidos registrados.</p>';
                 return;
             }
@@ -592,9 +760,11 @@
             `).join('');
         }
 
-        function handleWithdrawSubmit(e) {
+        async function handleWithdrawSubmit(e) {
             e.preventDefault();
             const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const cbu = document.getElementById('withdrawCbu').value.trim();
+            const name = document.getElementById('withdrawName').value.trim();
 
             if (amount < 10000) {
                 alert('El monto m\u00EDnimo de retiro es de $10.000 ARS.');
@@ -608,6 +778,19 @@
 
             const netAmount = amount * 0.85;
             appState.balance -= amount;
+            syncUserData();
+
+            // REGISTRAR SOLICITUD DE RETIRO EN FIREBASE
+            await db.collection('retiros').add({
+                phone: appState.currentUser,
+                amount: amount,
+                netAmount: netAmount,
+                cbu: cbu,
+                name: name,
+                status: 'pendiente',
+                date: new Date().toLocaleString('es-AR')
+            });
+
             alert(`Solicitud de retiro enviada. Recibir\u00E1s $${netAmount.toLocaleString('es-AR')} ARS en tu cuenta tras la deducci\u00F3n del 15%.`);
             document.getElementById('withdrawAmount').value = '';
             document.getElementById('withdrawCbu').value = '';
@@ -615,16 +798,105 @@
             updateUI();
         }
 
+        /* FUNCIONES MAESTRAS DEL PANEL DE ADMINISTRACIÓN */
+        async function adminSearchUser() {
+            const phone = document.getElementById('adminUserSearchInput').value.trim();
+            if (!phone) return;
+
+            const doc = await db.collection('usuarios').doc(phone).get();
+            if (!doc.exists) {
+                alert('Usuario no encontrado.');
+                document.getElementById('adminUserDetail').classList.add('hidden');
+                return;
+            }
+
+            const data = doc.data();
+            document.getElementById('adminTargetPhone').innerText = phone;
+            document.getElementById('adminTargetBalance').value = data.balance || 0;
+            document.getElementById('adminTargetKeys').value = data.keys || 0;
+            document.getElementById('adminUserDetail').classList.remove('hidden');
+        }
+
+        async function adminSaveUserChanges() {
+            const phone = document.getElementById('adminTargetPhone').innerText;
+            const newBalance = parseFloat(document.getElementById('adminTargetBalance').value);
+            const newKeys = parseInt(document.getElementById('adminTargetKeys').value);
+
+            await db.collection('usuarios').doc(phone).update({
+                balance: newBalance,
+                keys: newKeys
+            });
+
+            alert(`¡Usuario ${phone} actualizado correctamente!`);
+            if (phone === appState.currentUser) {
+                appState.balance = newBalance;
+                appState.keys = newKeys;
+                updateUI();
+            }
+        }
+
+        async function loadPendingWithdrawals() {
+            const container = document.getElementById('adminWithdrawalsList');
+            const snapshot = await db.collection('retiros').where('status', '==', 'pendiente').get();
+
+            if (snapshot.empty) {
+                container.innerHTML = '<p class="text-slate-400 text-center py-2">No hay retiros pendientes.</p>';
+                return;
+            }
+
+            container.innerHTML = snapshot.docs.map(doc => {
+                const item = doc.data();
+                return `
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+                        <div class="flex justify-between items-center font-bold">
+                            <span class="text-slate-800">${item.phone}</span>
+                            <span class="text-vortex-red">$${item.amount.toLocaleString('es-AR')} ARS</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500">Neto: $${item.netAmount.toLocaleString('es-AR')} | Titular: ${item.name}</p>
+                        <p class="text-[10px] text-slate-400 font-mono">CBU/CVU: ${item.cbu}</p>
+                        <div class="flex gap-2 pt-1">
+                            <button onclick="adminResolveWithdrawal('${doc.id}', 'aprobado')" class="flex-1 py-1.5 bg-emerald-600 text-white font-bold rounded-lg text-[11px]">
+                                Aprobar
+                            </button>
+                            <button onclick="adminResolveWithdrawal('${doc.id}', 'rechazado', '${item.phone}', ${item.amount})" class="flex-1 py-1.5 bg-rose-600 text-white font-bold rounded-lg text-[11px]">
+                                Rechazar y Reembolsar
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function adminResolveWithdrawal(docId, status, userPhone = null, amount = 0) {
+            await db.collection('retiros').doc(docId).update({ status: status });
+
+            if (status === 'rechazado' && userPhone) {
+                await db.collection('usuarios').doc(userPhone).update({
+                    balance: firebase.firestore.FieldValue.increment(amount)
+                });
+            }
+
+            alert(`Solicitud ${status} con éxito.`);
+            loadPendingWithdrawals();
+        }
+
         function switchTab(tab) {
-            ['inicio', 'cofre', 'cargar', 'retirar', 'perfil'].forEach(t => {
-                document.getElementById(`tab-${t}`).classList.add('hidden');
-                document.getElementById(`nav-${t}`).classList.remove('text-vortex-red');
-                document.getElementById(`nav-${t}`).classList.add('text-slate-400');
+            ['inicio', 'cofre', 'cargar', 'retirar', 'perfil', 'admin'].forEach(t => {
+                const elem = document.getElementById(`tab-${t}`);
+                if (elem) elem.classList.add('hidden');
+                const navElem = document.getElementById(`nav-${t}`);
+                if (navElem) {
+                    navElem.classList.remove('text-vortex-red');
+                    navElem.classList.add('text-slate-400');
+                }
             });
 
             document.getElementById(`tab-${tab}`).classList.remove('hidden');
-            document.getElementById(`nav-${tab}`).classList.remove('text-slate-400');
-            document.getElementById(`nav-${tab}`).classList.add('text-vortex-red');
+            const activeNav = document.getElementById(`nav-${tab}`);
+            if (activeNav) {
+                activeNav.classList.remove('text-slate-400');
+                activeNav.classList.add('text-vortex-red');
+            }
         }
 
         function copyAlias() {
