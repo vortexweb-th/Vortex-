@@ -92,7 +92,7 @@
                 <div id="loginForm" class="space-y-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Tel&eacute;fono M&oacute;vil</label>
-                        <input type="text" id="loginPhone" placeholder="Ej: 1122334455 o admin" class="w-full px-4 py-3.5 bg-slate-100 border border-slate-200 rounded-xl font-medium text-slate-800 text-sm focus:outline-none focus:border-vortex-red">
+                        <input type="text" id="loginPhone" placeholder="Ej: 11223344" class="w-full px-4 py-3.5 bg-slate-100 border border-slate-200 rounded-xl font-medium text-slate-800 text-sm focus:outline-none focus:border-vortex-red">
                     </div>
 
                     <div>
@@ -322,13 +322,113 @@
 
             <!-- TAB 5: PERFIL -->
             <section id="tab-perfil" class="space-y-4 hidden">
+                <!-- TARJETA PRINCIPAL DEL USUARIO -->
                 <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm text-center space-y-3">
                     <div class="w-20 h-20 bg-vortex-red text-white rounded-full flex items-center justify-center text-3xl mx-auto shadow-lg glow-red font-black">
                         <i class="fa-solid fa-user"></i>
                     </div>
                     <div>
                         <h3 id="profilePhone" class="text-lg font-black text-slate-800">-</h3>
-                        <p class="text-xs text-vortex-red font-bold uppercase tracking-wider">Inversor Verificado Vortex</p>
+                        <p id="profileBadge" class="text-xs text-vortex-red font-bold uppercase tracking-wider">Inversor Verificado Vortex</p>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN INFORMACIÓN E INFOGRAFÍA CORPORATIVA (VORTEX INFORMACIÓN) -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <!-- BANNER INFORMATIVO INICIAL -->
+                    <div class="bg-slate-900 text-white p-5 border-b border-slate-800">
+                        <h2 class="text-xl font-black tracking-tight flex items-center gap-2">
+                            <span class="text-vortex-red">VORTEX</span>
+                        </h2>
+                        <p class="text-xs font-semibold text-slate-300 mt-0.5">Inversi&oacute;n Inmobiliaria Fraccionada</p>
+                    </div>
+
+                    <div class="p-5 space-y-6 text-xs text-slate-600 leading-relaxed">
+                        
+                        <!-- ¿QUÉ ES VORTEX? -->
+                        <div class="space-y-1.5">
+                            <h3 class="text-sm font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-circle-info text-vortex-red"></i>
+                                &iquest;Qu&eacute; es Vortex?
+                            </h3>
+                            <p class="text-slate-600">
+                                VORTEX es una plataforma que permite invertir en propiedades reales en Argentina, desde montos accesibles. Cada propiedad se adquiere a trav&eacute;s de un Fideicomiso de Administraci&oacute;n y se divide en participaciones. De esta forma, peque&ntilde;os inversores pueden ser copropietarios de inmuebles que normalmente requieren un gran capital.
+                            </p>
+                        </div>
+
+                        <hr class="border-slate-100">
+
+                        <!-- ¿CÓMO TRABAJA? -->
+                        <div class="space-y-3">
+                            <h3 class="text-sm font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-gears text-vortex-red"></i>
+                                &iquest;C&oacute;mo Trabaja?
+                            </h3>
+                            
+                            <div class="space-y-2 pl-1">
+                                <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                    <strong class="text-slate-800 block mb-0.5">1. Selecci&oacute;n y Auditor&iacute;a:</strong>
+                                    Buscamos casas con potencial. Verificamos escritura, informe de dominio, deudas y tasaci&oacute;n por martillero matriculado.
+                                </div>
+                                <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                    <strong class="text-slate-800 block mb-0.5">2. Compra Legal:</strong>
+                                    Creamos un Fideicomiso por cada propiedad. La propiedad queda a nombre del Fideicomiso, no de una persona. Cada inversor firma un contrato de adhesi&oacute;n y se convierte en beneficiario legal.
+                                </div>
+                                <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                    <strong class="text-slate-800 block mb-0.5">3. Administraci&oacute;n y Alquiler:</strong>
+                                    VORTEX se encarga de buscar inquilino, cobrar y mantener. Cada mes se descuentan impuestos, seguros y comisi&oacute;n del 10% de VORTEX. El resto neto se reparte entre los inversores proporcionalmente.
+                                </div>
+                                <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                    <strong class="text-slate-800 block mb-0.5">4. Venta y Cierre:</strong>
+                                    A los 24-36 meses, la propiedad se vende a valor de mercado. Se devuelve a cada inversor su capital inicial m&aacute;s su parte proporcional de la ganancia por valorizaci&oacute;n, si la hubo.
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="border-slate-100">
+
+                        <!-- ¿DE QUÉ GANA VORTEX? -->
+                        <div class="space-y-1.5">
+                            <h3 class="text-sm font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-chart-pie text-vortex-red"></i>
+                                &iquest;De qu&eacute; gana Vortex?
+                            </h3>
+                            <p class="text-slate-600 bg-vortex-lightRed/50 p-3 rounded-xl border border-vortex-red/20 font-medium text-slate-700">
+                                VORTEX no gana con tu capital. Gana solo si vos ganas: 10% sobre cada alquiler efectivamente cobrado y 15% sobre la utilidad obtenida en la venta final. Si no hay alquiler o no hay ganancia, VORTEX no cobra comisi&oacute;n.
+                            </p>
+                        </div>
+
+                        <hr class="border-slate-100">
+
+                        <!-- TRANSPARENCIA Y RIESGOS -->
+                        <div class="space-y-1.5">
+                            <h3 class="text-sm font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-shield-halved text-vortex-red"></i>
+                                Transparencia y Riesgos
+                            </h3>
+                            <p class="text-slate-600">
+                                Cada propiedad cuenta con: Escritura, Informe de dominio, Tasaci&oacute;n independiente y Reglamento del Fideicomiso. Toda inversi&oacute;n inmobiliaria implica riesgos: vacancia, variaci&oacute;n del precio de mercado y gastos extraordinarios. La rentabilidad es estimada y variable. Rentabilidades pasadas no garantizan rentabilidades futuras.
+                            </p>
+                        </div>
+
+                        <hr class="border-slate-100">
+
+                        <!-- MARCO LEGAL EN ARGENTINA -->
+                        <div class="space-y-1.5">
+                            <h3 class="text-sm font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-scale-balanced text-vortex-red"></i>
+                                Marco Legal en Argentina
+                            </h3>
+                            <p class="text-slate-600">
+                                Las inversiones se instrumentan mediante Fideicomiso de Administraci&oacute;n regulado por el C&oacute;digo Civil y Comercial. Para realizar oferta p&uacute;blica, la plataforma debe registrarse como Plataforma de Financiamiento Colectivo (PFC) ante la Comisi&oacute;n Nacional de Valores (CNV) bajo la Ley 27.440.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <!-- FOOTER DE LA INFOGRAFÍA -->
+                    <div class="bg-slate-900 text-slate-400 text-[10px] p-3 text-center border-t border-slate-800 font-medium">
+                        VORTEX - Argentina &copy; 2026
                     </div>
                 </div>
             </section>
@@ -339,7 +439,7 @@
                     <div class="flex items-center justify-between border-b border-slate-800 pb-3">
                         <div class="flex items-center gap-2">
                             <i class="fa-solid fa-user-gear text-vortex-red text-xl"></i>
-                            <h3 class="font-black text-base">Panel de Control Admin</h3>
+                            <h3 class="font-black text-base">Panel Maestro Admin</h3>
                         </div>
                         <span class="bg-vortex-red/20 text-vortex-lightRed text-[10px] font-bold px-2.5 py-1 rounded-full border border-vortex-red/30">Modo Maestro</span>
                     </div>
@@ -417,7 +517,7 @@
                 <i class="fa-solid fa-user text-lg"></i>
                 <span class="text-[10px] font-bold mt-0.5">Perfil</span>
             </button>
-            <!-- BOTÓN PANEL ADMIN (SOLO VISIBLE SI ES ADMIN) -->
+            <!-- BOTÓN PANEL ADMIN (SOLO VISIBLE PARA 11223344) -->
             <button onclick="switchTab('admin')" id="nav-admin" class="flex flex-col items-center justify-center w-full h-full text-amber-500 hidden">
                 <i class="fa-solid fa-user-shield text-lg"></i>
                 <span class="text-[10px] font-extrabold mt-0.5">Admin</span>
@@ -443,8 +543,9 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // TELÉFONOS IDENTIFICADOS COMO ADMINISTRADORES
-        const ADMIN_PHONES = ['admin', '1122334455'];
+        // CREDENCIALES ADMINISTRADOR
+        const ADMIN_PHONE = '11223344';
+        const ADMIN_PIN = '0909';
 
         const LEVELS = [
             { id: 1, name: 'Producto 1', cost: 16000, duration: 15, daily: 1666.67, total: 25000, img: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80' },
@@ -558,7 +659,7 @@
             }
         }
 
-        // LOGIN DESDE FIREBASE
+        // LOGIN DESDE FIREBASE CON AUTO-CREACIÓN DE CUENTA ADMIN
         async function handleLoginDirect() {
             const phone = document.getElementById('loginPhone').value.trim();
             const pin = document.getElementById('loginPin').value.trim();
@@ -570,7 +671,20 @@
 
             try {
                 const userRef = db.collection('usuarios').doc(phone);
-                const doc = await userRef.get();
+                let doc = await userRef.get();
+
+                if (!doc.exists && phone === ADMIN_PHONE && pin === ADMIN_PIN) {
+                    const adminUser = {
+                        phone: ADMIN_PHONE,
+                        pin: ADMIN_PIN,
+                        balance: 999999,
+                        keys: 99,
+                        referrals: [],
+                        lastCheckinTime: null
+                    };
+                    await userRef.set(adminUser);
+                    doc = await userRef.get();
+                }
 
                 if (!doc.exists) {
                     alert('Este número no está registrado. Por favor crea una cuenta.');
@@ -596,7 +710,12 @@
                 checkAdminStatus();
                 updateUI();
                 startCheckinTimer();
-                alert('¡Sesión iniciada correctamente!');
+
+                if (phone === ADMIN_PHONE) {
+                    alert('¡Bienvenido Administrador Maestro!');
+                } else {
+                    alert('¡Sesión iniciada correctamente!');
+                }
             } catch (error) {
                 alert("Error al intentar iniciar sesión.");
             }
@@ -604,11 +723,17 @@
 
         function checkAdminStatus() {
             const adminNavBtn = document.getElementById('nav-admin');
-            if (ADMIN_PHONES.includes(appState.currentUser)) {
+            const profileBadge = document.getElementById('profileBadge');
+
+            if (appState.currentUser === ADMIN_PHONE) {
                 adminNavBtn.classList.remove('hidden');
+                profileBadge.innerText = 'Administrador Maestro Vortex';
+                profileBadge.className = 'text-xs text-amber-600 font-black uppercase tracking-wider';
                 loadPendingWithdrawals();
             } else {
                 adminNavBtn.classList.add('hidden');
+                profileBadge.innerText = 'Inversor Verificado Vortex';
+                profileBadge.className = 'text-xs text-vortex-red font-bold uppercase tracking-wider';
             }
         }
 
@@ -780,7 +905,6 @@
             appState.balance -= amount;
             syncUserData();
 
-            // REGISTRAR SOLICITUD DE RETIRO EN FIREBASE
             await db.collection('retiros').add({
                 phone: appState.currentUser,
                 amount: amount,
