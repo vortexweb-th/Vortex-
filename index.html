@@ -194,14 +194,17 @@
                     </div>
 
                     <!-- SUB-PESTAÑAS DE NAVEGACIÓN ADMIN -->
-                    <div class="flex bg-slate-800 p-1 rounded-xl text-xs font-bold gap-1">
-                        <button onclick="switchAdminSubTab('users')" id="adminTabUsersBtn" class="flex-1 py-2 rounded-lg bg-vortex-red text-white transition-all">
+                    <div class="grid grid-cols-4 bg-slate-800 p-1 rounded-xl text-xs font-bold gap-1 text-center">
+                        <button onclick="switchAdminSubTab('users')" id="adminTabUsersBtn" class="py-2 rounded-lg bg-vortex-red text-white transition-all">
                             👥 Usuarios
                         </button>
-                        <button onclick="switchAdminSubTab('requests')" id="adminTabRequestsBtn" class="flex-1 py-2 rounded-lg text-slate-400 transition-all">
+                        <button onclick="switchAdminSubTab('requests')" id="adminTabRequestsBtn" class="py-2 rounded-lg text-slate-400 transition-all">
                             💳 Solicitudes
                         </button>
-                        <button onclick="switchAdminSubTab('settings')" id="adminTabSettingsBtn" class="flex-1 py-2 rounded-lg text-slate-400 transition-all">
+                        <button onclick="switchAdminSubTab('affiliates')" id="adminTabAffiliatesBtn" class="py-2 rounded-lg text-slate-400 transition-all">
+                            🔗 Afiliados
+                        </button>
+                        <button onclick="switchAdminSubTab('settings')" id="adminTabSettingsBtn" class="py-2 rounded-lg text-slate-400 transition-all">
                             ⚙️ Config
                         </button>
                     </div>
@@ -222,7 +225,7 @@
                     </div>
                 </div>
 
-                <!-- SUB-SECCIÓN 2: CARGAS Y RETIROS PENDIENTES -->
+                <!-- SUB-SECCIÓN 2: CARGAS Y RETIROS PENDIENTES (MÓDULO DE PAGOS RIGUROSO) -->
                 <div id="adminSubTab-requests" class="space-y-4 hidden">
                     <!-- CARGAS PENDIENTES -->
                     <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
@@ -235,19 +238,34 @@
                         </div>
                     </div>
 
-                    <!-- RETIROS PENDIENTES -->
+                    <!-- RETIROS PENDIENTES (CONTROL INTEGRAL) -->
                     <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
                         <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
                             <i class="fa-solid fa-hand-holding-dollar text-vortex-red"></i>
-                            Retiros Pendientes por Procesar
+                            Solicitudes de Retiro (Fila en Tiempo Real)
                         </h4>
-                        <div id="adminWithdrawalsList" class="space-y-2 text-xs">
+                        <p class="text-[11px] text-slate-400">Verifica que el nombre del titular coincida antes de procesar.</p>
+                        <div id="adminWithdrawalsList" class="space-y-3 text-xs">
                             <p class="text-slate-400 text-center py-2">No hay retiros pendientes.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- SUB-SECCIÓN 3: CONFIGURACIÓN GLOBAL Y NUEVOS PRODUCTOS -->
+                <!-- SUB-SECCIÓN 3: MÓDULO DE REDES Y REFERIDOS (AFILIADOS) -->
+                <div id="adminSubTab-affiliates" class="space-y-4 hidden">
+                    <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-network-wired text-vortex-red"></i>
+                            Árbol de Referidos y Red Activa
+                        </h4>
+                        <p class="text-[11px] text-slate-500">Visualiza quién invitó a quién y el rendimiento de la red de afiliados.</p>
+                        <div id="adminAffiliatesContainer" class="space-y-3 text-xs">
+                            <p class="text-slate-400 text-center py-4">Cargando red de afiliados...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-SECCIÓN 4: CONFIGURACIÓN GLOBAL Y NUEVOS PRODUCTOS -->
                 <div id="adminSubTab-settings" class="space-y-4 hidden">
                     <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
                         <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 pb-2">
@@ -324,7 +342,7 @@
                     <div id="levelsContainer" class="space-y-4"></div>
                 </section>
 
-                <!-- TAB NUEVA: MIS INVERSIONES -->
+                <!-- TAB: MIS INVERSIONES -->
                 <section id="tab-mis-inversiones" class="space-y-4 hidden">
                     <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
                         <div class="flex items-center justify-between border-b border-slate-100 pb-3">
@@ -470,7 +488,7 @@
                             </div>
 
                             <div>
-                                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Nombre del Titular</label>
+                                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Nombre del Titular (Debe coincidir)</label>
                                 <input type="text" id="withdrawName" required placeholder="Nombre Completo" class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl font-medium text-slate-800 text-sm focus:outline-none focus:border-vortex-red">
                             </div>
 
@@ -726,6 +744,7 @@
                     pin,
                     balance: 5000,
                     keys: initialKeys,
+                    referredBy: refCode || null,
                     referrals: [],
                     investments: [],
                     lastCheckinTime: null
@@ -771,6 +790,7 @@
                         pin: ADMIN_PIN,
                         balance: 999999,
                         keys: 99,
+                        referredBy: null,
                         referrals: [],
                         investments: [],
                         lastCheckinTime: null
@@ -824,7 +844,6 @@
             const sectionAdmin = document.getElementById('section-admin');
 
             if (appState.currentUser === ADMIN_PHONE) {
-                // MODO ADMINISTRADOR PURO
                 userHeader.classList.add('hidden');
                 userNav.classList.add('hidden');
                 userViewsContainer.classList.add('hidden');
@@ -834,7 +853,6 @@
 
                 loadAdminData();
             } else {
-                // MODO USUARIO COMÚN
                 adminHeader.classList.add('hidden');
                 sectionAdmin.classList.add('hidden');
 
@@ -931,8 +949,6 @@
 
             container.innerHTML = appState.investments.map((inv, index) => {
                 const productInfo = levelsList.find(l => l.name === inv.name) || { duration: 30, total: 0, daily: 0 };
-                
-                // Cálculo de días transcurridos basados en la fecha de compra
                 const buyDate = new Date(inv.timestamp || Date.now());
                 const diffTime = Math.abs(new Date() - buyDate);
                 const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
@@ -947,7 +963,7 @@
                                 <span class="text-[10px] text-slate-400 font-medium">Comprado el: ${inv.date}</span>
                             </div>
                             <span class="px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-full font-bold text-[10px] border border-emerald-200">
-                                Día ${currentDay} / ${productInfo.duration}
+                                D&iacute;a ${currentDay} / ${productInfo.duration}
                             </span>
                         </div>
 
@@ -1203,26 +1219,24 @@
             }
         }
 
-        /* LÓGICA DEL PANEL DE ADMINISTRACIÓN */
+        /* LÓGICA DEL PANEL DE ADMINISTRACIÓN (MÓDULOS COMPLETOS) */
         function loadAdminData() {
             loadAllUsersAdmin();
             loadPendingDeposits();
             loadPendingWithdrawals();
+            loadAdminAffiliates();
         }
 
         function switchAdminSubTab(subTab) {
-            ['users', 'requests', 'settings'].forEach(st => {
+            ['users', 'requests', 'affiliates', 'settings'].forEach(st => {
                 document.getElementById(`adminSubTab-${st}`).classList.add('hidden');
             });
             document.getElementById(`adminSubTab-${subTab}`).classList.remove('hidden');
 
-            document.getElementById('adminTabUsersBtn').className = "flex-1 py-2 rounded-lg text-slate-400 transition-all";
-            document.getElementById('adminTabRequestsBtn').className = "flex-1 py-2 rounded-lg text-slate-400 transition-all";
-            document.getElementById('adminTabSettingsBtn').className = "flex-1 py-2 rounded-lg text-slate-400 transition-all";
-
-            if (subTab === 'users') document.getElementById('adminTabUsersBtn').className = "flex-1 py-2 rounded-lg bg-vortex-red text-white transition-all";
-            if (subTab === 'requests') document.getElementById('adminTabRequestsBtn').className = "flex-1 py-2 rounded-lg bg-vortex-red text-white transition-all";
-            if (subTab === 'settings') document.getElementById('adminTabSettingsBtn').className = "flex-1 py-2 rounded-lg bg-vortex-red text-white transition-all";
+            ['users', 'requests', 'affiliates', 'settings'].forEach(st => {
+                document.getElementById(`adminTab${st.charAt(0).toUpperCase() + st.slice(1)}Btn`).className = "py-2 rounded-lg text-slate-400 transition-all";
+            });
+            document.getElementById(`adminTab${subTab.charAt(0).toUpperCase() + subTab.slice(1)}Btn`).className = "py-2 rounded-lg bg-vortex-red text-white transition-all";
         }
 
         async function loadAllUsersAdmin() {
@@ -1248,7 +1262,7 @@
                         <div class="flex justify-between items-center border-b border-slate-200/60 pb-2">
                             <div>
                                 <strong class="text-slate-800 text-sm block">${phone}</strong>
-                                <span class="text-[10px] text-slate-400 font-medium">Referidos: ${referralsCount} | Casas: ${productsCount}</span>
+                                <span class="text-[10px] text-slate-400 font-medium">Referidos: ${referralsCount} | Inversiones Activas: ${productsCount}</span>
                             </div>
                             <button onclick="adminDeleteUser('${phone}')" class="px-2.5 py-1 bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold rounded-lg text-[10px] border border-rose-200">
                                 Eliminar
@@ -1256,7 +1270,7 @@
                         </div>
 
                         <div class="text-[11px] text-slate-500">
-                            <strong>Productos:</strong> ${productsText}
+                            <strong>Planes Activos:</strong> ${productsText}
                         </div>
 
                         <div class="grid grid-cols-2 gap-2 pt-1">
@@ -1358,26 +1372,31 @@
             const snapshot = await db.collection('retiros').where('status', '==', 'pendiente').get();
 
             if (snapshot.empty) {
-                container.innerHTML = '<p class="text-slate-400 text-center py-2">No hay retiros pendientes.</p>';
+                container.innerHTML = '<p class="text-slate-400 text-center py-2">No hay solicitudes de retiro pendientes.</p>';
                 return;
             }
 
             container.innerHTML = snapshot.docs.map(doc => {
                 const item = doc.data();
                 return `
-                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
-                        <div class="flex justify-between items-center font-bold">
-                            <span class="text-slate-800">${item.phone}</span>
-                            <span class="text-vortex-red">$${item.amount.toLocaleString('es-AR')} ARS</span>
+                    <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-2.5">
+                        <div class="flex justify-between items-center font-bold border-b border-slate-200/60 pb-2">
+                            <span class="text-slate-800 text-sm">Usuario: ${item.phone}</span>
+                            <span class="text-vortex-red text-sm">Bruto: $${item.amount.toLocaleString('es-AR')} ARS</span>
                         </div>
-                        <p class="text-[11px] text-slate-500">Neto: $${item.netAmount.toLocaleString('es-AR')} | Titular: ${item.name}</p>
-                        <p class="text-[10px] text-slate-400 font-mono">CBU/CVU: ${item.cbu}</p>
-                        <div class="flex gap-2 pt-1">
-                            <button onclick="adminResolveWithdrawal('${doc.id}', 'aprobado')" class="flex-1 py-1.5 bg-emerald-600 text-white font-bold rounded-lg text-[11px]">
-                                Aprobar
+                        <div class="text-[11px] text-slate-600 space-y-1">
+                            <p><strong>Comisión aplicada (15%):</strong> $${(item.amount * 0.15).toLocaleString('es-AR')} ARS</p>
+                            <p class="text-emerald-700 font-extrabold text-xs">Monto Neto a Enviar: $${item.netAmount.toLocaleString('es-AR')} ARS</p>
+                            <p><strong>Titular Registrado:</strong> ${item.name}</p>
+                            <p class="font-mono text-slate-800 bg-amber-50 p-1.5 rounded border border-amber-200"><strong>CBU/CVU Destino:</strong> ${item.cbu}</p>
+                            <p class="text-[10px] text-slate-400">Fecha solicitud: ${item.date || ''}</p>
+                        </div>
+                        <div class="flex gap-2 pt-2">
+                            <button onclick="adminResolveWithdrawal('${doc.id}', 'aprobado')" class="flex-1 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-sm">
+                                ✅ Aprobar y Procesar Pago
                             </button>
-                            <button onclick="adminResolveWithdrawal('${doc.id}', 'rechazado', '${item.phone}', ${item.amount})" class="flex-1 py-1.5 bg-rose-600 text-white font-bold rounded-lg text-[11px]">
-                                Rechazar y Reembolsar
+                            <button onclick="adminResolveWithdrawal('${doc.id}', 'rechazado', '${item.phone}', ${item.amount})" class="flex-1 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs shadow-sm">
+                                ❌ Rechazar y Reembolsar
                             </button>
                         </div>
                     </div>
@@ -1397,6 +1416,38 @@
             alert(`Solicitud ${status} con éxito.`);
             loadPendingWithdrawals();
             loadAllUsersAdmin();
+        }
+
+        async function loadAdminAffiliates() {
+            const container = document.getElementById('adminAffiliatesContainer');
+            const snapshot = await db.collection('usuarios').get();
+
+            if (snapshot.empty) {
+                container.innerHTML = '<p class="text-slate-400 text-center py-4">No hay datos de afiliados.</p>';
+                return;
+            }
+
+            container.innerHTML = snapshot.docs.map(doc => {
+                const user = doc.data();
+                const referrals = user.referrals || [];
+                
+                return `
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1.5">
+                        <div class="flex justify-between items-center font-bold text-slate-800">
+                            <span>Afiliador: ${user.phone}</span>
+                            <span class="text-vortex-red text-[11px]">${referrals.length} Referidos Directos</span>
+                        </div>
+                        <div class="text-[11px] text-slate-500">
+                            <strong>Llaves ganadas por referidos:</strong> ${user.keys || 0}
+                        </div>
+                        ${referrals.length > 0 ? `
+                            <div class="pl-2 border-l-2 border-vortex-red space-y-1 mt-2">
+                                ${referrals.map(r => `<p class="text-[10px] text-slate-600">↳ Referido activo: <strong class="text-slate-800">${r.phone}</strong></p>`).join('')}
+                            </div>
+                        ` : '<p class="text-[10px] text-slate-400">Sin red activa registrada aún.</p>'}
+                    </div>
+                `;
+            }).join('');
         }
 
         async function handleAddNewLevel(e) {
