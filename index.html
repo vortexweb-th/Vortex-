@@ -137,8 +137,8 @@
             </div>
         </div>
 
-        <!-- BARRA SUPERIOR HEADER -->
-        <header class="bg-white border-b border-slate-100 p-4 sticky top-0 z-30 flex items-center justify-between shadow-sm">
+        <!-- BARRA SUPERIOR HEADER DEL USUARIO COMÚN -->
+        <header id="userHeader" class="bg-white border-b border-slate-100 p-4 sticky top-0 z-30 flex items-center justify-between shadow-sm">
             <div class="flex items-center gap-3 cursor-pointer select-none">
                 <div class="w-10 h-10 bg-vortex-red rounded-xl flex items-center justify-center text-white font-black text-xl shadow-md">
                     V
@@ -164,278 +164,33 @@
             </div>
         </header>
 
+        <!-- HEADER EXCLUSIVO DEL ADMINISTRADOR -->
+        <header id="adminHeader" class="bg-slate-900 border-b border-slate-800 p-4 sticky top-0 z-30 flex items-center justify-between shadow-md hidden">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center text-slate-900 font-black text-xl shadow-md">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg font-black text-white leading-none">PANEL MAESTRO</h2>
+                    <p class="text-[10px] font-bold text-amber-400 tracking-wider uppercase mt-0.5">Administraci&oacute;n Vortex</p>
+                </div>
+            </div>
+
+            <button onclick="logout()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-rose-400 font-bold rounded-xl flex items-center gap-1.5 text-xs transition-all border border-slate-700">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Cerrar Sesión</span>
+            </button>
+        </header>
+
         <!-- CONTENIDO PRINCIPAL -->
         <main id="mainContainer" class="flex-1 overflow-y-auto hide-scrollbar pb-24 p-4 space-y-4">
 
-            <!-- TAB 1: INICIO -->
-            <section id="tab-inicio" class="space-y-4">
-                <div class="bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-2xl p-4 shadow-lg flex items-center justify-between relative overflow-hidden">
-                    <div class="relative z-10">
-                        <span class="bg-vortex-red/30 text-vortex-lightRed text-[10px] font-bold px-2 py-0.5 rounded-full uppercase border border-vortex-red/40">Premio Diario</span>
-                        <h3 class="text-base font-extrabold mt-1">Recompensa Asistencia</h3>
-                        <p class="text-xs text-slate-300">Cobra +$100 ARS cada 24 horas</p>
-                    </div>
-                    <button id="checkinBtn" onclick="claimDailyCheckin()" class="relative z-10 px-4 py-2.5 bg-vortex-red text-white font-bold text-xs rounded-xl shadow-md transition-all active:scale-95 flex items-center gap-1.5">
-                        <i class="fa-solid fa-clock"></i>
-                        <span id="checkinBtnText">Cobrar $100</span>
-                    </button>
-                    <i class="fa-solid fa-calendar-check absolute -right-3 -bottom-3 text-7xl text-white/5 pointer-events-none"></i>
-                </div>
-
-                <div class="flex items-center justify-between pt-1">
-                    <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-building-user text-vortex-red"></i>
-                        <h3 class="font-extrabold text-slate-800 text-base">Niveles de Inversi&oacute;n</h3>
-                    </div>
-                    <span class="text-xs font-bold text-vortex-red bg-vortex-lightRed px-2.5 py-1 rounded-full border border-vortex-red/20">Cobro Diario</span>
-                </div>
-
-                <div id="levelsContainer" class="space-y-4"></div>
-            </section>
-
-            <!-- TAB 2: COFRE -->
-            <section id="tab-cofre" class="space-y-4 hidden">
-                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm text-center">
-                    <div class="w-24 h-24 mx-auto mb-2 bg-amber-50 rounded-2xl flex items-center justify-center p-2 border border-amber-200 shadow-inner">
-                        <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=300&q=80" alt="Cofre de Tesoro" class="w-full h-full object-cover rounded-xl shadow-md animate-bounce-slow">
-                    </div>
-                    <h3 class="text-lg font-extrabold text-slate-800">Cofre Misterioso Vortex</h3>
-                    <p class="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
-                        Invita amigos a Vortex. Cada referido activo te concede <strong>1 Llave de Apertura</strong>.
-                    </p>
-
-                    <div class="mt-4 bg-slate-50 p-3 rounded-xl border border-slate-200 inline-flex items-center gap-3">
-                        <i class="fa-solid fa-key text-amber-500 text-xl"></i>
-                        <div class="text-left">
-                            <span class="block text-[10px] font-bold text-slate-400 uppercase">Llaves Disponibles</span>
-                            <span id="userKeysText" class="text-lg font-black text-slate-800">0 Llaves</span>
-                        </div>
-                    </div>
-
-                    <div class="mt-4">
-                        <button id="openChestBtn" onclick="openChest()" class="w-full py-3.5 bg-vortex-red text-white font-bold rounded-xl shadow-md glow-red active:scale-95 transition-all flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-unlock-keyhole"></i>
-                            <span>Abrir Cofre ($150 - $10.000 ARS)</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- TU ENLACE DE REFERIDO -->
-                <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
-                    <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
-                        <i class="fa-solid fa-share-nodes text-vortex-red"></i>
-                        Tu Enlace &Uacute;nico de Referido
-                    </h4>
-                    <div class="flex gap-2">
-                        <input id="refLinkInput" readonly type="text" value="" class="flex-1 bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono text-slate-600 focus:outline-none">
-                        <button onclick="copyRefLink()" class="px-4 py-2 bg-slate-800 text-white font-bold text-xs rounded-xl">
-                            Copiar
-                        </button>
-                    </div>
-                </div>
-
-                <!-- LISTA DE REFERIDOS REGISTRADOS -->
-                <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
-                    <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
-                        <i class="fa-solid fa-users text-vortex-red"></i>
-                        Mis Referidos Registrados
-                    </h4>
-                    <div id="referralsList" class="space-y-2 text-xs"></div>
-                </div>
-            </section>
-
-            <!-- TAB 3: CARGAR SALDO -->
-            <section id="tab-cargar" class="space-y-4 hidden">
-                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
-                    <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
-                        <div class="w-10 h-10 bg-vortex-lightRed rounded-xl flex items-center justify-center text-vortex-red font-bold text-lg">
-                            <i class="fa-solid fa-file-invoice-dollar"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-extrabold text-slate-800 text-base">Cargar Saldo ARS</h3>
-                            <p class="text-xs text-slate-500">Transferencia bancaria oficial Vortex</p>
-                        </div>
-                    </div>
-
-                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2 text-xs">
-                        <div class="flex justify-between items-center pb-2 border-b border-slate-200/60">
-                            <span class="text-slate-500">Banco:</span>
-                            <span class="font-bold text-slate-800">Mercado Pago / CVU Oficial</span>
-                        </div>
-                        <div class="flex justify-between items-center pb-2 border-b border-slate-200/60">
-                            <span class="text-slate-500">Titular:</span>
-                            <span class="font-bold text-slate-800">VORTEX S.A.</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-slate-500">Alias CBU:</span>
-                            <div class="flex items-center gap-1.5">
-                                <span class="font-extrabold text-vortex-red font-mono">vortex.oficial.ars</span>
-                                <button onclick="copyAlias()" class="text-slate-400 hover:text-slate-700">
-                                    <i class="fa-regular fa-copy"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <form onsubmit="handleDepositSubmit(event)" class="space-y-3 pt-2">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Monto Transferido (ARS)</label>
-                            <input type="number" id="depositAmount" min="1000" required placeholder="Ej: 16000" class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl font-bold text-slate-800 text-sm focus:outline-none focus:border-vortex-red">
-                        </div>
-                        <button type="submit" class="w-full py-3.5 bg-vortex-red text-white font-bold rounded-xl shadow-md glow-red active:scale-95 transition-all">
-                            Notificar Transferencia Realizada
-                        </button>
-                    </form>
-                </div>
-
-                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-3">
-                    <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
-                        <i class="fa-solid fa-receipt text-vortex-red"></i>
-                        Mis Cargas Realizadas
-                    </h4>
-                    <div id="userDepositsList" class="space-y-2 text-xs">
-                        <p class="text-slate-400 text-center py-2">No tienes cargas registradas.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TAB 4: RETIRAR FONDOS -->
-            <section id="tab-retirar" class="space-y-4 hidden">
-                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
-                    <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
-                        <div class="w-10 h-10 bg-vortex-lightRed rounded-xl flex items-center justify-center text-vortex-red font-bold text-lg">
-                            <i class="fa-solid fa-hand-holding-dollar"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-extrabold text-slate-800 text-base">Retirar Fondos</h3>
-                            <p class="text-xs text-slate-500">M&iacute;nimo $10.000 ARS • Deducci&oacute;n del 15%</p>
-                        </div>
-                    </div>
-
-                    <form onsubmit="handleWithdrawSubmit(event)" class="space-y-3">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Monto a Retirar (ARS)</label>
-                            <input type="number" id="withdrawAmount" min="10000" required placeholder="Ej: 15000" class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl font-bold text-slate-800 text-sm focus:outline-none focus:border-vortex-red">
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">CVU / CBU Destino</label>
-                            <input type="text" id="withdrawCbu" required placeholder="00000031000..." class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl font-medium text-slate-800 text-sm focus:outline-none focus:border-vortex-red">
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Nombre del Titular</label>
-                            <input type="text" id="withdrawName" required placeholder="Nombre Completo" class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl font-medium text-slate-800 text-sm focus:outline-none focus:border-vortex-red">
-                        </div>
-
-                        <div class="bg-vortex-lightRed p-3 rounded-xl border border-vortex-red/20 text-[11px] text-vortex-darkRed font-medium">
-                            * Los retiros son procesados en un plazo de 1 a 24 horas h&aacute;biles tras la verificaci&oacute;n de seguridad.
-                        </div>
-
-                        <button type="submit" class="w-full py-3.5 bg-vortex-red text-white font-bold rounded-xl shadow-md glow-red active:scale-95 transition-all">
-                            Solicitar Retiro Directo
-                        </button>
-                    </form>
-                </div>
-
-                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-3">
-                    <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
-                        <i class="fa-solid fa-clock-rotate-left text-vortex-red"></i>
-                        Mis Retiros Realizados
-                    </h4>
-                    <div id="userWithdrawalsList" class="space-y-2 text-xs">
-                        <p class="text-slate-400 text-center py-2">No tienes retiros registrados.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TAB 5: PERFIL -->
-            <section id="tab-perfil" class="space-y-4 hidden">
-                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm text-center space-y-3">
-                    <div class="w-20 h-20 bg-vortex-red text-white rounded-full flex items-center justify-center text-3xl mx-auto shadow-lg glow-red font-black">
-                        <i class="fa-solid fa-user"></i>
-                    </div>
-                    <div>
-                        <h3 id="profilePhone" class="text-lg font-black text-slate-800">-</h3>
-                        <p id="profileBadge" class="text-xs text-vortex-red font-bold uppercase tracking-wider">Inversor Verificado Vortex</p>
-                    </div>
-                </div>
-
-                <!-- INFOGRAFÍA CORPORATIVA -->
-                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                    <div class="bg-slate-900 text-white p-5 border-b border-slate-800">
-                        <h2 class="text-xl font-black tracking-tight flex items-center gap-2">
-                            <span class="text-vortex-red">VORTEX</span>
-                        </h2>
-                        <p class="text-xs font-semibold text-slate-300 mt-0.5">Inversi&oacute;n Inmobiliaria Fraccionada</p>
-                    </div>
-
-                    <div class="p-5 space-y-6 text-xs text-slate-600 leading-relaxed">
-                        <div class="space-y-1.5">
-                            <h3 class="text-sm font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
-                                <i class="fa-solid fa-circle-info text-vortex-red"></i>
-                                &iquest;Qu&eacute; es Vortex?
-                            </h3>
-                            <p class="text-slate-600">
-                                VORTEX es una plataforma que permite invertir en propiedades reales en Argentina, desde montos accesibles. Cada propiedad se adquiere a trav&eacute;s de un Fideicomiso de Administraci&oacute;n y se divide en participaciones.
-                            </p>
-                        </div>
-
-                        <hr class="border-slate-100">
-
-                        <div class="space-y-3">
-                            <h3 class="text-sm font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
-                                <i class="fa-solid fa-gears text-vortex-red"></i>
-                                &iquest;C&oacute;mo Trabaja?
-                            </h3>
-                            <div class="space-y-2 pl-1">
-                                <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
-                                    <strong class="text-slate-800 block mb-0.5">1. Selecci&oacute;n y Auditor&iacute;a:</strong>
-                                    Buscamos casas con potencial. Verificamos escritura, informe de dominio, deudas y tasaci&oacute;n por martillero matriculado.
-                                </div>
-                                <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
-                                    <strong class="text-slate-800 block mb-0.5">2. Compra Legal:</strong>
-                                    Creamos un Fideicomiso por cada propiedad. Cada inversor firma un contrato de adhesi&oacute;n.
-                                </div>
-                                <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
-                                    <strong class="text-slate-800 block mb-0.5">3. Administraci&oacute;n y Alquiler:</strong>
-                                    VORTEX cobra y mantiene. Se descuenta el 10% de comisi&oacute;n y se reparte el neto.
-                                </div>
-                                <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
-                                    <strong class="text-slate-800 block mb-0.5">4. Venta y Cierre:</strong>
-                                    A los 24-36 meses se vende a valor de mercado y se liquida la ganancia.
-                                </div>
-                            </div>
-                        </div>
-
-                        <hr class="border-slate-100">
-
-                        <div class="space-y-1.5">
-                            <h3 class="text-sm font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
-                                <i class="fa-solid fa-chart-pie text-vortex-red"></i>
-                                &iquest;De qu&eacute; gana Vortex?
-                            </h3>
-                            <p class="text-slate-600 bg-vortex-lightRed/50 p-3 rounded-xl border border-vortex-red/20 font-medium text-slate-700">
-                                VORTEX gana solo si vos ganas: 10% sobre alquileres y 15% sobre la utilidad obtenida en la venta final.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="bg-slate-900 text-slate-400 text-[10px] p-3 text-center border-t border-slate-800 font-medium">
-                        VORTEX - Argentina &copy; 2026
-                    </div>
-                </div>
-            </section>
-
-            <!-- TAB 6: PANEL MAESTRO DE ADMINISTRACIÓN (EXCLUSIVO ADMIN) -->
-            <section id="tab-admin" class="space-y-4 hidden">
-                <div class="bg-slate-900 text-white rounded-2xl p-5 shadow-xl space-y-4">
-                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-shield-halved text-amber-500 text-xl"></i>
-                            <h3 class="font-black text-base">Panel de Administraci&oacute;n</h3>
-                        </div>
-                        <span class="bg-amber-500/20 text-amber-400 text-[10px] font-bold px-2.5 py-1 rounded-full border border-amber-500/30">Admin Exclusivo</span>
+            <!-- VISTA 100% EXCLUSIVA DE ADMINISTRACIÓN -->
+            <section id="section-admin" class="space-y-4 hidden">
+                <div class="bg-slate-900 text-white rounded-2xl p-4 shadow-xl space-y-3">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+                        <span class="text-xs font-bold text-slate-400">Control General</span>
+                        <span class="bg-amber-500/20 text-amber-400 text-[10px] font-bold px-2.5 py-1 rounded-full border border-amber-500/30">Modo Admin Exclusivo</span>
                     </div>
 
                     <!-- SUB-PESTAÑAS DE NAVEGACIÓN ADMIN -->
@@ -541,10 +296,271 @@
                 </div>
             </section>
 
+            <!-- CONTENEDOR DE PESTAÑAS DE USUARIO COMÚN -->
+            <div id="userViewsContainer" class="space-y-4">
+                <!-- TAB 1: INICIO -->
+                <section id="tab-inicio" class="space-y-4">
+                    <div class="bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-2xl p-4 shadow-lg flex items-center justify-between relative overflow-hidden">
+                        <div class="relative z-10">
+                            <span class="bg-vortex-red/30 text-vortex-lightRed text-[10px] font-bold px-2 py-0.5 rounded-full uppercase border border-vortex-red/40">Premio Diario</span>
+                            <h3 class="text-base font-extrabold mt-1">Recompensa Asistencia</h3>
+                            <p class="text-xs text-slate-300">Cobra +$100 ARS cada 24 horas</p>
+                        </div>
+                        <button id="checkinBtn" onclick="claimDailyCheckin()" class="relative z-10 px-4 py-2.5 bg-vortex-red text-white font-bold text-xs rounded-xl shadow-md transition-all active:scale-95 flex items-center gap-1.5">
+                            <i class="fa-solid fa-clock"></i>
+                            <span id="checkinBtnText">Cobrar $100</span>
+                        </button>
+                        <i class="fa-solid fa-calendar-check absolute -right-3 -bottom-3 text-7xl text-white/5 pointer-events-none"></i>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-1">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-building-user text-vortex-red"></i>
+                            <h3 class="font-extrabold text-slate-800 text-base">Niveles de Inversi&oacute;n</h3>
+                        </div>
+                        <span class="text-xs font-bold text-vortex-red bg-vortex-lightRed px-2.5 py-1 rounded-full border border-vortex-red/20">Cobro Diario</span>
+                    </div>
+
+                    <div id="levelsContainer" class="space-y-4"></div>
+                </section>
+
+                <!-- TAB 2: COFRE -->
+                <section id="tab-cofre" class="space-y-4 hidden">
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm text-center">
+                        <div class="w-24 h-24 mx-auto mb-2 bg-amber-50 rounded-2xl flex items-center justify-center p-2 border border-amber-200 shadow-inner">
+                            <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=300&q=80" alt="Cofre de Tesoro" class="w-full h-full object-cover rounded-xl shadow-md animate-bounce-slow">
+                        </div>
+                        <h3 class="text-lg font-extrabold text-slate-800">Cofre Misterioso Vortex</h3>
+                        <p class="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
+                            Invita amigos a Vortex. Cada referido activo te concede <strong>1 Llave de Apertura</strong>.
+                        </p>
+
+                        <div class="mt-4 bg-slate-50 p-3 rounded-xl border border-slate-200 inline-flex items-center gap-3">
+                            <i class="fa-solid fa-key text-amber-500 text-xl"></i>
+                            <div class="text-left">
+                                <span class="block text-[10px] font-bold text-slate-400 uppercase">Llaves Disponibles</span>
+                                <span id="userKeysText" class="text-lg font-black text-slate-800">0 Llaves</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button id="openChestBtn" onclick="openChest()" class="w-full py-3.5 bg-vortex-red text-white font-bold rounded-xl shadow-md glow-red active:scale-95 transition-all flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-unlock-keyhole"></i>
+                                <span>Abrir Cofre ($150 - $10.000 ARS)</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-share-nodes text-vortex-red"></i>
+                            Tu Enlace &Uacute;nico de Referido
+                        </h4>
+                        <div class="flex gap-2">
+                            <input id="refLinkInput" readonly type="text" value="" class="flex-1 bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono text-slate-600 focus:outline-none">
+                            <button onclick="copyRefLink()" class="px-4 py-2 bg-slate-800 text-white font-bold text-xs rounded-xl">
+                                Copiar
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-users text-vortex-red"></i>
+                            Mis Referidos Registrados
+                        </h4>
+                        <div id="referralsList" class="space-y-2 text-xs"></div>
+                    </div>
+                </section>
+
+                <!-- TAB 3: CARGAR SALDO -->
+                <section id="tab-cargar" class="space-y-4 hidden">
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
+                        <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
+                            <div class="w-10 h-10 bg-vortex-lightRed rounded-xl flex items-center justify-center text-vortex-red font-bold text-lg">
+                                <i class="fa-solid fa-file-invoice-dollar"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-extrabold text-slate-800 text-base">Cargar Saldo ARS</h3>
+                                <p class="text-xs text-slate-500">Transferencia bancaria oficial Vortex</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2 text-xs">
+                            <div class="flex justify-between items-center pb-2 border-b border-slate-200/60">
+                                <span class="text-slate-500">Banco:</span>
+                                <span class="font-bold text-slate-800">Mercado Pago / CVU Oficial</span>
+                            </div>
+                            <div class="flex justify-between items-center pb-2 border-b border-slate-200/60">
+                                <span class="text-slate-500">Titular:</span>
+                                <span class="font-bold text-slate-800">VORTEX S.A.</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">Alias CBU:</span>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="font-extrabold text-vortex-red font-mono">vortex.oficial.ars</span>
+                                    <button onclick="copyAlias()" class="text-slate-400 hover:text-slate-700">
+                                        <i class="fa-regular fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <form onsubmit="handleDepositSubmit(event)" class="space-y-3 pt-2">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Monto Transferido (ARS)</label>
+                                <input type="number" id="depositAmount" min="1000" required placeholder="Ej: 16000" class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl font-bold text-slate-800 text-sm focus:outline-none focus:border-vortex-red">
+                            </div>
+                            <button type="submit" class="w-full py-3.5 bg-vortex-red text-white font-bold rounded-xl shadow-md glow-red active:scale-95 transition-all">
+                                Notificar Transferencia Realizada
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-3">
+                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-receipt text-vortex-red"></i>
+                            Mis Cargas Realizadas
+                        </h4>
+                        <div id="userDepositsList" class="space-y-2 text-xs">
+                            <p class="text-slate-400 text-center py-2">No tienes cargas registradas.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 4: RETIRAR FONDOS -->
+                <section id="tab-retirar" class="space-y-4 hidden">
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
+                        <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
+                            <div class="w-10 h-10 bg-vortex-lightRed rounded-xl flex items-center justify-center text-vortex-red font-bold text-lg">
+                                <i class="fa-solid fa-hand-holding-dollar"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-extrabold text-slate-800 text-base">Retirar Fondos</h3>
+                                <p class="text-xs text-slate-500">M&iacute;nimo $10.000 ARS • Deducci&oacute;n del 15%</p>
+                            </div>
+                        </div>
+
+                        <form onsubmit="handleWithdrawSubmit(event)" class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Monto a Retirar (ARS)</label>
+                                <input type="number" id="withdrawAmount" min="10000" required placeholder="Ej: 15000" class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl font-bold text-slate-800 text-sm focus:outline-none focus:border-vortex-red">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">CVU / CBU Destino</label>
+                                <input type="text" id="withdrawCbu" required placeholder="00000031000..." class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl font-medium text-slate-800 text-sm focus:outline-none focus:border-vortex-red">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Nombre del Titular</label>
+                                <input type="text" id="withdrawName" required placeholder="Nombre Completo" class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl font-medium text-slate-800 text-sm focus:outline-none focus:border-vortex-red">
+                            </div>
+
+                            <div class="bg-vortex-lightRed p-3 rounded-xl border border-vortex-red/20 text-[11px] text-vortex-darkRed font-medium">
+                                * Los retiros son procesados en un plazo de 1 a 24 horas h&aacute;biles tras la verificaci&oacute;n de seguridad.
+                            </div>
+
+                            <button type="submit" class="w-full py-3.5 bg-vortex-red text-white font-bold rounded-xl shadow-md glow-red active:scale-95 transition-all">
+                                Solicitar Retiro Directo
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-3">
+                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-clock-rotate-left text-vortex-red"></i>
+                            Mis Retiros Realizados
+                        </h4>
+                        <div id="userWithdrawalsList" class="space-y-2 text-xs">
+                            <p class="text-slate-400 text-center py-2">No tienes retiros registrados.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 5: PERFIL -->
+                <section id="tab-perfil" class="space-y-4 hidden">
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm text-center space-y-3">
+                        <div class="w-20 h-20 bg-vortex-red text-white rounded-full flex items-center justify-center text-3xl mx-auto shadow-lg glow-red font-black">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <div>
+                            <h3 id="profilePhone" class="text-lg font-black text-slate-800">-</h3>
+                            <p id="profileBadge" class="text-xs text-vortex-red font-bold uppercase tracking-wider">Inversor Verificado Vortex</p>
+                        </div>
+                    </div>
+
+                    <!-- INFOGRAFÍA CORPORATIVA -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                        <div class="bg-slate-900 text-white p-5 border-b border-slate-800">
+                            <h2 class="text-xl font-black tracking-tight flex items-center gap-2">
+                                <span class="text-vortex-red">VORTEX</span>
+                            </h2>
+                            <p class="text-xs font-semibold text-slate-300 mt-0.5">Inversi&oacute;n Inmobiliaria Fraccionada</p>
+                        </div>
+
+                        <div class="p-5 space-y-6 text-xs text-slate-600 leading-relaxed">
+                            <div class="space-y-1.5">
+                                <h3 class="text-sm font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                                    <i class="fa-solid fa-circle-info text-vortex-red"></i>
+                                    &iquest;Qu&eacute; es Vortex?
+                                </h3>
+                                <p class="text-slate-600">
+                                    VORTEX es una plataforma que permite invertir en propiedades reales en Argentina, desde montos accesibles. Cada propiedad se adquiere a trav&eacute;s de un Fideicomiso de Administraci&oacute;n y se divide en participaciones.
+                                </p>
+                            </div>
+
+                            <hr class="border-slate-100">
+
+                            <div class="space-y-3">
+                                <h3 class="text-sm font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                                    <i class="fa-solid fa-gears text-vortex-red"></i>
+                                    &iquest;C&oacute;mo Trabaja?
+                                </h3>
+                                <div class="space-y-2 pl-1">
+                                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                        <strong class="text-slate-800 block mb-0.5">1. Selecci&oacute;n y Auditor&iacute;a:</strong>
+                                        Buscamos casas con potencial. Verificamos escritura, informe de dominio, deudas y tasaci&oacute;n por martillero matriculado.
+                                    </div>
+                                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                        <strong class="text-slate-800 block mb-0.5">2. Compra Legal:</strong>
+                                        Creamos un Fideicomiso por cada propiedad. Cada inversor firma un contrato de adhesi&oacute;n.
+                                    </div>
+                                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                        <strong class="text-slate-800 block mb-0.5">3. Administraci&oacute;n y Alquiler:</strong>
+                                        VORTEX cobra y mantiene. Se descuenta el 10% de comisi&oacute;n y se reparte el neto.
+                                    </div>
+                                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                        <strong class="text-slate-800 block mb-0.5">4. Venta y Cierre:</strong>
+                                        A los 24-36 meses se vende a valor de mercado y se liquida la ganancia.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="border-slate-100">
+
+                            <div class="space-y-1.5">
+                                <h3 class="text-sm font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                                    <i class="fa-solid fa-chart-pie text-vortex-red"></i>
+                                    &iquest;De qu&eacute; gana Vortex?
+                                </h3>
+                                <p class="text-slate-600 bg-vortex-lightRed/50 p-3 rounded-xl border border-vortex-red/20 font-medium text-slate-700">
+                                    VORTEX gana solo si vos ganas: 10% sobre alquileres y 15% sobre la utilidad obtenida en la venta final.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900 text-slate-400 text-[10px] p-3 text-center border-t border-slate-800 font-medium">
+                            VORTEX - Argentina &copy; 2026
+                        </div>
+                    </div>
+                </section>
+            </div>
+
         </main>
 
-        <!-- NAVEGACIÓN INFERIOR -->
-        <nav class="bg-white border-t border-slate-200 fixed bottom-0 inset-x-0 h-16 flex items-center justify-around px-2 z-30 shadow-lg">
+        <!-- NAVEGACIÓN INFERIOR (SOLO VISIBLE PARA USUARIOS NORMALES) -->
+        <nav id="userNav" class="bg-white border-t border-slate-200 fixed bottom-0 inset-x-0 h-16 flex items-center justify-around px-2 z-30 shadow-lg">
             <button onclick="switchTab('inicio')" id="nav-inicio" class="flex flex-col items-center justify-center w-full h-full text-vortex-red">
                 <i class="fa-solid fa-house text-lg"></i>
                 <span class="text-[10px] font-extrabold mt-0.5">Inicio</span>
@@ -566,10 +582,6 @@
             <button onclick="switchTab('perfil')" id="nav-perfil" class="flex flex-col items-center justify-center w-full h-full text-slate-400">
                 <i class="fa-solid fa-user text-lg"></i>
                 <span class="text-[10px] font-bold mt-0.5">Perfil</span>
-            </button>
-            <button onclick="switchTab('admin')" id="nav-admin" class="flex flex-col items-center justify-center w-full h-full text-amber-500 hidden">
-                <i class="fa-solid fa-user-shield text-lg"></i>
-                <span class="text-[10px] font-extrabold mt-0.5">Admin</span>
             </button>
         </nav>
 
@@ -784,18 +796,32 @@
         }
 
         function checkAdminStatus() {
-            const adminNavBtn = document.getElementById('nav-admin');
-            const profileBadge = document.getElementById('profileBadge');
+            const userHeader = document.getElementById('userHeader');
+            const adminHeader = document.getElementById('adminHeader');
+            const userNav = document.getElementById('userNav');
+            const userViewsContainer = document.getElementById('userViewsContainer');
+            const sectionAdmin = document.getElementById('section-admin');
 
             if (appState.currentUser === ADMIN_PHONE) {
-                adminNavBtn.classList.remove('hidden');
-                profileBadge.innerText = 'Administrador Maestro Vortex';
-                profileBadge.className = 'text-xs text-amber-600 font-black uppercase tracking-wider';
+                // MODO ADMINISTRADOR PURO
+                userHeader.classList.add('hidden');
+                userNav.classList.add('hidden');
+                userViewsContainer.classList.add('hidden');
+
+                adminHeader.classList.remove('hidden');
+                sectionAdmin.classList.remove('hidden');
+
                 loadAdminData();
             } else {
-                adminNavBtn.classList.add('hidden');
-                profileBadge.innerText = 'Inversor Verificado Vortex';
-                profileBadge.className = 'text-xs text-vortex-red font-bold uppercase tracking-wider';
+                // MODO USUARIO COMÚN
+                adminHeader.classList.add('hidden');
+                sectionAdmin.classList.add('hidden');
+
+                userHeader.classList.remove('hidden');
+                userNav.classList.remove('hidden');
+                userViewsContainer.classList.remove('hidden');
+
+                switchTab('inicio');
             }
         }
 
@@ -809,13 +835,14 @@
                     investments: appState.investments
                 });
             } catch (e) {
-                console.error("Error sincronizando:", e);
+                console.error("Error synchronizing:", e);
             }
         }
 
         function logout() {
             appState.currentUser = null;
-            document.getElementById('nav-admin').classList.add('hidden');
+            document.getElementById('adminHeader').classList.add('hidden');
+            document.getElementById('section-admin').classList.add('hidden');
             document.getElementById('authModal').classList.remove('hidden');
         }
 
@@ -1095,7 +1122,6 @@
             if (subTab === 'settings') document.getElementById('adminTabSettingsBtn').className = "flex-1 py-2 rounded-lg bg-vortex-red text-white transition-all";
         }
 
-        /* MOSTRAR TODOS LOS USUARIOS CON SUS DATOS DETALLADOS */
         async function loadAllUsersAdmin() {
             const container = document.getElementById('adminAllUsersContainer');
             const snapshot = await db.collection('usuarios').get();
@@ -1296,7 +1322,7 @@
         }
 
         function switchTab(tab) {
-            ['inicio', 'cofre', 'cargar', 'retirar', 'perfil', 'admin'].forEach(t => {
+            ['inicio', 'cofre', 'cargar', 'retirar', 'perfil'].forEach(t => {
                 const elem = document.getElementById(`tab-${t}`);
                 if (elem) elem.classList.add('hidden');
                 const navElem = document.getElementById(`nav-${t}`);
