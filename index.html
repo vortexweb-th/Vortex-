@@ -606,13 +606,13 @@
         const ADMIN_PIN = '0909';
 
         let levelsList = [
-            { id: 1, name: 'Producto 1', cost: 16000, duration: 15, daily: 1666.67, total: 25000, img: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80' },
-            { id: 2, name: 'Producto 2', cost: 35000, duration: 30, daily: 1500.00, total: 45000, img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
-            { id: 3, name: 'Producto 3', cost: 55000, duration: 45, daily: 1555.56, total: 70000, img: 'https://i.ibb.co/RkNVV64t/IMG-ac754688-96ad-46b3-9845-54a5d6708d34.jpg' },
-            { id: 4, name: 'Producto 4', cost: 85000, duration: 60, daily: 1916.67, total: 115000, img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=400&q=80' },
-            { id: 5, name: 'Producto 5', cost: 100000, duration: 90, daily: 1777.78, total: 160000, img: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=400&q=80' },
-            { id: 6, name: 'Producto 6', cost: 250000, duration: 100, daily: 3500.00, total: 350000, img: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=400&q=80' },
-            { id: 7, name: 'Producto 7', cost: 500000, duration: 120, daily: 6666.67, total: 800000, img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80' }
+            { id: 1, name: 'Producto 1', cost: 16000, duration: 15, daily: 1666.67, total: 25000, limit: 1, img: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80' },
+            { id: 2, name: 'Producto 2', cost: 35000, duration: 30, daily: 1500.00, total: 45000, limit: 1, img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
+            { id: 3, name: 'Producto 3', cost: 55000, duration: 45, daily: 1555.56, total: 70000, limit: 2, img: 'https://i.ibb.co/RkNVV64t/IMG-ac754688-96ad-46b3-9845-54a5d6708d34.jpg' },
+            { id: 4, name: 'Producto 4', cost: 85000, duration: 60, daily: 1916.67, total: 115000, limit: 2, img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=400&q=80' },
+            { id: 5, name: 'Producto 5', cost: 100000, duration: 90, daily: 1777.78, total: 160000, limit: 2, img: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=400&q=80' },
+            { id: 6, name: 'Producto 6', cost: 250000, duration: 100, daily: 3500.00, total: 350000, limit: 3, img: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=400&q=80' },
+            { id: 7, name: 'Producto 7', cost: 500000, duration: 120, daily: 6666.67, total: 800000, limit: 3, img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80' }
         ];
 
         let appState = {
@@ -854,32 +854,57 @@
 
         function renderLevels() {
             const container = document.getElementById('levelsContainer');
-            container.innerHTML = levelsList.map(level => `
-                <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
-                    <div class="flex gap-3">
-                        <img src="${level.img}" class="w-20 h-20 rounded-xl object-cover shadow-sm">
-                        <div class="flex-1">
-                            <h4 class="font-extrabold text-slate-800 text-sm">${level.name}</h4>
-                            <p class="text-xs text-slate-500 mt-0.5">Inversi&oacute;n: <strong class="text-slate-800">$${level.cost.toLocaleString('es-AR')} ARS</strong></p>
-                            <p class="text-xs text-slate-500">Duraci&oacute;n: <strong class="text-slate-800">${level.duration} D&iacute;as</strong></p>
-                            <div class="mt-1 flex items-center justify-between text-xs">
-                                <span class="text-emerald-600 font-extrabold">+$${level.daily.toLocaleString('es-AR', {minimumFractionDigits: 2})}/d&iacute;a</span>
-                                <span class="text-slate-500 font-bold">Total: $${level.total.toLocaleString('es-AR')}</span>
+            container.innerHTML = levelsList.map(level => {
+                const timesBought = appState.investments.filter(i => i.name === level.name).length;
+                const maxLimit = level.limit || 1;
+                const limitReached = timesBought >= maxLimit;
+
+                return `
+                    <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+                        <div class="flex gap-3">
+                            <img src="${level.img}" class="w-20 h-20 rounded-xl object-cover shadow-sm">
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start">
+                                    <h4 class="font-extrabold text-slate-800 text-sm">${level.name}</h4>
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-md ${limitReached ? 'bg-rose-100 text-rose-600' : 'bg-slate-100 text-slate-500'}">
+                                        ${timesBought}/${maxLimit} Comprado
+                                    </span>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-0.5">Inversi&oacute;n: <strong class="text-slate-800">$${level.cost.toLocaleString('es-AR')} ARS</strong></p>
+                                <p class="text-xs text-slate-500">Duraci&oacute;n: <strong class="text-slate-800">${level.duration} D&iacute;as</strong></p>
+                                <div class="mt-1 flex items-center justify-between text-xs">
+                                    <span class="text-emerald-600 font-extrabold">+$${level.daily.toLocaleString('es-AR', {minimumFractionDigits: 2})}/d&iacute;a</span>
+                                    <span class="text-slate-500 font-bold">Total: $${level.total.toLocaleString('es-AR')}</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="pt-2 border-t border-slate-100 flex justify-end">
-                        <button onclick="buyLevel(${level.id})" class="px-4 py-2 bg-vortex-red hover:bg-vortex-darkRed text-white font-bold text-xs rounded-xl shadow-sm transition-all active:scale-95">
-                            Invertir $${level.cost.toLocaleString('es-AR')}
-                        </button>
+                        <div class="pt-2 border-t border-slate-100 flex justify-end">
+                            ${limitReached ? `
+                                <button disabled class="px-4 py-2 bg-slate-300 text-slate-500 font-bold text-xs rounded-xl cursor-not-allowed">
+                                    L&iacute;mite Alcanzado
+                                </button>
+                            ` : `
+                                <button onclick="buyLevel(${level.id})" class="px-4 py-2 bg-vortex-red hover:bg-vortex-darkRed text-white font-bold text-xs rounded-xl shadow-sm transition-all active:scale-95">
+                                    Invertir $${level.cost.toLocaleString('es-AR')}
+                                </button>
+                            `}
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         function buyLevel(levelId) {
             const level = levelsList.find(l => l.id === levelId);
+            const timesBought = appState.investments.filter(i => i.name === level.name).length;
+            const maxLimit = level.limit || 1;
+
+            if (timesBought >= maxLimit) {
+                alert(`Ya alcanzaste el l\u00EDmite de compras (${maxLimit}) para ${level.name}.`);
+                return;
+            }
+
             if (appState.balance < level.cost) {
                 alert(`Saldo insuficiente. Necesitas $${level.cost.toLocaleString('es-AR')} ARS.`);
                 switchTab('cargar');
@@ -895,6 +920,7 @@
             syncUserData();
             alert(`\u00A1Inversi\u00F3n exitosa en ${level.name}!`);
             updateUI();
+            renderLevels();
         }
 
         function claimDailyCheckin() {
@@ -1305,6 +1331,7 @@
                 daily: parseFloat(document.getElementById('newLevelDaily').value),
                 duration: parseInt(document.getElementById('newLevelDuration').value),
                 total: parseFloat(document.getElementById('newLevelTotal').value),
+                limit: 1, // Por defecto 1 para nuevos productos creados desde admin
                 img: document.getElementById('newLevelImg').value.trim()
             };
 
