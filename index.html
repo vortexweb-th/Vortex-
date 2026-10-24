@@ -47,16 +47,15 @@
 
     <div class="w-full min-h-screen relative flex flex-col overflow-hidden bg-slate-50">
 
-        <!-- BOTÓN FLOTANTE DE ASISTENCIA / SOPORTE (ASESORA CON AURICULARES) -->
+        <!-- BOTÓN FLOTANTE DE ASISTENCIA / SOPORTE -->
         <div id="floatingSupportBtn" class="fixed bottom-20 left-4 z-40 flex items-center gap-2">
             <button onclick="toggleSupportModal()" class="relative group flex items-center justify-center w-14 h-14 rounded-full bg-white shadow-2xl border-2 border-vortex-red glow-red active:scale-95 transition-all">
                 <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80" alt="Soporte Gerencial" class="w-full h-full object-cover rounded-full">
-                <!-- Indicador Verde en Línea -->
                 <span class="absolute top-0 right-0 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full"></span>
             </button>
         </div>
 
-        <!-- MODAL DESPLEGABLE DE SOPORTE GERENCIAL CON USUARIO DE TELEGRAM INTEGRADO -->
+        <!-- MODAL DESPLEGABLE DE SOPORTE GERENCIAL -->
         <div id="supportModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
             <div class="bg-white w-full max-w-xs rounded-3xl p-5 shadow-2xl space-y-4 text-center relative overflow-hidden">
                 <button onclick="toggleSupportModal()" class="absolute top-3 right-3 text-slate-400 hover:text-slate-600 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 font-bold">
@@ -74,13 +73,11 @@
                 </div>
 
                 <div class="space-y-2 pt-2">
-                    <!-- ENLACE DE TELEGRAM CON TU USUARIO (SOFI_TIF) -->
                     <a href="https://t.me/Sofi_tif" target="_blank" class="w-full py-3 bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-2 transition-all">
                         <i class="fa-brands fa-telegram text-lg"></i>
                         <span>Soporte Oficial en Telegram</span>
                     </a>
 
-                    <!-- ENLACE DE WHATSAPP (AQUÍ PEGAS TU LINK DE WA.LINK) -->
                     <a href="https://wa.link/TU_LINK_AQUI" target="_blank" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-2 transition-all">
                         <i class="fa-brands fa-whatsapp text-lg"></i>
                         <span>Contactar por WhatsApp</span>
@@ -122,7 +119,6 @@
                     </div>
                 </div>
 
-                <!-- Tabs -->
                 <div class="flex bg-slate-100 p-1 rounded-xl mb-6 border border-slate-200">
                     <button id="authTabLoginBtn" type="button" onclick="toggleAuthTab('login')" class="flex-1 py-2.5 font-bold text-xs rounded-lg transition-all bg-white text-slate-800 shadow-sm">
                         Ingresar
@@ -254,12 +250,12 @@
                     </div>
                 </div>
 
-                <!-- SUB-SECCIÓN 1: GESTIÓN DE USUARIOS COMPLETA -->
+                <!-- SUB-SECCIÓN 1: GESTIÓN DE USUARIOS COMPLETA (ACTUALIZADA CON DETALLE DE CARGAS) -->
                 <div id="adminSubTab-users" class="space-y-3">
                     <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
                         <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
                             <div>
-                                <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Usuarios Registrados</h4>
+                                <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Usuarios Registrados y Cargas</h4>
                                 <span id="adminTotalUsersBadge" class="text-[10px] text-vortex-red font-extrabold bg-vortex-lightRed px-2 py-0.5 rounded-full">Total: 0 usuarios</span>
                             </div>
                             <button onclick="loadAllUsersAdmin()" class="text-vortex-red text-[11px] font-bold">
@@ -691,7 +687,6 @@
         const ADMIN_PHONE = '11223344';
         const ADMIN_PIN = '0909';
 
-        // 12 PRODUCTOS COMPLETOS CON LÍMITES CONFIGURADOS
         let levelsList = [
             { id: 1, name: 'Producto 1', cost: 16000, duration: 15, daily: 1666.67, total: 25000, limit: 1, img: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=400&q=80' },
             { id: 2, name: 'Producto 2', cost: 35000, duration: 30, daily: 1500.00, total: 45000, limit: 1, img: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80' },
@@ -1309,8 +1304,8 @@
         async function loadAllUsersAdmin() {
             const container = document.getElementById('adminAllUsersContainer');
             const totalUsersBadge = document.getElementById('adminTotalUsersBadge');
+            
             const snapshot = await db.collection('usuarios').get();
-
             const totalCount = snapshot.size;
             totalUsersBadge.innerText = `Total: ${totalCount} usuarios`;
 
@@ -1323,22 +1318,35 @@
                 const user = doc.data();
                 const phone = user.phone;
                 const referralsCount = user.referrals ? user.referrals.length : 0;
-                const depositsCount = user.depositsHistory ? user.depositsHistory.length : 0;
+                const depositsHistory = user.depositsHistory || [];
+                const depositsCount = depositsHistory.length;
                 const productsCount = user.investments ? user.investments.length : 0;
                 const productsText = user.investments && user.investments.length > 0 
                     ? user.investments.map(i => i.name).join(', ') 
                     : 'Ninguno';
 
                 return `
-                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-2">
+                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-2.5">
                         <div class="flex justify-between items-center border-b border-slate-200/60 pb-2">
                             <div>
                                 <strong class="text-slate-800 text-sm block">${phone}</strong>
-                                <span class="text-[10px] text-slate-400 font-medium">Cargas Aprobadas: ${depositsCount} | Referidos: ${referralsCount} | Inversiones: ${productsCount}</span>
+                                <span class="text-[10px] text-emerald-600 font-extrabold">💳 Cargas aprobadas: ${depositsCount}</span> | 
+                                <span class="text-[10px] text-slate-400 font-medium">Referidos: ${referralsCount} | Inversiones: ${productsCount}</span>
                             </div>
                             <button onclick="adminDeleteUser('${phone}')" class="px-2.5 py-1 bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold rounded-lg text-[10px] border border-rose-200">
                                 Eliminar
                             </button>
+                        </div>
+
+                        <!-- HISTORIAL DE CARGAS DEL USUARIO -->
+                        <div class="bg-white p-2 rounded-xl border border-slate-200 space-y-1">
+                            <span class="text-[10px] font-bold text-slate-500 uppercase block">Historial de Cargas:</span>
+                            ${depositsCount > 0 ? depositsHistory.map(dep => `
+                                <div class="flex justify-between text-[10px] text-slate-700 border-b border-slate-100 pb-1 last:border-0">
+                                    <span>➕ <strong>$${dep.amount.toLocaleString('es-AR')} ARS</strong></span>
+                                    <span class="text-slate-400">${dep.date || ''}</span>
+                                </div>
+                            `).join('') : '<p class="text-[10px] text-slate-400 italic">Este usuario aún no tiene cargas acreditadas.</p>'}
                         </div>
 
                         <div class="text-[11px] text-slate-500">
