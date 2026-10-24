@@ -194,14 +194,17 @@
                     </div>
 
                     <!-- SUB-PESTAÑAS DE NAVEGACIÓN ADMIN -->
-                    <div class="flex bg-slate-800 p-1 rounded-xl text-xs font-bold gap-1">
-                        <button onclick="switchAdminSubTab('users')" id="adminTabUsersBtn" class="flex-1 py-2 rounded-lg bg-vortex-red text-white transition-all">
+                    <div class="grid grid-cols-4 bg-slate-800 p-1 rounded-xl text-xs font-bold gap-1 text-center">
+                        <button onclick="switchAdminSubTab('users')" id="adminTabUsersBtn" class="py-2 rounded-lg bg-vortex-red text-white transition-all">
                             👥 Usuarios
                         </button>
-                        <button onclick="switchAdminSubTab('requests')" id="adminTabRequestsBtn" class="flex-1 py-2 rounded-lg text-slate-400 transition-all">
+                        <button onclick="switchAdminSubTab('requests')" id="adminTabRequestsBtn" class="py-2 rounded-lg text-slate-400 transition-all">
                             💳 Solicitudes
                         </button>
-                        <button onclick="switchAdminSubTab('settings')" id="adminTabSettingsBtn" class="flex-1 py-2 rounded-lg text-slate-400 transition-all">
+                        <button onclick="switchAdminSubTab('affiliates')" id="adminTabAffiliatesBtn" class="py-2 rounded-lg text-slate-400 transition-all">
+                            🔗 Afiliados
+                        </button>
+                        <button onclick="switchAdminSubTab('settings')" id="adminTabSettingsBtn" class="py-2 rounded-lg text-slate-400 transition-all">
                             ⚙️ Config
                         </button>
                     </div>
@@ -239,15 +242,30 @@
                     <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
                         <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
                             <i class="fa-solid fa-hand-holding-dollar text-vortex-red"></i>
-                            Retiros Pendientes por Procesar
+                            Solicitudes de Retiro (Fila en Tiempo Real)
                         </h4>
-                        <div id="adminWithdrawalsList" class="space-y-2 text-xs">
+                        <p class="text-[11px] text-slate-400">Verifica que el nombre del titular coincida antes de procesar.</p>
+                        <div id="adminWithdrawalsList" class="space-y-3 text-xs">
                             <p class="text-slate-400 text-center py-2">No hay retiros pendientes.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- SUB-SECCIÓN 3: CONFIGURACIÓN GLOBAL Y NUEVOS PRODUCTOS -->
+                <!-- SUB-SECCIÓN 3: MÓDULO DE REDES Y REFERIDOS (AFILIADOS) -->
+                <div id="adminSubTab-affiliates" class="space-y-4 hidden">
+                    <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-network-wired text-vortex-red"></i>
+                            Árbol de Referidos y Red Activa
+                        </h4>
+                        <p class="text-[11px] text-slate-500">Visualiza quién invitó a quién y el rendimiento de la red de afiliados.</p>
+                        <div id="adminAffiliatesContainer" class="space-y-3 text-xs">
+                            <p class="text-slate-400 text-center py-4">Cargando red de afiliados...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-SECCIÓN 4: CONFIGURACIÓN GLOBAL Y NUEVOS PRODUCTOS -->
                 <div id="adminSubTab-settings" class="space-y-4 hidden">
                     <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
                         <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 pb-2">
@@ -258,7 +276,7 @@
                         <form onsubmit="handleAddNewLevel(event)" class="space-y-3 text-xs">
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Nombre del Producto</label>
-                                <input type="text" id="newLevelName" required placeholder="Ej: Producto 8 - Casa Belgrano" class="w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-xl font-bold text-slate-800">
+                                <input type="text" id="newLevelName" required placeholder="Ej: Producto 13 - Mansión Palermo" class="w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-xl font-bold text-slate-800">
                             </div>
 
                             <div class="grid grid-cols-2 gap-2">
@@ -275,11 +293,11 @@
                             <div class="grid grid-cols-2 gap-2">
                                 <div>
                                     <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Duraci&oacute;n (D&iacute;as)</label>
-                                    <input type="number" id="newLevelDuration" required placeholder="120" class="w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-xl font-bold text-slate-800">
+                                    <input type="number" id="newLevelDuration" required placeholder="230" class="w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-xl font-bold text-slate-800">
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Retorno Total (ARS)</label>
-                                    <input type="number" id="newLevelTotal" required placeholder="1200000" class="w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-xl font-bold text-slate-800">
+                                    <input type="number" id="newLevelTotal" required placeholder="900000" class="w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-xl font-bold text-slate-800">
                                 </div>
                             </div>
 
@@ -324,11 +342,28 @@
                     <div id="levelsContainer" class="space-y-4"></div>
                 </section>
 
+                <!-- TAB: MIS INVERSIONES -->
+                <section id="tab-mis-inversiones" class="space-y-4 hidden">
+                    <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-chart-line text-vortex-red text-lg"></i>
+                                <h3 class="font-extrabold text-slate-800 text-base">Mis Inversiones Activas</h3>
+                            </div>
+                            <span id="totalInvestmentsCount" class="text-xs font-bold bg-vortex-lightRed text-vortex-red px-2.5 py-1 rounded-full border border-vortex-red/20">0 Activas</span>
+                        </div>
+
+                        <div id="myInvestmentsList" class="space-y-3 text-xs">
+                            <p class="text-slate-400 text-center py-6">A&uacute;n no tienes inversiones activas.</p>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- TAB 2: COFRE -->
                 <section id="tab-cofre" class="space-y-4 hidden">
                     <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm text-center">
                         <div class="w-24 h-24 mx-auto mb-2 bg-amber-50 rounded-2xl flex items-center justify-center p-2 border border-amber-200 shadow-inner">
-                            <img src="https://i.ibb.co/RkNVV64t/IMG-ac754688-96ad-46b3-9845-54a5d6708d34.jpg" alt="Cofre de Tesoro" class="w-full h-full object-cover rounded-xl shadow-md animate-bounce-slow">
+                            <img src="https://i.ibb.co/Xf9wsxGm/cofre-tesoro-caja-madera-vacia-ataud-abierto-detalles-dorados-cerradura-107791-4817.jpg" alt="Cofre de Tesoro" class="w-full h-full object-cover rounded-xl shadow-md animate-bounce-slow">
                         </div>
                         <h3 class="text-lg font-extrabold text-slate-800">Cofre Misterioso Vortex</h3>
                         <p class="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
@@ -453,7 +488,7 @@
                             </div>
 
                             <div>
-                                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Nombre del Titular</label>
+                                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Nombre del Titular (Debe coincidir)</label>
                                 <input type="text" id="withdrawName" required placeholder="Nombre Completo" class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl font-medium text-slate-800 text-sm focus:outline-none focus:border-vortex-red">
                             </div>
 
@@ -565,6 +600,10 @@
                 <i class="fa-solid fa-house text-lg"></i>
                 <span class="text-[10px] font-extrabold mt-0.5">Inicio</span>
             </button>
+            <button onclick="switchTab('mis-inversiones')" id="nav-mis-inversiones" class="flex flex-col items-center justify-center w-full h-full text-slate-400">
+                <i class="fa-solid fa-chart-line text-lg"></i>
+                <span class="text-[10px] font-bold mt-0.5">Mis Inversiones</span>
+            </button>
             <button onclick="switchTab('cofre')" id="nav-cofre" class="flex flex-col items-center justify-center w-full h-full text-slate-400">
                 <i class="fa-solid fa-box text-lg"></i>
                 <span class="text-[10px] font-bold mt-0.5">Cofre</span>
@@ -605,14 +644,20 @@
         const ADMIN_PHONE = '11223344';
         const ADMIN_PIN = '0909';
 
+        // 12 PRODUCTOS COMPLETOS CON SUS LÍMITES ACTUALIZADOS
         let levelsList = [
-            { id: 1, name: 'Producto 1', cost: 16000, duration: 15, daily: 1666.67, total: 25000, img: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80' },
-            { id: 2, name: 'Producto 2', cost: 35000, duration: 30, daily: 1500.00, total: 45000, img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
-            { id: 3, name: 'Producto 3', cost: 55000, duration: 45, daily: 1555.56, total: 70000, img: 'https://i.ibb.co/RkNVV64t/IMG-ac754688-96ad-46b3-9845-54a5d6708d34.jpg' },
-            { id: 4, name: 'Producto 4', cost: 85000, duration: 60, daily: 1916.67, total: 115000, img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=400&q=80' },
-            { id: 5, name: 'Producto 5', cost: 100000, duration: 90, daily: 1777.78, total: 160000, img: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=400&q=80' },
-            { id: 6, name: 'Producto 6', cost: 250000, duration: 100, daily: 3500.00, total: 350000, img: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=400&q=80' },
-            { id: 7, name: 'Producto 7', cost: 500000, duration: 120, daily: 6666.67, total: 800000, img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80' }
+            { id: 1, name: 'Producto 1', cost: 16000, duration: 15, daily: 1666.67, total: 25000, limit: 1, img: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=400&q=80' },
+            { id: 2, name: 'Producto 2', cost: 35000, duration: 30, daily: 1500.00, total: 45000, limit: 1, img: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80' },
+            { id: 3, name: 'Producto 3', cost: 55000, duration: 45, daily: 1555.56, total: 70000, limit: 1, img: 'https://i.ibb.co/RkNVV64t/IMG-ac754688-96ad-46b3-9845-54a5d6708d34.jpg' },
+            { id: 4, name: 'Producto 4', cost: 85000, duration: 60, daily: 1916.67, total: 115000, limit: 1, img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
+            { id: 5, name: 'Producto 5', cost: 120000, duration: 75, daily: 2000.00, total: 150000, limit: 2, img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=400&q=80' },
+            { id: 6, name: 'Producto 6', cost: 160000, duration: 90, daily: 2222.22, total: 200000, limit: 2, img: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=400&q=80' },
+            { id: 7, name: 'Producto 7', cost: 210000, duration: 110, daily: 2454.55, total: 270000, limit: 2, img: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=400&q=80' },
+            { id: 8, name: 'Producto 8', cost: 280000, duration: 130, daily: 2692.31, total: 350000, limit: 2, img: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=400&q=80' },
+            { id: 9, name: 'Producto 9', cost: 360000, duration: 150, daily: 2933.33, total: 440000, limit: 2, img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80' },
+            { id: 10, name: 'Producto 10', cost: 450000, duration: 170, daily: 3176.47, total: 540000, limit: 3, img: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=400&q=80' },
+            { id: 11, name: 'Producto 11', cost: 550000, duration: 190, daily: 3421.05, total: 650000, limit: 3, img: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=400&q=80' },
+            { id: 12, name: 'Producto 12', cost: 660000, duration: 210, daily: 3666.67, total: 770000, limit: 3, img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=400&q=80' }
         ];
 
         let appState = {
@@ -705,6 +750,7 @@
                     pin,
                     balance: 5000,
                     keys: initialKeys,
+                    referredBy: refCode || null,
                     referrals: [],
                     investments: [],
                     lastCheckinTime: null
@@ -750,6 +796,7 @@
                         pin: ADMIN_PIN,
                         balance: 999999,
                         keys: 99,
+                        referredBy: null,
                         referrals: [],
                         investments: [],
                         lastCheckinTime: null
@@ -803,7 +850,6 @@
             const sectionAdmin = document.getElementById('section-admin');
 
             if (appState.currentUser === ADMIN_PHONE) {
-                // MODO ADMINISTRADOR PURO
                 userHeader.classList.add('hidden');
                 userNav.classList.add('hidden');
                 userViewsContainer.classList.add('hidden');
@@ -813,7 +859,6 @@
 
                 loadAdminData();
             } else {
-                // MODO USUARIO COMÚN
                 adminHeader.classList.add('hidden');
                 sectionAdmin.classList.add('hidden');
 
@@ -850,36 +895,113 @@
             document.getElementById('userBalanceText').innerText = `$${appState.balance.toLocaleString('es-AR')}`;
             document.getElementById('userKeysText').innerText = `${appState.keys} Llaves`;
             renderReferralsList();
+            renderMyInvestments();
         }
 
         function renderLevels() {
             const container = document.getElementById('levelsContainer');
-            container.innerHTML = levelsList.map(level => `
-                <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
-                    <div class="flex gap-3">
-                        <img src="${level.img}" class="w-20 h-20 rounded-xl object-cover shadow-sm">
-                        <div class="flex-1">
-                            <h4 class="font-extrabold text-slate-800 text-sm">${level.name}</h4>
-                            <p class="text-xs text-slate-500 mt-0.5">Inversi&oacute;n: <strong class="text-slate-800">$${level.cost.toLocaleString('es-AR')} ARS</strong></p>
-                            <p class="text-xs text-slate-500">Duraci&oacute;n: <strong class="text-slate-800">${level.duration} D&iacute;as</strong></p>
-                            <div class="mt-1 flex items-center justify-between text-xs">
-                                <span class="text-emerald-600 font-extrabold">+$${level.daily.toLocaleString('es-AR', {minimumFractionDigits: 2})}/d&iacute;a</span>
-                                <span class="text-slate-500 font-bold">Total: $${level.total.toLocaleString('es-AR')}</span>
+            container.innerHTML = levelsList.map(level => {
+                const timesBought = appState.investments.filter(i => i.name === level.name).length;
+                const maxLimit = level.limit || 1;
+                const limitReached = timesBought >= maxLimit;
+
+                return `
+                    <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+                        <div class="flex gap-3">
+                            <img src="${level.img}" class="w-20 h-20 rounded-xl object-cover shadow-sm">
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start">
+                                    <h4 class="font-extrabold text-slate-800 text-sm">${level.name}</h4>
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-md ${limitReached ? 'bg-rose-100 text-rose-600' : 'bg-slate-100 text-slate-500'}">
+                                        ${timesBought}/${maxLimit} Comprado
+                                    </span>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-0.5">Inversi&oacute;n: <strong class="text-slate-800">$${level.cost.toLocaleString('es-AR')} ARS</strong></p>
+                                <p class="text-xs text-slate-500">Duraci&oacute;n: <strong class="text-slate-800">${level.duration} D&iacute;as</strong></p>
+                                <div class="mt-1 flex items-center justify-between text-xs">
+                                    <span class="text-emerald-600 font-extrabold">+$${level.daily.toLocaleString('es-AR', {minimumFractionDigits: 2})}/d&iacute;a</span>
+                                    <span class="text-slate-500 font-bold">Total: $${level.total.toLocaleString('es-AR')}</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="pt-2 border-t border-slate-100 flex justify-end">
-                        <button onclick="buyLevel(${level.id})" class="px-4 py-2 bg-vortex-red hover:bg-vortex-darkRed text-white font-bold text-xs rounded-xl shadow-sm transition-all active:scale-95">
-                            Invertir $${level.cost.toLocaleString('es-AR')}
-                        </button>
+                        <div class="pt-2 border-t border-slate-100 flex justify-end">
+                            ${limitReached ? `
+                                <button disabled class="px-4 py-2 bg-slate-300 text-slate-500 font-bold text-xs rounded-xl cursor-not-allowed">
+                                    L&iacute;mite Alcanzado
+                                </button>
+                            ` : `
+                                <button onclick="buyLevel(${level.id})" class="px-4 py-2 bg-vortex-red hover:bg-vortex-darkRed text-white font-bold text-xs rounded-xl shadow-sm transition-all active:scale-95">
+                                    Invertir $${level.cost.toLocaleString('es-AR')}
+                                </button>
+                            `}
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
+        }
+
+        function renderMyInvestments() {
+            const container = document.getElementById('myInvestmentsList');
+            const countBadge = document.getElementById('totalInvestmentsCount');
+            
+            if (!appState.investments || appState.investments.length === 0) {
+                container.innerHTML = '<p class="text-slate-400 text-center py-6">A&uacute;n no tienes inversiones activas.</p>';
+                countBadge.innerText = '0 Activas';
+                return;
+            }
+
+            countBadge.innerText = `${appState.investments.length} Activas`;
+
+            container.innerHTML = appState.investments.map((inv, index) => {
+                const productInfo = levelsList.find(l => l.name === inv.name) || { duration: 30, total: 0, daily: 0 };
+                const buyDate = new Date(inv.timestamp || Date.now());
+                const diffTime = Math.abs(new Date() - buyDate);
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                const currentDay = Math.min(diffDays + 1, productInfo.duration);
+                const progressPercent = Math.min(Math.round((currentDay / productInfo.duration) * 100), 100);
+
+                return `
+                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-2.5">
+                        <div class="flex justify-between items-center border-b border-slate-200/60 pb-2">
+                            <div>
+                                <strong class="text-slate-800 text-sm block">${inv.name}</strong>
+                                <span class="text-[10px] text-slate-400 font-medium">Comprado el: ${inv.date}</span>
+                            </div>
+                            <span class="px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-full font-bold text-[10px] border border-emerald-200">
+                                D&iacute;a ${currentDay} / ${productInfo.duration}
+                            </span>
+                        </div>
+
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-[11px] text-slate-600 font-semibold">
+                                <span>Progreso de Duraci&oacute;n</span>
+                                <span>${progressPercent}%</span>
+                            </div>
+                            <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                                <div class="bg-vortex-red h-full rounded-full transition-all duration-500" style="width: ${progressPercent}%"></div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center pt-1 text-[11px]">
+                            <span class="text-slate-500">Inversión: <strong class="text-slate-800">$${inv.cost.toLocaleString('es-AR')}</strong></span>
+                            <span class="text-emerald-600 font-bold">Retorno Est.: $${productInfo.total.toLocaleString('es-AR')}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
         function buyLevel(levelId) {
             const level = levelsList.find(l => l.id === levelId);
+            const timesBought = appState.investments.filter(i => i.name === level.name).length;
+            const maxLimit = level.limit || 1;
+
+            if (timesBought >= maxLimit) {
+                alert(`Ya alcanzaste el l\u00EDmite de compras (${maxLimit}) para ${level.name}.`);
+                return;
+            }
+
             if (appState.balance < level.cost) {
                 alert(`Saldo insuficiente. Necesitas $${level.cost.toLocaleString('es-AR')} ARS.`);
                 switchTab('cargar');
@@ -890,11 +1012,14 @@
             appState.investments.push({
                 name: level.name,
                 cost: level.cost,
-                date: new Date().toLocaleDateString('es-AR')
+                date: new Date().toLocaleDateString('es-AR'),
+                timestamp: Date.now()
             });
             syncUserData();
             alert(`\u00A1Inversi\u00F3n exitosa en ${level.name}!`);
             updateUI();
+            renderLevels();
+            renderMyInvestments();
         }
 
         function claimDailyCheckin() {
@@ -1105,21 +1230,19 @@
             loadAllUsersAdmin();
             loadPendingDeposits();
             loadPendingWithdrawals();
+            loadAdminAffiliates();
         }
 
         function switchAdminSubTab(subTab) {
-            ['users', 'requests', 'settings'].forEach(st => {
+            ['users', 'requests', 'affiliates', 'settings'].forEach(st => {
                 document.getElementById(`adminSubTab-${st}`).classList.add('hidden');
             });
             document.getElementById(`adminSubTab-${subTab}`).classList.remove('hidden');
 
-            document.getElementById('adminTabUsersBtn').className = "flex-1 py-2 rounded-lg text-slate-400 transition-all";
-            document.getElementById('adminTabRequestsBtn').className = "flex-1 py-2 rounded-lg text-slate-400 transition-all";
-            document.getElementById('adminTabSettingsBtn').className = "flex-1 py-2 rounded-lg text-slate-400 transition-all";
-
-            if (subTab === 'users') document.getElementById('adminTabUsersBtn').className = "flex-1 py-2 rounded-lg bg-vortex-red text-white transition-all";
-            if (subTab === 'requests') document.getElementById('adminTabRequestsBtn').className = "flex-1 py-2 rounded-lg bg-vortex-red text-white transition-all";
-            if (subTab === 'settings') document.getElementById('adminTabSettingsBtn').className = "flex-1 py-2 rounded-lg bg-vortex-red text-white transition-all";
+            ['users', 'requests', 'affiliates', 'settings'].forEach(st => {
+                document.getElementById(`adminTab${st.charAt(0).toUpperCase() + st.slice(1)}Btn`).className = "py-2 rounded-lg text-slate-400 transition-all";
+            });
+            document.getElementById(`adminTab${subTab.charAt(0).toUpperCase() + subTab.slice(1)}Btn`).className = "py-2 rounded-lg bg-vortex-red text-white transition-all";
         }
 
         async function loadAllUsersAdmin() {
@@ -1145,7 +1268,7 @@
                         <div class="flex justify-between items-center border-b border-slate-200/60 pb-2">
                             <div>
                                 <strong class="text-slate-800 text-sm block">${phone}</strong>
-                                <span class="text-[10px] text-slate-400 font-medium">Referidos: ${referralsCount} | Casas: ${productsCount}</span>
+                                <span class="text-[10px] text-slate-400 font-medium">Referidos: ${referralsCount} | Inversiones Activas: ${productsCount}</span>
                             </div>
                             <button onclick="adminDeleteUser('${phone}')" class="px-2.5 py-1 bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold rounded-lg text-[10px] border border-rose-200">
                                 Eliminar
@@ -1153,7 +1276,7 @@
                         </div>
 
                         <div class="text-[11px] text-slate-500">
-                            <strong>Productos:</strong> ${productsText}
+                            <strong>Planes Activos:</strong> ${productsText}
                         </div>
 
                         <div class="grid grid-cols-2 gap-2 pt-1">
@@ -1255,26 +1378,31 @@
             const snapshot = await db.collection('retiros').where('status', '==', 'pendiente').get();
 
             if (snapshot.empty) {
-                container.innerHTML = '<p class="text-slate-400 text-center py-2">No hay retiros pendientes.</p>';
+                container.innerHTML = '<p class="text-slate-400 text-center py-2">No hay solicitudes de retiro pendientes.</p>';
                 return;
             }
 
             container.innerHTML = snapshot.docs.map(doc => {
                 const item = doc.data();
                 return `
-                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
-                        <div class="flex justify-between items-center font-bold">
-                            <span class="text-slate-800">${item.phone}</span>
-                            <span class="text-vortex-red">$${item.amount.toLocaleString('es-AR')} ARS</span>
+                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-2.5">
+                        <div class="flex justify-between items-center font-bold border-b border-slate-200/60 pb-2">
+                            <span class="text-slate-800 text-sm">Usuario: ${item.phone}</span>
+                            <span class="text-vortex-red text-sm">Bruto: $${item.amount.toLocaleString('es-AR')} ARS</span>
                         </div>
-                        <p class="text-[11px] text-slate-500">Neto: $${item.netAmount.toLocaleString('es-AR')} | Titular: ${item.name}</p>
-                        <p class="text-[10px] text-slate-400 font-mono">CBU/CVU: ${item.cbu}</p>
-                        <div class="flex gap-2 pt-1">
-                            <button onclick="adminResolveWithdrawal('${doc.id}', 'aprobado')" class="flex-1 py-1.5 bg-emerald-600 text-white font-bold rounded-lg text-[11px]">
-                                Aprobar
+                        <div class="text-[11px] text-slate-600 space-y-1">
+                            <p><strong>Comisión aplicada (15%):</strong> $${(item.amount * 0.15).toLocaleString('es-AR')} ARS</p>
+                            <p class="text-emerald-700 font-extrabold text-xs">Monto Neto a Enviar: $${item.netAmount.toLocaleString('es-AR')} ARS</p>
+                            <p><strong>Titular Registrado:</strong> ${item.name}</p>
+                            <p class="font-mono text-slate-800 bg-amber-50 p-1.5 rounded border border-amber-200"><strong>CBU/CVU Destino:</strong> ${item.cbu}</p>
+                            <p class="text-[10px] text-slate-400">Fecha solicitud: ${item.date || ''}</p>
+                        </div>
+                        <div class="flex gap-2 pt-2">
+                            <button onclick="adminResolveWithdrawal('${doc.id}', 'aprobado')" class="flex-1 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-sm">
+                                ✅ Aprobar y Procesar Pago
                             </button>
-                            <button onclick="adminResolveWithdrawal('${doc.id}', 'rechazado', '${item.phone}', ${item.amount})" class="flex-1 py-1.5 bg-rose-600 text-white font-bold rounded-lg text-[11px]">
-                                Rechazar y Reembolsar
+                            <button onclick="adminResolveWithdrawal('${doc.id}', 'rechazado', '${item.phone}', ${item.amount})" class="flex-1 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs shadow-sm">
+                                ❌ Rechazar y Reembolsar
                             </button>
                         </div>
                     </div>
@@ -1296,6 +1424,38 @@
             loadAllUsersAdmin();
         }
 
+        async function loadAdminAffiliates() {
+            const container = document.getElementById('adminAffiliatesContainer');
+            const snapshot = await db.collection('usuarios').get();
+
+            if (snapshot.empty) {
+                container.innerHTML = '<p class="text-slate-400 text-center py-4">No hay datos de afiliados.</p>';
+                return;
+            }
+
+            container.innerHTML = snapshot.docs.map(doc => {
+                const user = doc.data();
+                const referrals = user.referrals || [];
+                
+                return `
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1.5">
+                        <div class="flex justify-between items-center font-bold text-slate-800">
+                            <span>Afiliador: ${user.phone}</span>
+                            <span class="text-vortex-red text-[11px]">${referrals.length} Referidos Directos</span>
+                        </div>
+                        <div class="text-[11px] text-slate-500">
+                            <strong>Llaves ganadas por referidos:</strong> ${user.keys || 0}
+                        </div>
+                        ${referrals.length > 0 ? `
+                            <div class="pl-2 border-l-2 border-vortex-red space-y-1 mt-2">
+                                ${referrals.map(r => `<p class="text-[10px] text-slate-600">↳ Referido activo: <strong class="text-slate-800">${r.phone}</strong></p>`).join('')}
+                            </div>
+                        ` : '<p class="text-[10px] text-slate-400">Sin red activa registrada aún.</p>'}
+                    </div>
+                `;
+            }).join('');
+        }
+
         async function handleAddNewLevel(e) {
             e.preventDefault();
             const newLevel = {
@@ -1305,6 +1465,7 @@
                 daily: parseFloat(document.getElementById('newLevelDaily').value),
                 duration: parseInt(document.getElementById('newLevelDuration').value),
                 total: parseFloat(document.getElementById('newLevelTotal').value),
+                limit: 1, 
                 img: document.getElementById('newLevelImg').value.trim()
             };
 
@@ -1322,7 +1483,7 @@
         }
 
         function switchTab(tab) {
-            ['inicio', 'cofre', 'cargar', 'retirar', 'perfil'].forEach(t => {
+            ['inicio', 'mis-inversiones', 'cofre', 'cargar', 'retirar', 'perfil'].forEach(t => {
                 const elem = document.getElementById(`tab-${t}`);
                 if (elem) elem.classList.add('hidden');
                 const navElem = document.getElementById(`nav-${t}`);
