@@ -47,6 +47,50 @@
 
     <div class="w-full min-h-screen relative flex flex-col overflow-hidden bg-slate-50">
 
+        <!-- BOTÓN FLOTANTE DE ASISTENCIA / SOPORTE (ASESORA CON AURICULARES) -->
+        <div id="floatingSupportBtn" class="fixed bottom-20 left-4 z-40 flex items-center gap-2">
+            <button onclick="toggleSupportModal()" class="relative group flex items-center justify-center w-14 h-14 rounded-full bg-white shadow-2xl border-2 border-vortex-red glow-red active:scale-95 transition-all">
+                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80" alt="Soporte Gerencial" class="w-full h-full object-cover rounded-full">
+                <!-- Indicador Verde en Línea -->
+                <span class="absolute top-0 right-0 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full"></span>
+            </button>
+        </div>
+
+        <!-- MODAL DESPLEGABLE DE SOPORTE GERENCIAL CON USUARIO DE TELEGRAM INTEGRADO -->
+        <div id="supportModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+            <div class="bg-white w-full max-w-xs rounded-3xl p-5 shadow-2xl space-y-4 text-center relative overflow-hidden">
+                <button onclick="toggleSupportModal()" class="absolute top-3 right-3 text-slate-400 hover:text-slate-600 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 font-bold">
+                    ✕
+                </button>
+
+                <div class="relative w-20 h-20 mx-auto">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80" alt="Atención al Cliente" class="w-20 h-20 rounded-full object-cover shadow-md border-2 border-vortex-red">
+                    <span class="absolute bottom-0 right-0 w-5 h-5 bg-emerald-500 border-2 border-white rounded-full"></span>
+                </div>
+
+                <div>
+                    <h3 class="text-base font-black text-slate-800">&iquest;Necesit&aacute;s Ayuda o Asesoramiento?</h3>
+                    <p class="text-xs text-slate-500 mt-1">Comun&iacute;cate directamente con nuestros gerentes de soporte para resolver cualquier duda.</p>
+                </div>
+
+                <div class="space-y-2 pt-2">
+                    <!-- ENLACE DE TELEGRAM CON TU USUARIO (SOFI_TIF) -->
+                    <a href="https://t.me/Sofi_tif" target="_blank" class="w-full py-3 bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-2 transition-all">
+                        <i class="fa-brands fa-telegram text-lg"></i>
+                        <span>Soporte Oficial en Telegram</span>
+                    </a>
+
+                    <!-- ENLACE DE WHATSAPP (AQUÍ PEGAS TU LINK DE WA.LINK) -->
+                    <a href="https://wa.link/TU_LINK_AQUI" target="_blank" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-2 transition-all">
+                        <i class="fa-brands fa-whatsapp text-lg"></i>
+                        <span>Contactar por WhatsApp</span>
+                    </a>
+                </div>
+
+                <p class="text-[10px] text-slate-400 pt-1">Atenci&oacute;n personalizada 24/7</p>
+            </div>
+        </div>
+
         <!-- PREMIO RECOMPENSA MODAL FLOATING -->
         <div id="rewardModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
             <div class="bg-white w-full max-w-xs rounded-3xl p-6 shadow-2xl space-y-4 text-center relative overflow-hidden">
@@ -213,12 +257,15 @@
                 <!-- SUB-SECCIÓN 1: GESTIÓN DE USUARIOS COMPLETA -->
                 <div id="adminSubTab-users" class="space-y-3">
                     <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
-                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center justify-between">
-                            <span>Todos los Usuarios Registrados</span>
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Usuarios Registrados</h4>
+                                <span id="adminTotalUsersBadge" class="text-[10px] text-vortex-red font-extrabold bg-vortex-lightRed px-2 py-0.5 rounded-full">Total: 0 usuarios</span>
+                            </div>
                             <button onclick="loadAllUsersAdmin()" class="text-vortex-red text-[11px] font-bold">
                                 <i class="fa-solid fa-rotate-right"></i> Actualizar Listado
                             </button>
-                        </h4>
+                        </div>
                         <div id="adminAllUsersContainer" class="space-y-3 text-xs">
                             <p class="text-slate-400 text-center py-4">Cargando usuarios...</p>
                         </div>
@@ -666,7 +713,8 @@
             keys: 0,
             lastCheckinTime: null,
             referrals: [],
-            investments: []
+            investments: [],
+            depositsHistory: []
         };
 
         let checkinTimerInterval = null;
@@ -677,6 +725,11 @@
             updateUI();
             startCheckinTimer();
         });
+
+        function toggleSupportModal() {
+            const modal = document.getElementById('supportModal');
+            modal.classList.toggle('hidden');
+        }
 
         async function loadCustomLevels() {
             try {
@@ -748,11 +801,12 @@
                 const newUser = {
                     phone,
                     pin,
-                    balance: 1500, // BONO DE BIENVIENIDA ACTUALIZADO A 1.500 ARS
+                    balance: 1500,
                     keys: initialKeys,
                     referredBy: refCode || null,
                     referrals: [],
                     investments: [],
+                    depositsHistory: [],
                     lastCheckinTime: null
                 };
 
@@ -763,6 +817,7 @@
                 appState.keys = newUser.keys;
                 appState.referrals = newUser.referrals;
                 appState.investments = [];
+                appState.depositsHistory = [];
 
                 document.getElementById('authModal').classList.add('hidden');
                 document.getElementById('profilePhone').innerText = phone;
@@ -799,6 +854,7 @@
                         referredBy: null,
                         referrals: [],
                         investments: [],
+                        depositsHistory: [],
                         lastCheckinTime: null
                     };
                     await userRef.set(adminUser);
@@ -821,6 +877,7 @@
                 appState.keys = userData.keys;
                 appState.referrals = userData.referrals || [];
                 appState.investments = userData.investments || [];
+                appState.depositsHistory = userData.depositsHistory || [];
                 appState.lastCheckinTime = userData.lastCheckinTime;
 
                 document.getElementById('authModal').classList.add('hidden');
@@ -848,11 +905,13 @@
             const userNav = document.getElementById('userNav');
             const userViewsContainer = document.getElementById('userViewsContainer');
             const sectionAdmin = document.getElementById('section-admin');
+            const floatingSupportBtn = document.getElementById('floatingSupportBtn');
 
             if (appState.currentUser === ADMIN_PHONE) {
                 userHeader.classList.add('hidden');
                 userNav.classList.add('hidden');
                 userViewsContainer.classList.add('hidden');
+                floatingSupportBtn.classList.add('hidden');
 
                 adminHeader.classList.remove('hidden');
                 sectionAdmin.classList.remove('hidden');
@@ -865,6 +924,7 @@
                 userHeader.classList.remove('hidden');
                 userNav.classList.remove('hidden');
                 userViewsContainer.classList.remove('hidden');
+                floatingSupportBtn.classList.remove('hidden');
 
                 switchTab('inicio');
             }
@@ -877,7 +937,8 @@
                     balance: appState.balance,
                     keys: appState.keys,
                     lastCheckinTime: appState.lastCheckinTime,
-                    investments: appState.investments
+                    investments: appState.investments,
+                    depositsHistory: appState.depositsHistory
                 });
             } catch (e) {
                 console.error("Error synchronizing:", e);
@@ -1073,7 +1134,6 @@
             }
 
             appState.keys -= 1;
-            // PREMIOS DEL COFRE RESTRINGIDOS DE 150 A 5.000 ARS
             const prizes = [150, 300, 500, 1000, 1500, 2500, 3500, 5000];
             const reward = prizes[Math.floor(Math.random() * prizes.length)];
             
@@ -1248,7 +1308,11 @@
 
         async function loadAllUsersAdmin() {
             const container = document.getElementById('adminAllUsersContainer');
+            const totalUsersBadge = document.getElementById('adminTotalUsersBadge');
             const snapshot = await db.collection('usuarios').get();
+
+            const totalCount = snapshot.size;
+            totalUsersBadge.innerText = `Total: ${totalCount} usuarios`;
 
             if (snapshot.empty) {
                 container.innerHTML = '<p class="text-slate-400 text-center py-4">No hay usuarios registrados.</p>';
@@ -1259,6 +1323,7 @@
                 const user = doc.data();
                 const phone = user.phone;
                 const referralsCount = user.referrals ? user.referrals.length : 0;
+                const depositsCount = user.depositsHistory ? user.depositsHistory.length : 0;
                 const productsCount = user.investments ? user.investments.length : 0;
                 const productsText = user.investments && user.investments.length > 0 
                     ? user.investments.map(i => i.name).join(', ') 
@@ -1269,7 +1334,7 @@
                         <div class="flex justify-between items-center border-b border-slate-200/60 pb-2">
                             <div>
                                 <strong class="text-slate-800 text-sm block">${phone}</strong>
-                                <span class="text-[10px] text-slate-400 font-medium">Referidos: ${referralsCount} | Inversiones Activas: ${productsCount}</span>
+                                <span class="text-[10px] text-slate-400 font-medium">Cargas Aprobadas: ${depositsCount} | Referidos: ${referralsCount} | Inversiones: ${productsCount}</span>
                             </div>
                             <button onclick="adminDeleteUser('${phone}')" class="px-2.5 py-1 bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold rounded-lg text-[10px] border border-rose-200">
                                 Eliminar
@@ -1364,8 +1429,22 @@
             await db.collection('cargas').doc(docId).update({ status: status });
 
             if (status === 'aprobado' && userPhone) {
-                await db.collection('usuarios').doc(userPhone).update({
-                    balance: firebase.firestore.FieldValue.increment(amount)
+                const userRef = db.collection('usuarios').doc(userPhone);
+                const userDoc = await userRef.get();
+                
+                let currentHistory = [];
+                if (userDoc.exists && userDoc.data().depositsHistory) {
+                    currentHistory = userDoc.data().depositsHistory;
+                }
+                
+                currentHistory.push({
+                    amount: amount,
+                    date: new Date().toLocaleString('es-AR')
+                });
+
+                await userRef.update({
+                    balance: firebase.firestore.FieldValue.increment(amount),
+                    depositsHistory: currentHistory
                 });
             }
 
