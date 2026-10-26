@@ -43,30 +43,9 @@
         .animate-bounce-slow { animation: bounce 2s infinite; }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen p-0 m-0" onload="initApp()">
+<body class="bg-slate-50 min-h-screen p-0 m-0">
 
     <div class="w-full min-h-screen relative flex flex-col overflow-hidden bg-slate-50">
-
-        <!-- MODAL DE RECORDATORIO / HORARIO DE OPERACIONES -->
-        <div id="scheduleModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-            <div class="bg-white w-full max-w-xs rounded-3xl p-6 shadow-2xl space-y-4 text-center relative overflow-hidden">
-                <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-2xl mx-auto shadow-inner">
-                    <i class="fa-solid fa-clock"></i>
-                </div>
-                <div>
-                    <h3 class="text-lg font-black text-slate-800">Horario de Operaciones</h3>
-                    <p class="text-xs text-slate-600 mt-2 leading-relaxed">
-                        Los depósitos y retiros se realizan de <strong class="text-slate-800">lunes a viernes de 10:00 AM a 17:00 PM</strong>.
-                    </p>
-                    <p class="text-[11px] text-vortex-red font-bold mt-2">
-                        Fuera de esa franja horaria no se recibe ni se retira dinero.
-                    </p>
-                </div>
-                <button onclick="closeScheduleModal()" class="w-full py-3 bg-vortex-red text-white font-bold text-xs rounded-xl shadow-md glow-red">
-                    Entendido
-                </button>
-            </div>
-        </div>
 
         <!-- BOTÓN FLOTANTE DE ASISTENCIA / SOPORTE -->
         <div id="floatingSupportBtn" class="fixed bottom-20 left-4 z-40 flex items-center gap-2">
@@ -94,10 +73,13 @@
                 </div>
 
                 <div class="space-y-2 pt-2">
+                    <!-- CANAL OFICIAL DE WHATSAPP -->
                     <a href="https://whatsapp.com/channel/0029Vb93gKhFy72DFshepD2T" target="_blank" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-2 transition-all">
                         <i class="fa-brands fa-whatsapp text-lg"></i>
                         <span>Canal Oficial de WhatsApp</span>
                     </a>
+
+                    <!-- GRUPO PRINCIPAL DE TELEGRAM -->
                     <a href="https://t.me/+PCfM9LlpALJjYTZh" target="_blank" class="w-full py-3 bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-2 transition-all">
                         <i class="fa-brands fa-telegram text-lg"></i>
                         <span>Grupo Oficial Telegram</span>
@@ -214,7 +196,7 @@
                     <i class="fa-solid fa-wallet text-vortex-red text-sm"></i>
                     <div>
                         <span class="block text-[9px] font-bold text-slate-500 uppercase leading-none">Saldo ARS</span>
-                        <span id="userBalanceText" class="text-sm font-extrabold text-slate-800 leading-none">$8.550</span>
+                        <span id="userBalanceText" class="text-sm font-extrabold text-slate-800 leading-none">$0.00</span>
                     </div>
                 </div>
 
@@ -331,282 +313,1302 @@
                             <i class="fa-solid fa-plus-circle text-vortex-red"></i>
                             Agregar Nuevo Producto de Inversi&oacute;n
                         </h4>
-                    </div>
-                </div>
-            </section>
 
-            <!-- VISTA DE INICIO / HOME -->
-            <section id="section-home" class="space-y-4 hidden">
-                <div class="bg-vortex-red text-white rounded-3xl p-5 shadow-lg relative overflow-hidden">
-                    <div class="relative z-10 space-y-2">
-                        <span class="bg-white/20 text-white text-[10px] font-bold px-2.5 py-1 rounded-full">Plataforma Oficial Vortex</span>
-                        <h3 class="text-xl font-black">Inversiones Inmobiliarias Seguras</h3>
-                        <p class="text-xs text-white/90">Haz crecer tu capital con retornos diarios garantizados en proyectos inmobiliarios reales.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- VISTA DE INVERTIR / PRODUCTOS -->
-            <section id="section-invest" class="space-y-4 hidden">
-                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-3">
-                    <h3 class="text-base font-black text-slate-800">Productos Inmobiliarios Disponibles</h3>
-                    <p class="text-xs text-slate-500">Selecciona el plan que mejor se adapte a tus objetivos financieros.</p>
-                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
-                        <h4 class="font-bold text-slate-800 text-sm">Producto 1 (Plan Inmobiliario Base)</h4>
-                        <p class="text-xs text-slate-600">Inversión: $16.000 ARS | Retorno Total: $25.000 ARS (15 días)</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- VISTA DE INVERSIONES ACTIVAS (SECCIÓN PRINCIPAL) -->
-            <section id="section-investments" class="space-y-4">
-                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
-                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                        <h3 class="text-sm font-black text-slate-800 flex items-center gap-2">
-                            <i class="fa-solid fa-chart-line text-vortex-red"></i> Mis Inversiones Activas
-                        </h3>
-                        <span id="activeCountBadge" class="bg-vortex-lightRed text-vortex-red text-[10px] font-extrabold px-2.5 py-1 rounded-full">1 Activas</span>
-                    </div>
-
-                    <!-- TARJETA PRODUCTO 1 (23/10/2026) -->
-                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3 shadow-inner">
-                        <div class="flex items-center justify-between">
+                        <form onsubmit="handleAddNewLevel(event)" class="space-y-3 text-xs">
                             <div>
-                                <h4 class="font-black text-slate-800 text-sm">Producto 1</h4>
-                                <p class="text-[10px] text-slate-500">Comprado el: <span id="purchaseDateText">23/10/2026</span></p>
+                                <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Nombre del Producto</label>
+                                <input type="text" id="newLevelName" required placeholder="Ej: Producto 13" class="w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-xl font-bold text-slate-800">
                             </div>
-                            <span id="dayCounterBadge" class="bg-emerald-100 text-emerald-700 text-[11px] font-extrabold px-3 py-1 rounded-full">Día 3 / 15</span>
-                        </div>
 
-                        <div class="space-y-1">
-                            <div class="flex justify-between text-xs font-bold text-slate-600">
-                                <span>Progreso de Duración</span>
-                                <span id="progressPercentText">20%</span>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Costo (ARS)</label>
+                                    <input type="number" id="newLevelCost" required placeholder="750000" class="w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-xl font-bold text-slate-800">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Ganancia Diaria (ARS)</label>
+                                    <input type="number" step="0.01" id="newLevelDaily" required placeholder="10000" class="w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-xl font-bold text-slate-800">
+                                </div>
                             </div>
-                            <!-- Barra de progreso -->
-                            <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
-                                <div id="progressBarFill" class="bg-vortex-red h-full rounded-full transition-all duration-500" style="width: 20%;"></div>
+
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Duraci&oacute;n (D&iacute;as)</label>
+                                    <input type="number" id="newLevelDuration" required placeholder="230" class="w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-xl font-bold text-slate-800">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Retorno Total (ARS)</label>
+                                    <input type="number" id="newLevelTotal" required placeholder="900000" class="w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-xl font-bold text-slate-800">
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Detalle de ganancia acumulada calculada de forma continua -->
-                        <div class="bg-white p-2.5 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
-                            <span class="text-slate-500 font-medium">Ganancia acumulada (aprox):</span>
-                            <span id="accumulatedEarningsText" class="font-extrabold text-emerald-600">$0 ARS</span>
-                        </div>
-
-                        <div class="flex items-center justify-between pt-2 border-t border-slate-200 text-xs">
                             <div>
-                                <span class="text-slate-400 block text-[10px] uppercase font-bold">Inversión</span>
-                                <span class="font-extrabold text-slate-800">$16.000</span>
+                                <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">URL de la Imagen</label>
+                                <input type="url" id="newLevelImg" required placeholder="https://images.unsplash.com/..." class="w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-xl font-medium text-slate-800">
                             </div>
-                            <div class="text-right">
-                                <span class="text-slate-400 block text-[10px] uppercase font-bold">Retorno Est.</span>
-                                <span class="font-extrabold text-emerald-600">$25.000</span>
-                            </div>
-                        </div>
+
+                            <button type="submit" class="w-full py-3 bg-vortex-red text-white font-bold rounded-xl shadow-md">
+                                Publicar Nuevo Producto
+                            </button>
+                        </form>
                     </div>
-                </div>
-
-                <!-- SECCIÓN DE DEPÓSITOS (Con datos provisionales y validación horaria) -->
-                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
-                    <div class="text-center">
-                        <h3 class="text-base font-black text-slate-800">Datos para Transferencia Bancaria</h3>
-                        <p class="text-xs text-slate-500 mt-1">Realiza tu depósito utilizando los datos provisorios</p>
-                    </div>
-
-                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3 text-sm">
-                        <div class="flex flex-col">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase">Titular</span>
-                            <span class="font-bold text-slate-800 text-base">Cuenta Recaudadora S.A.</span>
-                        </div>
-
-                        <div class="flex flex-col">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase">Alias</span>
-                            <div class="flex items-center justify-between bg-white p-2.5 rounded-lg border border-slate-200 mt-0.5">
-                                <span class="font-bold text-slate-800">vortex.pagos.tmp</span>
-                                <button onclick="navigator.clipboard.writeText('vortex.pagos.tmp'); alert('Alias copiado');" class="text-xs font-bold text-vortex-red bg-vortex-lightRed px-3 py-1 rounded-md">Copiar</button>
-                            </div>
-                        </div>
-
-                        <div class="flex flex-col">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase">CBU</span>
-                            <div class="flex items-center justify-between bg-white p-2.5 rounded-lg border border-slate-200 mt-0.5">
-                                <span class="font-bold text-slate-800 text-xs sm:text-sm">0000003100000000000099</span>
-                                <button onclick="navigator.clipboard.writeText('0000003100000000000099'); alert('CBU copiado');" class="text-xs font-bold text-vortex-red bg-vortex-lightRed px-3 py-1 rounded-md">Copiar</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Botón de acción con verificación de horario -->
-                    <button onclick="attemptFinancialAction('deposit')" class="w-full py-3.5 bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-money-bill-transfer"></i>
-                        <span>Notificar / Confirmar Depósito</span>
-                    </button>
-                </div>
-
-                <!-- Sección de Retiros -->
-                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-3">
-                    <h3 class="text-base font-black text-slate-800">Solicitar Retiro</h3>
-                    <p class="text-xs text-slate-500">Transfiere tus fondos disponibles a tu cuenta bancaria personal.</p>
-                    <button onclick="attemptFinancialAction('withdrawal')" class="w-full py-3.5 bg-vortex-red text-white font-bold text-xs rounded-xl shadow-md glow-red">
-                        Solicitar Retiro de Fondos
-                    </button>
                 </div>
             </section>
 
-            <!-- VISTA DE PERFIL -->
-            <section id="section-profile" class="space-y-4 hidden">
-                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-3 text-center">
-                    <div class="w-20 h-20 rounded-full bg-vortex-red text-white text-2xl font-black flex items-center justify-center mx-auto shadow-md">
-                        V
+            <!-- VISTAS DE USUARIO -->
+            <div id="userViewsContainer" class="space-y-4">
+                <!-- TAB 1: INICIO -->
+                <section id="tab-inicio" class="space-y-4">
+                    <div class="bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-2xl p-4 shadow-lg flex items-center justify-between relative overflow-hidden">
+                        <div class="relative z-10">
+                            <span class="bg-vortex-red/30 text-vortex-lightRed text-[10px] font-bold px-2 py-0.5 rounded-full uppercase border border-vortex-red/40">Premio Diario</span>
+                            <h3 class="text-base font-extrabold mt-1">Recompensa Asistencia</h3>
+                            <p class="text-xs text-slate-300">Cobra +$100 ARS cada 24 horas</p>
+                        </div>
+                        <button id="checkinBtn" onclick="claimDailyCheckin()" class="relative z-10 px-4 py-2.5 bg-vortex-red text-white font-bold text-xs rounded-xl shadow-md transition-all active:scale-95 flex items-center gap-1.5">
+                            <i class="fa-solid fa-clock"></i>
+                            <span id="checkinBtnText">Cobrar $100</span>
+                        </button>
+                        <i class="fa-solid fa-calendar-check absolute -right-3 -bottom-3 text-7xl text-white/5 pointer-events-none"></i>
                     </div>
-                    <h3 class="text-base font-black text-slate-800">Mi Perfil Vortex</h3>
-                    <p class="text-xs text-slate-500">Administra tus datos personales y seguridad de cuenta.</p>
-                </div>
-            </section>
+
+                    <div class="flex items-center justify-between pt-1">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-building-user text-vortex-red"></i>
+                            <h3 class="font-extrabold text-slate-800 text-base">Niveles de Inversi&oacute;n (12 Productos)</h3>
+                        </div>
+                        <span class="text-xs font-bold text-vortex-red bg-vortex-lightRed px-2.5 py-1 rounded-full border border-vortex-red/20">Cobro Diario</span>
+                    </div>
+
+                    <div id="levelsContainer" class="space-y-4"></div>
+                </section>
+
+                <!-- TAB: MIS INVERSIONES -->
+                <section id="tab-mis-inversiones" class="space-y-4 hidden">
+                    <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-chart-line text-vortex-red text-lg"></i>
+                                <h3 class="font-extrabold text-slate-800 text-base">Mis Inversiones Activas</h3>
+                            </div>
+                            <span id="totalInvestmentsCount" class="text-xs font-bold bg-vortex-lightRed text-vortex-red px-2.5 py-1 rounded-full border border-vortex-red/20">0 Activas</span>
+                        </div>
+
+                        <div id="myInvestmentsList" class="space-y-3 text-xs">
+                            <p class="text-slate-400 text-center py-6">A&uacute;n no tienes inversiones activas.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 2: COFRE -->
+                <section id="tab-cofre" class="space-y-4 hidden">
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm text-center">
+                        <div class="w-24 h-24 mx-auto mb-2 bg-amber-50 rounded-2xl flex items-center justify-center p-2 border border-amber-200 shadow-inner">
+                            <img src="https://i.ibb.co/Xf9wsxGm/cofre-tesoro-caja-madera-vacia-ataud-abierto-detalles-dorados-cerradura-107791-4817.jpg" alt="Cofre de Tesoro" class="w-full h-full object-cover rounded-xl shadow-md animate-bounce-slow">
+                        </div>
+                        <h3 class="text-lg font-extrabold text-slate-800">Cofre Misterioso Vortex</h3>
+                        <p class="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
+                            Invita amigos a Vortex. Cada referido activo te concede <strong>1 Llave de Apertura</strong>.
+                        </p>
+
+                        <div class="mt-4 bg-slate-50 p-3 rounded-xl border border-slate-200 inline-flex items-center gap-3">
+                            <i class="fa-solid fa-key text-amber-500 text-xl"></i>
+                            <div class="text-left">
+                                <span class="block text-[10px] font-bold text-slate-400 uppercase">Llaves Disponibles</span>
+                                <span id="userKeysText" class="text-lg font-black text-slate-800">0 Llaves</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button id="openChestBtn" onclick="openChest()" class="w-full py-3.5 bg-vortex-red text-white font-bold rounded-xl shadow-md glow-red active:scale-95 transition-all flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-unlock-keyhole"></i>
+                                <span>Abrir Cofre ($150 - $5.000 ARS)</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-share-nodes text-vortex-red"></i>
+                            Tu Enlace &Uacute;nico de Referido
+                        </h4>
+                        <div class="flex gap-2">
+                            <input id="refLinkInput" readonly type="text" value="" class="flex-1 bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono text-slate-600 focus:outline-none">
+                            <button onclick="copyRefLink()" class="px-4 py-2 bg-slate-800 text-white font-bold text-xs rounded-xl">
+                                Copiar
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-users text-vortex-red"></i>
+                            Mis Referidos Registrados
+                        </h4>
+                        <div id="referralsList" class="space-y-2 text-xs"></div>
+                    </div>
+                </section>
+
+                <!-- TAB 3: CARGAR SALDO -->
+                <section id="tab-cargar" class="space-y-4 hidden">
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
+                        <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
+                            <div class="w-10 h-10 bg-vortex-lightRed rounded-xl flex items-center justify-center text-vortex-red font-bold text-lg">
+                                <i class="fa-solid fa-file-invoice-dollar"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-extrabold text-slate-800 text-base">Cargar Saldo ARS</h3>
+                                <p class="text-xs text-slate-500">Transferencia bancaria oficial Vortex</p>
+                            </div>
+                        </div>
+
+                        <!-- AVISO DE HORARIOS DE CARGA AGREGADO -->
+                        <div class="bg-amber-50 border border-amber-200 p-3 rounded-xl text-amber-800 text-xs font-bold flex items-center gap-2">
+                            <i class="fa-solid fa-clock text-amber-600 text-base"></i>
+                            <span>Horario de Cargas: Lunes a Viernes de 10:00 a 17:00 hs.</span>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2 text-xs">
+                            <div class="flex justify-between items-center pb-2 border-b border-slate-200/60">
+                                <span class="text-slate-500">Banco:</span>
+                                <span class="font-bold text-slate-800">Mercado Pago / CVU Oficial</span>
+                            </div>
+                            <div class="flex justify-between items-center pb-2 border-b border-slate-200/60">
+                                <span class="text-slate-500">Titular:</span>
+                                <span class="font-bold text-slate-800">VORTEX S.A.</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">Alias CBU:</span>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="font-extrabold text-vortex-red font-mono">vortex.oficial.ars</span>
+                                    <button onclick="copyAlias()" class="text-slate-400 hover:text-slate-700">
+                                        <i class="fa-regular fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <form onsubmit="handleDepositSubmit(event)" class="space-y-3 pt-2">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Monto Transferido (ARS)</label>
+                                <input type="number" id="depositAmount" min="1000" required placeholder="Ej: 16000" class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl font-bold text-slate-800 text-sm focus:outline-none focus:border-vortex-red">
+                            </div>
+                            <button type="submit" class="w-full py-3.5 bg-vortex-red text-white font-bold rounded-xl shadow-md glow-red active:scale-95 transition-all">
+                                Notificar Transferencia Realizada
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-3">
+                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-receipt text-vortex-red"></i>
+                            Mis Cargas Realizadas
+                        </h4>
+                        <div id="userDepositsList" class="space-y-2 text-xs">
+                            <p class="text-slate-400 text-center py-2">No tienes cargas registradas.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 4: RETIRAR FONDOS -->
+                <section id="tab-retirar" class="space-y-4 hidden">
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
+                        <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
+                            <div class="w-10 h-10 bg-vortex-lightRed rounded-xl flex items-center justify-center text-vortex-red font-bold text-lg">
+                                <i class="fa-solid fa-hand-holding-dollar"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-extrabold text-slate-800 text-base">Retirar Fondos</h3>
+                                <p class="text-xs text-slate-500">M&iacute;nimo $10.000 ARS • Deducci&oacute;n del 15%</p>
+                            </div>
+                        </div>
+
+                        <!-- AVISO DE HORARIOS DE RETIRO AGREGADO -->
+                        <div class="bg-amber-50 border border-amber-200 p-3 rounded-xl text-amber-800 text-xs font-bold flex items-center gap-2">
+                            <i class="fa-solid fa-clock text-amber-600 text-base"></i>
+                            <span>Horario de Retiros: Lunes a Viernes de 10:00 a 17:00 hs.</span>
+                        </div>
+
+                        <form onsubmit="handleWithdrawSubmit(event)" class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Monto a Retirar (ARS)</label>
+                                <input type="number" id="withdrawAmount" min="10000" required placeholder="Ej: 15000" class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl font-bold text-slate-800 text-sm focus:outline-none focus:border-vortex-red">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">CVU / CBU Destino</label>
+                                <input type="text" id="withdrawCbu" required placeholder="00000031000..." class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl font-medium text-slate-800 text-sm focus:outline-none focus:border-vortex-red">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Nombre del Titular (Debe coincidir)</label>
+                                <input type="text" id="withdrawName" required placeholder="Nombre Completo" class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl font-medium text-slate-800 text-sm focus:outline-none focus:border-vortex-red">
+                            </div>
+
+                            <div class="bg-vortex-lightRed p-3 rounded-xl border border-vortex-red/20 text-[11px] text-vortex-darkRed font-medium">
+                                * Los retiros son procesados en un plazo de 1 a 24 horas h&aacute;biles tras la verificaci&oacute;n de seguridad.
+                            </div>
+
+                            <button type="submit" class="w-full py-3.5 bg-vortex-red text-white font-bold rounded-xl shadow-md glow-red active:scale-95 transition-all">
+                                Solicitar Retiro Directo
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-3">
+                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-clock-rotate-left text-vortex-red"></i>
+                            Mis Retiros Realizados
+                        </h4>
+                        <div id="userWithdrawalsList" class="space-y-2 text-xs">
+                            <p class="text-slate-400 text-center py-2">No tienes retiros registrados.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 5: PERFIL -->
+                <section id="tab-perfil" class="space-y-4 hidden">
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm text-center space-y-3">
+                        <div class="w-20 h-20 bg-vortex-red text-white rounded-full flex items-center justify-center text-3xl mx-auto shadow-lg glow-red font-black">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <div>
+                            <h3 id="profilePhone" class="text-lg font-black text-slate-800">-</h3>
+                            <p id="profileBadge" class="text-xs text-vortex-red font-bold uppercase tracking-wider">Inversor Verificado Vortex</p>
+                        </div>
+                    </div>
+
+                    <!-- INFOGRAFÍA CORPORATIVA -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                        <div class="bg-slate-900 text-white p-5 border-b border-slate-800">
+                            <h2 class="text-xl font-black tracking-tight flex items-center gap-2">
+                                <span class="text-vortex-red">VORTEX</span>
+                            </h2>
+                            <p class="text-xs font-semibold text-slate-300 mt-0.5">Inversi&oacute;n Inmobiliaria Fraccionada</p>
+                        </div>
+
+                        <div class="p-5 space-y-6 text-xs text-slate-600 leading-relaxed">
+                            <div class="space-y-1.5">
+                                <h3 class="text-sm font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                                    <i class="fa-solid fa-circle-info text-vortex-red"></i>
+                                    &iquest;Qu&eacute; es Vortex?
+                                </h3>
+                                <p class="text-slate-600">
+                                    VORTEX es una plataforma que permite invertir en propiedades reales en Argentina, desde montos accesibles. Cada propiedad se adquiere a trav&eacute;s de un Fideicomiso de Administraci&oacute;n y se divide en participaciones.
+                                </p>
+                            </div>
+
+                            <hr class="border-slate-100">
+
+                            <div class="space-y-3">
+                                <h3 class="text-sm font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                                    <i class="fa-solid fa-gears text-vortex-red"></i>
+                                    &iquest;C&oacute;mo Trabaja?
+                                </h3>
+                                <div class="space-y-2 pl-1">
+                                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                        <strong class="text-slate-800 block mb-0.5">1. Selecci&oacute;n y Auditor&iacute;a:</strong>
+                                        Buscamos casas con potencial. Verificamos escritura, informe de dominio, deudas y tasaci&oacute;n por martillero matriculado.
+                                    </div>
+                                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                        <strong class="text-slate-800 block mb-0.5">2. Compra Legal:</strong>
+                                        Creamos un Fideicomiso por cada propiedad. Cada inversor firma un contrato de adhesi&oacute;n.
+                                    </div>
+                                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                        <strong class="text-slate-800 block mb-0.5">3. Administraci&oacute;n y Alquiler:</strong>
+                                        VORTEX cobra y mantiene. Se descuenta el 10% de comisi&oacute;n y se reparte el neto.
+                                    </div>
+                                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                        <strong class="text-slate-800 block mb-0.5">4. Venta y Cierre:</strong>
+                                        A los 24-36 meses se vende a valor de mercado y se liquida la ganancia.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="border-slate-100">
+
+                            <div class="space-y-1.5">
+                                <h3 class="text-sm font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                                    <i class="fa-solid fa-chart-pie text-vortex-red"></i>
+                                    &iquest;De qu&eacute; gana Vortex?
+                                </h3>
+                                <p class="text-slate-600 bg-vortex-lightRed/50 p-3 rounded-xl border border-vortex-red/20 font-medium text-slate-700">
+                                    VORTEX gana solo si vos ganas: 10% sobre alquileres y 15% sobre la utilidad obtenida en la venta final.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900 text-slate-400 text-[10px] p-3 text-center border-t border-slate-800 font-medium">
+                            VORTEX - Argentina &copy; 2026
+                        </div>
+                    </div>
+                </section>
+            </div>
 
         </main>
 
-        <!-- NAVEGACIÓN INFERIOR (BOTTOM NAV) -->
-        <nav id="bottomNav" class="bg-white border-t border-slate-200 fixed bottom-0 left-0 right-0 z-30 flex justify-around items-center h-16 shadow-lg">
-            <button onclick="switchTab('home')" id="navBtn-home" class="flex flex-col items-center justify-center flex-1 text-slate-400">
+        <!-- NAVEGACIÓN INFERIOR -->
+        <nav id="userNav" class="bg-white border-t border-slate-200 fixed bottom-0 inset-x-0 h-16 flex items-center justify-around px-2 z-30 shadow-lg">
+            <button onclick="switchTab('inicio')" id="nav-inicio" class="flex flex-col items-center justify-center w-full h-full text-vortex-red">
                 <i class="fa-solid fa-house text-lg"></i>
-                <span class="text-[10px] font-bold mt-1">Inicio</span>
+                <span class="text-[10px] font-extrabold mt-0.5">Inicio</span>
             </button>
-            <button onclick="switchTab('invest')" id="navBtn-invest" class="flex flex-col items-center justify-center flex-1 text-slate-400">
-                <i class="fa-solid fa-building text-lg"></i>
-                <span class="text-[10px] font-bold mt-1">Invertir</span>
-            </button>
-            <button onclick="switchTab('investments')" id="navBtn-investments" class="flex flex-col items-center justify-center flex-1 text-vortex-red">
+            <button onclick="switchTab('mis-inversiones')" id="nav-mis-inversiones" class="flex flex-col items-center justify-center w-full h-full text-slate-400">
                 <i class="fa-solid fa-chart-line text-lg"></i>
-                <span class="text-[10px] font-bold mt-1">Mis Inversiones</span>
+                <span class="text-[10px] font-bold mt-0.5">Mis Inversiones</span>
             </button>
-            <button onclick="switchTab('profile')" id="navBtn-profile" class="flex flex-col items-center justify-center flex-1 text-slate-400">
+            <button onclick="switchTab('cofre')" id="nav-cofre" class="flex flex-col items-center justify-center w-full h-full text-slate-400">
+                <i class="fa-solid fa-box text-lg"></i>
+                <span class="text-[10px] font-bold mt-0.5">Cofre</span>
+            </button>
+            <button onclick="switchTab('cargar')" id="nav-cargar" class="flex flex-col items-center justify-center w-full h-full text-slate-400">
+                <div class="w-10 h-10 bg-vortex-red text-white rounded-full flex items-center justify-center -mt-5 shadow-lg glow-red border-4 border-slate-50">
+                    <i class="fa-solid fa-plus text-base"></i>
+                </div>
+                <span class="text-[10px] font-bold mt-0.5">Cargar</span>
+            </button>
+            <button onclick="switchTab('retirar')" id="nav-retirar" class="flex flex-col items-center justify-center w-full h-full text-slate-400">
+                <i class="fa-solid fa-wallet text-lg"></i>
+                <span class="text-[10px] font-bold mt-0.5">Retirar</span>
+            </button>
+            <button onclick="switchTab('perfil')" id="nav-perfil" class="flex flex-col items-center justify-center w-full h-full text-slate-400">
                 <i class="fa-solid fa-user text-lg"></i>
-                <span class="text-[10px] font-bold mt-1">Perfil</span>
+                <span class="text-[10px] font-bold mt-0.5">Perfil</span>
             </button>
         </nav>
 
     </div>
 
+    <!-- JAVASCRIPT LOGIC CON FIREBASE REAL -->
     <script>
-        // Inicialización de la aplicación y cálculo continuo de días de inversión (todos los días corridos)
-        function initApp() {
-            const purchaseDate = new Date(2026, 9, 23); // 23 de Octubre de 2026
-            const currentDate = new Date(); // Fecha actual del sistema
-            
-            const diffTime = currentDate - purchaseDate;
-            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
-            
-            const totalDays = 15;
-            const currentDay = Math.min(Math.max(diffDays, 1), totalDays);
-            const progressPercent = Math.round((currentDay / totalDays) * 100);
+        const firebaseConfig = {
+            apiKey: "AIzaSyDt6V_LuY4FfNezNEnaNp_vGBIh4_k4r0E",
+            authDomain: "vortexweb-2a41e.firebaseapp.com",
+            projectId: "vortexweb-2a41e",
+            storageBucket: "vortexweb-2a41e.firebasestorage.app",
+            messagingSenderId: "867279303363",
+            appId: "1:867279303363:web:be4c81fde1533e6b332876",
+            measurementId: "G-4335XYH7PW"
+        };
 
-            // Cálculo exacto del rendimiento diario basado en la inversión de $16.000 y retorno de $25.000 ($9.000 netos / 15 días)
-            const totalInvestment = 16000;
-            const totalReturn = 25000;
-            const totalProfit = totalReturn - totalInvestment; // $9.000
-            const dailyProfit = totalProfit / totalDays; // $600 por día
-            const accumulatedProfit = Math.round(dailyProfit * currentDay);
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-            // Actualizar la interfaz de forma dinámica
-            document.getElementById('dayCounterBadge').innerText = `Día ${currentDay} / ${totalDays}`;
-            document.getElementById('progressPercentText').innerText = `${progressPercent}%`;
-            document.getElementById('progressBarFill').style.width = `${progressPercent}%`;
-            document.getElementById('accumulatedEarningsText').innerText = `$${accumulatedProfit.toLocaleString('es-AR')} ARS`;
-        }
+        const ADMIN_PHONE = '11223344';
+        const ADMIN_PIN = '0909';
 
-        // Sistema de navegación por pestañas
-        function switchTab(tabName) {
-            const sections = ['home', 'invest', 'investments', 'profile', 'admin'];
-            sections.forEach(sec => {
-                const el = document.getElementById(`section-${sec}`);
-                if (el) el.classList.add('hidden');
-            });
+        let levelsList = [
+            { id: 1, name: 'Producto 1', cost: 16000, duration: 15, daily: 1666.67, total: 25000, limit: 1, img: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=400&q=80' },
+            { id: 2, name: 'Producto 2', cost: 35000, duration: 30, daily: 1500.00, total: 45000, limit: 1, img: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80' },
+            { id: 3, name: 'Producto 3', cost: 55000, duration: 45, daily: 1555.56, total: 70000, limit: 1, img: 'https://i.ibb.co/RkNVV64t/IMG-ac754688-96ad-46b3-9845-54a5d6708d34.jpg' },
+            { id: 4, name: 'Producto 4', cost: 85000, duration: 60, daily: 1916.67, total: 115000, limit: 1, img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
+            { id: 5, name: 'Producto 5', cost: 120000, duration: 75, daily: 2000.00, total: 150000, limit: 2, img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=400&q=80' },
+            { id: 6, name: 'Producto 6', cost: 160000, duration: 90, daily: 2222.22, total: 200000, limit: 2, img: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=400&q=80' },
+            { id: 7, name: 'Producto 7', cost: 210000, duration: 110, daily: 2454.55, total: 270000, limit: 2, img: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=400&q=80' },
+            { id: 8, name: 'Producto 8', cost: 280000, duration: 130, daily: 2692.31, total: 350000, limit: 2, img: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=400&q=80' },
+            { id: 9, name: 'Producto 9', cost: 360000, duration: 150, daily: 2933.33, total: 440000, limit: 2, img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80' },
+            { id: 10, name: 'Producto 10', cost: 450000, duration: 170, daily: 3176.47, total: 540000, limit: 3, img: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=400&q=80' },
+            { id: 11, name: 'Producto 11', cost: 550000, duration: 190, daily: 3421.05, total: 650000, limit: 3, img: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=400&q=80' },
+            { id: 12, name: 'Producto 12', cost: 660000, duration: 210, daily: 3666.67, total: 770000, limit: 3, img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=400&q=80' }
+        ];
 
-            const targetSection = document.getElementById(`section-${tabName}`);
-            if (targetSection) targetSection.classList.remove('hidden');
+        let appState = {
+            currentUser: null,
+            balance: 0,
+            keys: 0,
+            lastCheckinTime: null,
+            referrals: [],
+            investments: [],
+            depositsHistory: []
+        };
 
-            // Resetear iconos del bottom nav
-            ['home', 'invest', 'investments', 'profile'].forEach(nav => {
-                const btn = document.getElementById(`navBtn-${nav}`);
-                if (btn) btn.className = "flex flex-col items-center justify-center flex-1 text-slate-400";
-            });
+        let checkinTimerInterval = null;
 
-            const activeNav = document.getElementById(`navBtn-${tabName}`);
-            if (activeNav) activeNav.className = "flex flex-col items-center justify-center flex-1 text-vortex-red";
-        }
-
-        // Validador de horario (Lun-Vie de 10:00 a 17:00 hs)
-        function attemptFinancialAction(type) {
-            const now = new Date();
-            const day = now.getDay(); // 0: Dom, 1: Lun, ..., 6: Sáb
-            const hour = now.getHours();
-
-            const isWeekday = day >= 1 && day <= 5;
-            const isWorkingHours = hour >= 10 && hour < 17;
-
-            if (isWeekday && isWorkingHours) {
-                if (type === 'deposit') {
-                    alert('¡Horario válido! Procediendo con el registro de depósito.');
-                } else {
-                    alert('¡Horario válido! Abriendo formulario de retiro.');
-                }
-            } else {
-                document.getElementById('scheduleModal').classList.remove('hidden');
-            }
-        }
-
-        function closeScheduleModal() {
-            document.getElementById('scheduleModal').classList.add('hidden');
-        }
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCustomLevels();
+            renderLevels();
+            updateUI();
+            startCheckinTimer();
+        });
 
         function toggleSupportModal() {
-            document.getElementById('supportModal').classList.toggle('hidden');
+            const modal = document.getElementById('supportModal');
+            modal.classList.toggle('hidden');
         }
 
-        function toggleAuthTab(tab) {
+        async function loadCustomLevels() {
+            try {
+                const snapshot = await db.collection('productos').get();
+                snapshot.forEach(doc => {
+                    levelsList.push(doc.data());
+                });
+                renderLevels();
+            } catch (e) {}
+        }
+
+        function toggleAuthTab(mode) {
             const loginForm = document.getElementById('loginForm');
             const registerForm = document.getElementById('registerForm');
             const loginBtn = document.getElementById('authTabLoginBtn');
             const regBtn = document.getElementById('authTabRegisterBtn');
 
-            if (tab === 'login') {
+            if (mode === 'login') {
                 loginForm.classList.remove('hidden');
                 registerForm.classList.add('hidden');
-                loginBtn.className = "flex-1 py-2.5 font-bold text-xs rounded-lg transition-all bg-white text-slate-800 shadow-sm";
-                regBtn.className = "flex-1 py-2.5 font-bold text-xs rounded-lg transition-all text-slate-500";
+                loginBtn.className = "flex-1 py-2.5 font-bold text-xs rounded-lg bg-white text-slate-800 shadow-sm";
+                regBtn.className = "flex-1 py-2.5 font-bold text-xs rounded-lg text-slate-500";
             } else {
-                registerForm.classList.remove('hidden');
                 loginForm.classList.add('hidden');
-                regBtn.className = "flex-1 py-2.5 font-bold text-xs rounded-lg transition-all bg-white text-slate-800 shadow-sm";
-                loginBtn.className = "flex-1 py-2.5 font-bold text-xs rounded-lg transition-all text-slate-500";
+                registerForm.classList.remove('hidden');
+                regBtn.className = "flex-1 py-2.5 font-bold text-xs rounded-lg bg-white text-slate-800 shadow-sm";
+                loginBtn.className = "flex-1 py-2.5 font-bold text-xs rounded-lg text-slate-500";
+            }
+        }
+
+        async function handleRegisterDirect() {
+            const phone = document.getElementById('regPhone').value.trim();
+            const pin = document.getElementById('regPin').value.trim();
+            const refCode = document.getElementById('regRefCode').value.trim();
+
+            if (!phone || !pin) {
+                alert('Por favor ingresa un teléfono y contraseña.');
+                return;
+            }
+
+            try {
+                const userRef = db.collection('usuarios').doc(phone);
+                const doc = await userRef.get();
+
+                if (doc.exists) {
+                    alert('⚠️ Este número de teléfono ya está registrado. Por favor inicia sesión.');
+                    toggleAuthTab('login');
+                    document.getElementById('loginPhone').value = phone;
+                    return;
+                }
+
+                let initialKeys = 0;
+
+                if (refCode !== '') {
+                    initialKeys = 1;
+                    const refUserRef = db.collection('usuarios').doc(refCode);
+                    const refDoc = await refUserRef.get();
+                    if (refDoc.exists) {
+                        const refData = refDoc.data();
+                        const updatedRefs = refData.referrals || [];
+                        updatedRefs.push({ phone: phone });
+                        await refUserRef.update({
+                            keys: firebase.firestore.FieldValue.increment(1),
+                            referrals: updatedRefs
+                        });
+                    }
+                }
+
+                const newUser = {
+                    phone,
+                    pin,
+                    balance: 1500,
+                    keys: initialKeys,
+                    referredBy: refCode || null,
+                    referrals: [],
+                    investments: [],
+                    depositsHistory: [],
+                    lastCheckinTime: null
+                };
+
+                await userRef.set(newUser);
+
+                appState.currentUser = phone;
+                appState.balance = newUser.balance;
+                appState.keys = newUser.keys;
+                appState.referrals = newUser.referrals;
+                appState.investments = [];
+                appState.depositsHistory = [];
+
+                document.getElementById('authModal').classList.add('hidden');
+                document.getElementById('profilePhone').innerText = phone;
+                document.getElementById('refLinkInput').value = `https://vortex.app/ref?id=${phone}`;
+
+                checkAdminStatus();
+                alert("¡Cuenta creada exitosamente en Firebase! Se han acreditado $1.500 ARS de bono.");
+                updateUI();
+                loadUserHistory();
+            } catch (error) {
+                alert("Error de conexión con la base de datos.");
+            }
+        }
+
+        async function handleLoginDirect() {
+            const phone = document.getElementById('loginPhone').value.trim();
+            const pin = document.getElementById('loginPin').value.trim();
+
+            if (!phone || !pin) {
+                alert('Por favor completa todos los campos.');
+                return;
+            }
+
+            try {
+                const userRef = db.collection('usuarios').doc(phone);
+                let doc = await userRef.get();
+
+                if (!doc.exists && phone === ADMIN_PHONE && pin === ADMIN_PIN) {
+                    const adminUser = {
+                        phone: ADMIN_PHONE,
+                        pin: ADMIN_PIN,
+                        balance: 999999,
+                        keys: 99,
+                        referredBy: null,
+                        referrals: [],
+                        investments: [],
+                        depositsHistory: [],
+                        lastCheckinTime: null
+                    };
+                    await userRef.set(adminUser);
+                    doc = await userRef.get();
+                }
+
+                if (!doc.exists) {
+                    alert('Este número no está registrado. Por favor crea una cuenta.');
+                    return;
+                }
+
+                const userData = doc.data();
+                if (userData.pin !== pin) {
+                    alert('Contraseña incorrecta.');
+                    return;
+                }
+
+                appState.currentUser = phone;
+                appState.balance = userData.balance;
+                appState.keys = userData.keys;
+                appState.referrals = userData.referrals || [];
+                appState.investments = userData.investments || [];
+                appState.depositsHistory = userData.depositsHistory || [];
+                appState.lastCheckinTime = userData.lastCheckinTime;
+
+                document.getElementById('authModal').classList.add('hidden');
+                document.getElementById('profilePhone').innerText = phone;
+                document.getElementById('refLinkInput').value = `https://vortex.app/ref?id=${phone}`;
+
+                checkAdminStatus();
+                updateUI();
+                startCheckinTimer();
+                loadUserHistory();
+
+                if (phone === ADMIN_PHONE) {
+                    alert('¡Bienvenido Administrador Maestro!');
+                } else {
+                    alert('¡Sesión iniciada correctamente!');
+                }
+            } catch (error) {
+                alert("Error al intentar iniciar sesión.");
+            }
+        }
+
+        function checkAdminStatus() {
+            const userHeader = document.getElementById('userHeader');
+            const adminHeader = document.getElementById('adminHeader');
+            const userNav = document.getElementById('userNav');
+            const userViewsContainer = document.getElementById('userViewsContainer');
+            const sectionAdmin = document.getElementById('section-admin');
+            const floatingSupportBtn = document.getElementById('floatingSupportBtn');
+
+            if (appState.currentUser === ADMIN_PHONE) {
+                userHeader.classList.add('hidden');
+                userNav.classList.add('hidden');
+                userViewsContainer.classList.add('hidden');
+                floatingSupportBtn.classList.add('hidden');
+
+                adminHeader.classList.remove('hidden');
+                sectionAdmin.classList.remove('hidden');
+
+                loadAdminData();
+            } else {
+                adminHeader.classList.add('hidden');
+                sectionAdmin.classList.add('hidden');
+
+                userHeader.classList.remove('hidden');
+                userNav.classList.remove('hidden');
+                userViewsContainer.classList.remove('hidden');
+                floatingSupportBtn.classList.remove('hidden');
+
+                switchTab('inicio');
+            }
+        }
+
+        async function syncUserData() {
+            if (!appState.currentUser) return;
+            try {
+                await db.collection('usuarios').doc(appState.currentUser).update({
+                    balance: appState.balance,
+                    keys: appState.keys,
+                    lastCheckinTime: appState.lastCheckinTime,
+                    investments: appState.investments,
+                    depositsHistory: appState.depositsHistory
+                });
+            } catch (e) {
+                console.error("Error synchronizing:", e);
             }
         }
 
         function logout() {
+            appState.currentUser = null;
+            document.getElementById('adminHeader').classList.add('hidden');
+            document.getElementById('section-admin').classList.add('hidden');
             document.getElementById('authModal').classList.remove('hidden');
+        }
+
+        function updateUI() {
+            document.getElementById('userBalanceText').innerText = `$${appState.balance.toLocaleString('es-AR')}`;
+            document.getElementById('userKeysText').innerText = `${appState.keys} Llaves`;
+            renderReferralsList();
+            renderMyInvestments();
+        }
+
+        function renderLevels() {
+            const container = document.getElementById('levelsContainer');
+            container.innerHTML = levelsList.map(level => {
+                const timesBought = appState.investments.filter(i => i.name === level.name).length;
+                const maxLimit = level.limit || 1;
+                const limitReached = timesBought >= maxLimit;
+
+                return `
+                    <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+                        <div class="flex gap-3">
+                            <img src="${level.img}" class="w-20 h-20 rounded-xl object-cover shadow-sm">
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start">
+                                    <h4 class="font-extrabold text-slate-800 text-sm">${level.name}</h4>
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-md ${limitReached ? 'bg-rose-100 text-rose-600' : 'bg-slate-100 text-slate-500'}">
+                                        ${timesBought}/${maxLimit} Comprado
+                                    </span>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-0.5">Inversi&oacute;n: <strong class="text-slate-800">$${level.cost.toLocaleString('es-AR')} ARS</strong></p>
+                                <p class="text-xs text-slate-500">Duraci&oacute;n: <strong class="text-slate-800">${level.duration} D&iacute;as</strong></p>
+                                <div class="mt-1 flex items-center justify-between text-xs">
+                                    <span class="text-emerald-600 font-extrabold">+$${level.daily.toLocaleString('es-AR', {minimumFractionDigits: 2})}/d&iacute;a</span>
+                                    <span class="text-slate-500 font-bold">Total: $${level.total.toLocaleString('es-AR')}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-2 border-t border-slate-100 flex justify-end">
+                            ${limitReached ? `
+                                <button disabled class="px-4 py-2 bg-slate-300 text-slate-500 font-bold text-xs rounded-xl cursor-not-allowed">
+                                    L&iacute;mite Alcanzado
+                                </button>
+                            ` : `
+                                <button onclick="buyLevel(${level.id})" class="px-4 py-2 bg-vortex-red hover:bg-vortex-darkRed text-white font-bold text-xs rounded-xl shadow-sm transition-all active:scale-95">
+                                    Invertir $${level.cost.toLocaleString('es-AR')}
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderMyInvestments() {
+            const container = document.getElementById('myInvestmentsList');
+            const countBadge = document.getElementById('totalInvestmentsCount');
+            
+            if (!appState.investments || appState.investments.length === 0) {
+                container.innerHTML = '<p class="text-slate-400 text-center py-6">A&uacute;n no tienes inversiones activas.</p>';
+                countBadge.innerText = '0 Activas';
+                return;
+            }
+
+            countBadge.innerText = `${appState.investments.length} Activas`;
+
+            container.innerHTML = appState.investments.map((inv, index) => {
+                const productInfo = levelsList.find(l => l.name === inv.name) || { duration: 30, total: 0, daily: 0 };
+                const buyDate = new Date(inv.timestamp || Date.now());
+                const diffTime = Math.abs(new Date() - buyDate);
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                const currentDay = Math.min(diffDays + 1, productInfo.duration);
+                const progressPercent = Math.min(Math.round((currentDay / productInfo.duration) * 100), 100);
+
+                return `
+                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-2.5">
+                        <div class="flex justify-between items-center border-b border-slate-200/60 pb-2">
+                            <div>
+                                <strong class="text-slate-800 text-sm block">${inv.name}</strong>
+                                <span class="text-[10px] text-slate-400 font-medium">Comprado el: ${inv.date}</span>
+                            </div>
+                            <span class="px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-full font-bold text-[10px] border border-emerald-200">
+                                D&iacute;a ${currentDay} / ${productInfo.duration}
+                            </span>
+                        </div>
+
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-[11px] text-slate-600 font-semibold">
+                                <span>Progreso de Duraci&oacute;n</span>
+                                <span>${progressPercent}%</span>
+                            </div>
+                            <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                                <div class="bg-vortex-red h-full rounded-full transition-all duration-500" style="width: ${progressPercent}%"></div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center pt-1 text-[11px]">
+                            <span class="text-slate-500">Inversión: <strong class="text-slate-800">$${inv.cost.toLocaleString('es-AR')}</strong></span>
+                            <span class="text-emerald-600 font-bold">Retorno Est.: $${productInfo.total.toLocaleString('es-AR')}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function buyLevel(levelId) {
+            const level = levelsList.find(l => l.id === levelId);
+            const timesBought = appState.investments.filter(i => i.name === level.name).length;
+            const maxLimit = level.limit || 1;
+
+            if (timesBought >= maxLimit) {
+                alert(`Ya alcanzaste el l\u00EDmite de compras (${maxLimit}) para ${level.name}.`);
+                return;
+            }
+
+            if (appState.balance < level.cost) {
+                alert(`Saldo insuficiente. Necesitas $${level.cost.toLocaleString('es-AR')} ARS.`);
+                switchTab('cargar');
+                return;
+            }
+
+            appState.balance -= level.cost;
+            appState.investments.push({
+                name: level.name,
+                cost: level.cost,
+                date: new Date().toLocaleDateString('es-AR'),
+                timestamp: Date.now()
+            });
+            syncUserData();
+            alert(`\u00A1Inversi\u00F3n exitosa en ${level.name}!`);
+            updateUI();
+            renderLevels();
+            renderMyInvestments();
+        }
+
+        function claimDailyCheckin() {
+            const now = Date.now();
+            const cooldownMs = 24 * 60 * 60 * 1000;
+
+            if (appState.lastCheckinTime && (now - appState.lastCheckinTime < cooldownMs)) {
+                return;
+            }
+
+            appState.balance += 100;
+            appState.lastCheckinTime = now;
+            syncUserData();
+            alert("\u00A1Recompensa diaria de $100 ARS acreditada!");
+            updateUI();
+            startCheckinTimer();
+        }
+
+        function startCheckinTimer() {
+            if (checkinTimerInterval) clearInterval(checkinTimerInterval);
+
+            const btn = document.getElementById('checkinBtn');
+            const textSpan = document.getElementById('checkinBtnText');
+            const cooldownMs = 24 * 60 * 60 * 1000;
+
+            checkinTimerInterval = setInterval(() => {
+                const now = Date.now();
+                if (!appState.lastCheckinTime || (now - appState.lastCheckinTime >= cooldownMs)) {
+                    btn.disabled = false;
+                    textSpan.innerText = 'Cobrar $100';
+                    btn.className = "relative z-10 px-4 py-2.5 bg-vortex-red text-white font-bold text-xs rounded-xl shadow-md transition-all active:scale-95 flex items-center gap-1.5";
+                    clearInterval(checkinTimerInterval);
+                } else {
+                    btn.disabled = true;
+                    btn.className = "relative z-10 px-4 py-2.5 bg-slate-700 text-slate-300 font-bold text-xs rounded-xl border border-slate-600 cursor-not-allowed flex items-center gap-1.5";
+                    
+                    const diff = cooldownMs - (now - appState.lastCheckinTime);
+                    const hrs = Math.floor(diff / (1000 * 60 * 60));
+                    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+                    textSpan.innerText = `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                }
+            }, 1000);
+        }
+
+        function openChest() {
+            if (appState.keys <= 0) {
+                alert("No tienes llaves disponibles. Invita a un amigo para obtener llaves.");
+                return;
+            }
+
+            appState.keys -= 1;
+            const prizes = [150, 300, 500, 1000, 1500, 2500, 3500, 5000];
+            const reward = prizes[Math.floor(Math.random() * prizes.length)];
+            
+            appState.balance += reward;
+            syncUserData();
+            document.getElementById('rewardAmountText').innerText = `$${reward.toLocaleString('es-AR')} ARS`;
+            document.getElementById('rewardModal').classList.remove('hidden');
+            updateUI();
         }
 
         function closeRewardModal() {
             document.getElementById('rewardModal').classList.add('hidden');
         }
 
+        function renderReferralsList() {
+            const container = document.getElementById('referralsList');
+            if (!appState.referrals || appState.referrals.length === 0) {
+                container.innerHTML = '<p class="text-slate-400 text-center py-2">A&uacute;n no tienes referidos registrados.</p>';
+                return;
+            }
+
+            container.innerHTML = appState.referrals.map((ref, idx) => `
+                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 bg-vortex-lightRed text-vortex-red rounded-full flex items-center justify-center font-bold text-[10px]">${idx + 1}</span>
+                        <strong class="text-slate-800">${ref.phone}</strong>
+                    </div>
+                    <span class="text-emerald-600 font-bold text-[10px]">+1 Llave</span>
+                </div>
+            `).join('');
+        }
+
+        async function handleDepositSubmit(e) {
+            e.preventDefault();
+            const amount = parseFloat(document.getElementById('depositAmount').value);
+
+            if (!amount || amount <= 0) return;
+
+            await db.collection('cargas').add({
+                phone: appState.currentUser,
+                amount: amount,
+                status: 'pendiente',
+                date: new Date().toLocaleString('es-AR')
+            });
+
+            alert('Solicitud de carga notificada con éxito. Se acreditará cuando el pago sea verificado por administración.');
+            document.getElementById('depositAmount').value = '';
+            loadUserHistory();
+        }
+
+        async function handleWithdrawSubmit(e) {
+            e.preventDefault();
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const cbu = document.getElementById('withdrawCbu').value.trim();
+            const name = document.getElementById('withdrawName').value.trim();
+
+            if (amount < 10000) {
+                alert('El monto m\u00EDnimo de retiro es de $10.000 ARS.');
+                return;
+            }
+
+            if (appState.balance < amount) {
+                alert('Saldo insuficiente para realizar esta solicitud.');
+                return;
+            }
+
+            const netAmount = amount * 0.85;
+            appState.balance -= amount;
+            syncUserData();
+
+            await db.collection('retiros').add({
+                phone: appState.currentUser,
+                amount: amount,
+                netAmount: netAmount,
+                cbu: cbu,
+                name: name,
+                status: 'pendiente',
+                date: new Date().toLocaleString('es-AR')
+            });
+
+            alert(`Solicitud de retiro enviada. Recibir\u00E1s $${netAmount.toLocaleString('es-AR')} ARS tras la verificaci&oacute;n.`);
+            document.getElementById('withdrawAmount').value = '';
+            document.getElementById('withdrawCbu').value = '';
+            document.getElementById('withdrawName').value = '';
+            updateUI();
+            loadUserHistory();
+        }
+
+        async function loadUserHistory() {
+            if (!appState.currentUser) return;
+
+            const depSnapshot = await db.collection('cargas').where('phone', '==', appState.currentUser).get();
+            const depContainer = document.getElementById('userDepositsList');
+
+            if (depSnapshot.empty) {
+                depContainer.innerHTML = '<p class="text-slate-400 text-center py-2">No tienes cargas registradas.</p>';
+            } else {
+                depContainer.innerHTML = depSnapshot.docs.map(doc => {
+                    const item = doc.data();
+                    let badgeClass = 'bg-amber-100 text-amber-700 border-amber-200';
+                    let label = 'Pendiente';
+                    if (item.status === 'aprobado') {
+                        badgeClass = 'bg-emerald-100 text-emerald-700 border-emerald-200';
+                        label = 'Aprobado';
+                    } else if (item.status === 'rechazado') {
+                        badgeClass = 'bg-rose-100 text-rose-700 border-rose-200';
+                        label = 'Rechazado';
+                    }
+
+                    return `
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex justify-between items-center">
+                            <div>
+                                <span class="font-extrabold text-slate-800">$${item.amount.toLocaleString('es-AR')} ARS</span>
+                                <span class="block text-[10px] text-slate-400">${item.date || ''}</span>
+                            </div>
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold border ${badgeClass}">${label}</span>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            const withSnapshot = await db.collection('retiros').where('phone', '==', appState.currentUser).get();
+            const withContainer = document.getElementById('userWithdrawalsList');
+
+            if (withSnapshot.empty) {
+                withContainer.innerHTML = '<p class="text-slate-400 text-center py-2">No tienes retiros registrados.</p>';
+            } else {
+                withContainer.innerHTML = withSnapshot.docs.map(doc => {
+                    const item = doc.data();
+                    let badgeClass = 'bg-amber-100 text-amber-700 border-amber-200';
+                    let label = 'Pendiente';
+                    if (item.status === 'aprobado') {
+                        badgeClass = 'bg-emerald-100 text-emerald-700 border-emerald-200';
+                        label = 'Aprobado';
+                    } else if (item.status === 'rechazado') {
+                        badgeClass = 'bg-rose-100 text-rose-700 border-rose-200';
+                        label = 'Rechazado';
+                    }
+
+                    return `
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex justify-between items-center">
+                            <div>
+                                <span class="font-extrabold text-slate-800">$${item.amount.toLocaleString('es-AR')} ARS</span>
+                                <span class="block text-[10px] text-slate-400">Neto: $${item.netAmount.toLocaleString('es-AR')} | ${item.date || ''}</span>
+                            </div>
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold border ${badgeClass}">${label}</span>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        /* LÓGICA DEL PANEL DE ADMINISTRACIÓN */
+        function loadAdminData() {
+            loadAllUsersAdmin();
+            loadPendingDeposits();
+            loadPendingWithdrawals();
+            loadAdminAffiliates();
+        }
+
         function switchAdminSubTab(subTab) {
-            console.log('Sub-pestaña admin:', subTab);
+            ['users', 'requests', 'affiliates', 'settings'].forEach(st => {
+                document.getElementById(`adminSubTab-${st}`).classList.add('hidden');
+            });
+            document.getElementById(`adminSubTab-${subTab}`).classList.remove('hidden');
+
+            ['users', 'requests', 'affiliates', 'settings'].forEach(st => {
+                document.getElementById(`adminTab${st.charAt(0).toUpperCase() + st.slice(1)}Btn`).className = "py-2 rounded-lg text-slate-400 transition-all";
+            });
+            document.getElementById(`adminTab${subTab.charAt(0).toUpperCase() + subTab.slice(1)}Btn`).className = "py-2 rounded-lg bg-vortex-red text-white transition-all";
         }
 
-        function handleLoginDirect() {
-            document.getElementById('authModal').classList.add('hidden');
+        async function loadAllUsersAdmin() {
+            const container = document.getElementById('adminAllUsersContainer');
+            const totalUsersBadge = document.getElementById('adminTotalUsersBadge');
+            
+            const snapshot = await db.collection('usuarios').get();
+            const totalCount = snapshot.size;
+            totalUsersBadge.innerText = `Total: ${totalCount} usuarios`;
+
+            if (snapshot.empty) {
+                container.innerHTML = '<p class="text-slate-400 text-center py-4">No hay usuarios registrados.</p>';
+                return;
+            }
+
+            container.innerHTML = snapshot.docs.map(doc => {
+                const user = doc.data();
+                const phone = user.phone;
+                const referralsCount = user.referrals ? user.referrals.length : 0;
+                const depositsHistory = user.depositsHistory || [];
+                const depositsCount = depositsHistory.length;
+                const productsCount = user.investments ? user.investments.length : 0;
+                const productsText = user.investments && user.investments.length > 0 
+                    ? user.investments.map(i => i.name).join(', ') 
+                    : 'Ninguno';
+
+                return `
+                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-2.5">
+                        <div class="flex justify-between items-center border-b border-slate-200/60 pb-2">
+                            <div>
+                                <strong class="text-slate-800 text-sm block">${phone}</strong>
+                                <span class="text-[10px] text-emerald-600 font-extrabold">💳 Cargas aprobadas: ${depositsCount}</span> | 
+                                <span class="text-[10px] text-slate-400 font-medium">Referidos: ${referralsCount} | Inversiones: ${productsCount}</span>
+                            </div>
+                            <button onclick="adminDeleteUser('${phone}')" class="px-2.5 py-1 bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold rounded-lg text-[10px] border border-rose-200">
+                                Eliminar
+                            </button>
+                        </div>
+
+                        <!-- HISTORIAL DE CARGAS DEL USUARIO -->
+                        <div class="bg-white p-2 rounded-xl border border-slate-200 space-y-1">
+                            <span class="text-[10px] font-bold text-slate-500 uppercase block">Historial de Cargas:</span>
+                            ${depositsCount > 0 ? depositsHistory.map(dep => `
+                                <div class="flex justify-between text-[10px] text-slate-700 border-b border-slate-100 pb-1 last:border-0">
+                                    <span>➕ <strong>$${dep.amount.toLocaleString('es-AR')} ARS</strong></span>
+                                    <span class="text-slate-400">${dep.date || ''}</span>
+                                </div>
+                            `).join('') : '<p class="text-[10px] text-slate-400 italic">Este usuario aún no tiene cargas acreditadas.</p>'}
+                        </div>
+
+                        <div class="text-[11px] text-slate-500">
+                            <strong>Planes Activos:</strong> ${productsText}
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 pt-1">
+                            <div>
+                                <label class="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Saldo (ARS)</label>
+                                <input type="number" id="inputBalance_${phone}" value="${user.balance || 0}" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg font-bold text-slate-800">
+                            </div>
+                            <div>
+                                <label class="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Llaves</label>
+                                <input type="number" id="inputKeys_${phone}" value="${user.keys || 0}" class="w-full px-2 py-1 bg-white border border-slate-300 rounded-lg font-bold text-slate-800">
+                            </div>
+                        </div>
+
+                        <button onclick="adminUpdateSingleUser('${phone}')" class="w-full py-1.5 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-lg text-[10px] mt-1">
+                            Guardar Ajustes de ${phone}
+                        </button>
+                    </div>
+                `;
+            }).join('');
         }
 
-        function handleRegisterDirect() {
-            document.getElementById('authModal').classList.add('hidden');
+        async function adminUpdateSingleUser(phone) {
+            const newBalance = parseFloat(document.getElementById(`inputBalance_${phone}`).value);
+            const newKeys = parseInt(document.getElementById(`inputKeys_${phone}`).value);
+
+            await db.collection('usuarios').doc(phone).update({
+                balance: newBalance,
+                keys: newKeys
+            });
+
+            alert(`¡Datos del usuario ${phone} actualizados!`);
+            if (phone === appState.currentUser) {
+                appState.balance = newBalance;
+                appState.keys = newKeys;
+                updateUI();
+            }
         }
 
-        function loadAllUsersAdmin() {
-            console.log('Cargando usuarios para admin...');
+        async function adminDeleteUser(phone) {
+            if (phone === ADMIN_PHONE) {
+                alert('No puedes eliminar la cuenta de administrador maestro.');
+                return;
+            }
+
+            if (confirm(`¿Estás seguro de eliminar definitivamente a la cuenta ${phone}?`)) {
+                await db.collection('usuarios').doc(phone).delete();
+                alert(`Cuenta ${phone} eliminada.`);
+                loadAllUsersAdmin();
+            }
+        }
+
+        async function loadPendingDeposits() {
+            const container = document.getElementById('adminDepositsList');
+            const snapshot = await db.collection('cargas').where('status', '==', 'pendiente').get();
+
+            if (snapshot.empty) {
+                container.innerHTML = '<p class="text-slate-400 text-center py-2">No hay cargas pendientes.</p>';
+                return;
+            }
+
+            container.innerHTML = snapshot.docs.map(doc => {
+                const item = doc.data();
+                return `
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+                        <div class="flex justify-between items-center font-bold">
+                            <span class="text-slate-800">${item.phone}</span>
+                            <span class="text-emerald-600">+$${item.amount.toLocaleString('es-AR')} ARS</span>
+                        </div>
+                        <p class="text-[10px] text-slate-400">${item.date || ''}</p>
+                        <div class="flex gap-2 pt-1">
+                            <button onclick="adminResolveDeposit('${doc.id}', 'aprobado', '${item.phone}', ${item.amount})" class="flex-1 py-1.5 bg-emerald-600 text-white font-bold rounded-lg text-[11px]">
+                                Aprobar Carga
+                            </button>
+                            <button onclick="adminResolveDeposit('${doc.id}', 'rechazado')" class="flex-1 py-1.5 bg-rose-600 text-white font-bold rounded-lg text-[11px]">
+                                Rechazar
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function adminResolveDeposit(docId, status, userPhone = null, amount = 0) {
+            await db.collection('cargas').doc(docId).update({ status: status });
+
+            if (status === 'aprobado' && userPhone) {
+                const userRef = db.collection('usuarios').doc(userPhone);
+                const userDoc = await userRef.get();
+                
+                let currentHistory = [];
+                if (userDoc.exists && userDoc.data().depositsHistory) {
+                    currentHistory = userDoc.data().depositsHistory;
+                }
+                
+                currentHistory.push({
+                    amount: amount,
+                    date: new Date().toLocaleString('es-AR')
+                });
+
+                await userRef.update({
+                    balance: firebase.firestore.FieldValue.increment(amount),
+                    depositsHistory: currentHistory
+                });
+            }
+
+            alert(`Carga ${status} con éxito.`);
+            loadPendingDeposits();
+            loadAllUsersAdmin();
+        }
+
+        async function loadPendingWithdrawals() {
+            const container = document.getElementById('adminWithdrawalsList');
+            const snapshot = await db.collection('retiros').where('status', '==', 'pendiente').get();
+
+            if (snapshot.empty) {
+                container.innerHTML = '<p class="text-slate-400 text-center py-2">No hay solicitudes de retiro pendientes.</p>';
+                return;
+            }
+
+            container.innerHTML = snapshot.docs.map(doc => {
+                const item = doc.data();
+                return `
+                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-2.5">
+                        <div class="flex justify-between items-center font-bold border-b border-slate-200/60 pb-2">
+                            <span class="text-slate-800 text-sm">Usuario: ${item.phone}</span>
+                            <span class="text-vortex-red text-sm">Bruto: $${item.amount.toLocaleString('es-AR')} ARS</span>
+                        </div>
+                        <div class="text-[11px] text-slate-600 space-y-1">
+                            <p><strong>Comisión aplicada (15%):</strong> $${(item.amount * 0.15).toLocaleString('es-AR')} ARS</p>
+                            <p class="text-emerald-700 font-extrabold text-xs">Monto Neto a Enviar: $${item.netAmount.toLocaleString('es-AR')} ARS</p>
+                            <p><strong>Titular Registrado:</strong> ${item.name}</p>
+                            <p class="font-mono text-slate-800 bg-amber-50 p-1.5 rounded border border-amber-200"><strong>CBU/CVU Destino:</strong> ${item.cbu}</p>
+                            <p class="text-[10px] text-slate-400">Fecha solicitud: ${item.date || ''}</p>
+                        </div>
+                        <div class="flex gap-2 pt-2">
+                            <button onclick="adminResolveWithdrawal('${doc.id}', 'aprobado')" class="flex-1 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-sm">
+                                ✅ Aprobar y Procesar Pago
+                            </button>
+                            <button onclick="adminResolveWithdrawal('${doc.id}', 'rechazado', '${item.phone}', ${item.amount})" class="flex-1 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs shadow-sm">
+                                ❌ Rechazar y Reembolsar
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function adminResolveWithdrawal(docId, status, userPhone = null, amount = 0) {
+            await db.collection('retiros').doc(docId).update({ status: status });
+
+            if (status === 'rechazado' && userPhone) {
+                await db.collection('usuarios').doc(userPhone).update({
+                    balance: firebase.firestore.FieldValue.increment(amount)
+                });
+            }
+
+            alert(`Solicitud ${status} con éxito.`);
+            loadPendingWithdrawals();
+            loadAllUsersAdmin();
+        }
+
+        async function loadAdminAffiliates() {
+            const container = document.getElementById('adminAffiliatesContainer');
+            const snapshot = await db.collection('usuarios').get();
+
+            if (snapshot.empty) {
+                container.innerHTML = '<p class="text-slate-400 text-center py-4">No hay datos de afiliados.</p>';
+                return;
+            }
+
+            container.innerHTML = snapshot.docs.map(doc => {
+                const user = doc.data();
+                const referrals = user.referrals || [];
+                
+                return `
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1.5">
+                        <div class="flex justify-between items-center font-bold text-slate-800">
+                            <span>Afiliador: ${user.phone}</span>
+                            <span class="text-vortex-red text-[11px]">${referrals.length} Referidos Directos</span>
+                        </div>
+                        <div class="text-[11px] text-slate-500">
+                            <strong>Llaves ganadas por referidos:</strong> ${user.keys || 0}
+                        </div>
+                        ${referrals.length > 0 ? `
+                            <div class="pl-2 border-l-2 border-vortex-red space-y-1 mt-2">
+                                ${referrals.map(r => `<p class="text-[10px] text-slate-600">↳ Referido activo: <strong class="text-slate-800">${r.phone}</strong></p>`).join('')}
+                            </div>
+                        ` : '<p class="text-[10px] text-slate-400">Sin red activa registrada aún.</p>'}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function handleAddNewLevel(e) {
+            e.preventDefault();
+            const newLevel = {
+                id: Date.now(),
+                name: document.getElementById('newLevelName').value.trim(),
+                cost: parseFloat(document.getElementById('newLevelCost').value),
+                daily: parseFloat(document.getElementById('newLevelDaily').value),
+                duration: parseInt(document.getElementById('newLevelDuration').value),
+                total: parseFloat(document.getElementById('newLevelTotal').value),
+                limit: 1, 
+                img: document.getElementById('newLevelImg').value.trim()
+            };
+
+            await db.collection('productos').add(newLevel);
+            levelsList.push(newLevel);
+            renderLevels();
+            alert('¡Nuevo producto agregado y publicado en la plataforma!');
+
+            document.getElementById('newLevelName').value = '';
+            document.getElementById('newLevelCost').value = '';
+            document.getElementById('newLevelDaily').value = '';
+            document.getElementById('newLevelDuration').value = '';
+            document.getElementById('newLevelTotal').value = '';
+            document.getElementById('newLevelImg').value = '';
+        }
+
+        function switchTab(tab) {
+            ['inicio', 'mis-inversiones', 'cofre', 'cargar', 'retirar', 'perfil'].filter(t => document.getElementById(`tab-${t}`)).forEach(t => {
+                const elem = document.getElementById(`tab-${t}`);
+                if (elem) elem.classList.add('hidden');
+                const navElem = document.getElementById(`nav-${t}`);
+                if (navElem) {
+                    navElem.classList.remove('text-vortex-red');
+                    navElem.classList.add('text-slate-400');
+                }
+            });
+
+            const targetTab = document.getElementById(`tab-${tab}`);
+            if (targetTab) targetTab.classList.remove('hidden');
+            const activeNav = document.getElementById(`nav-${tab}`);
+            if (activeNav) {
+                activeNav.classList.remove('text-slate-400');
+                activeNav.classList.add('text-vortex-red');
+            }
+        }
+
+        function copyAlias() {
+            navigator.clipboard.writeText('vortex.oficial.ars');
+            alert('Alias CBU copiado: vortex.oficial.ars');
+        }
+
+        function copyRefLink() {
+            const input = document.getElementById('refLinkInput');
+            navigator.clipboard.writeText(input.value);
+            alert('Enlace copiado al portapapeles.');
         }
     </script>
 </body>
