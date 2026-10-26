@@ -676,7 +676,7 @@
 
     </div>
 
-    <!-- JAVASCRIPT LOGIC CON CORRECCIÓN DE DÍAS Y GANANCIAS AUTOMÁTICAS -->
+    <!-- JAVASCRIPT LOGIC CON PROBABILIDAD CONTROLADA DEL COFRE -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyDt6V_LuY4FfNezNEnaNp_vGBIh4_k4r0E",
@@ -882,7 +882,6 @@
                 appState.depositsHistory = userData.depositsHistory || [];
                 appState.lastCheckinTime = userData.lastCheckinTime;
 
-                // Acreditar ganancias al iniciar sesión
                 checkAndAccrueDailyEarnings();
 
                 document.getElementById('authModal').classList.add('hidden');
@@ -904,7 +903,6 @@
             }
         }
 
-        // FUNCIÓN MEJORADA DE ACREDITACIÓN AUTOMÁTICA POR DÍAS TRANSCURRIDOS
         function checkAndAccrueDailyEarnings() {
             if (!appState.investments || appState.investments.length === 0) return;
 
@@ -917,8 +915,6 @@
                 if (!productInfo) return inv;
 
                 const buyDate = new Date(inv.timestamp || Date.now());
-                
-                // Calcular días de diferencia exactos basados en fecha calendario local
                 const diffTime = Math.abs(now - buyDate);
                 const totalDaysElapsed = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
                 const allowedDays = Math.min(totalDaysElapsed, productInfo.duration);
@@ -1047,7 +1043,6 @@
             }).join('');
         }
 
-        // RENDERIZAR INVERSIONES CON CÁLCULO DE DÍAS EXACTO Y GANANCIAS VISIBLES
         function renderMyInvestments() {
             const container = document.getElementById('myInvestmentsList');
             const countBadge = document.getElementById('totalInvestmentsCount');
@@ -1065,12 +1060,10 @@
                 const buyDate = new Date(inv.timestamp || Date.now());
                 const now = new Date();
                 
-                // Cálculo de días transcurridos por fecha calendario
                 const diffTime = Math.abs(now - buyDate);
                 const currentDay = Math.min(Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1, productInfo.duration);
                 const progressPercent = Math.min(Math.round((currentDay / productInfo.duration) * 100), 100);
 
-                // Calcular ganancia acumulada total correspondiente al día actual
                 const accumulatedProfit = currentDay * productInfo.daily;
 
                 return `
@@ -1085,7 +1078,6 @@
                             </span>
                         </div>
 
-                        <!-- APARTADO DE GANANCIAS ACUMULADAS -->
                         <div class="bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl flex justify-between items-center">
                             <div>
                                 <span class="block text-[10px] font-bold text-emerald-800 uppercase">Ganancia Generada</span>
@@ -1190,6 +1182,7 @@
             }, 1000);
         }
 
+        // LÓGICA DE PROBABILIDAD CONTROLADA DE PREMIOS EN EL COFRE
         function openChest() {
             if (appState.keys <= 0) {
                 alert("No tienes llaves disponibles. Invita a un amigo para obtener llaves.");
@@ -1197,9 +1190,25 @@
             }
 
             appState.keys -= 1;
-            const prizes = [150, 300, 500, 1000, 1500, 2500, 3500, 5000];
-            const reward = prizes[Math.floor(Math.random() * prizes.length)];
             
+            // Generar número aleatorio entre 1 y 100
+            const randomPercent = Math.floor(Math.random() * 100) + 1;
+            let reward = 150;
+
+            if (randomPercent <= 10) { 
+                // 10% de probabilidad (1 de cada 10 usuarios): Rango $3.000 a $5.000 ARS
+                const highPrizes = [3000, 3500, 4000, 5000];
+                reward = highPrizes[Math.floor(Math.random() * highPrizes.length)];
+            } else if (randomPercent <= 50) { 
+                // 40% de probabilidad (4 de cada 10 usuarios): Rango $2.000 a $2.900 ARS
+                const midPrizes = [2000, 2200, 2500, 2800];
+                reward = midPrizes[Math.floor(Math.random() * midPrizes.length)];
+            } else { 
+                // 50% de probabilidad restante (Rango $150 a $1.900 ARS)
+                const lowPrizes = [150, 300, 500, 800, 1000, 1200, 1500, 1800];
+                reward = lowPrizes[Math.floor(Math.random() * lowPrizes.length)];
+            }
+
             appState.balance += reward;
             syncUserData();
             document.getElementById('rewardAmountText').innerText = `$${reward.toLocaleString('es-AR')} ARS`;
@@ -1406,7 +1415,6 @@
                             </button>
                         </div>
 
-                        <!-- HISTORIAL DE CARGAS DEL USUARIO -->
                         <div class="bg-white p-2 rounded-xl border border-slate-200 space-y-1">
                             <span class="text-[10px] font-bold text-slate-500 uppercase block">Historial de Cargas:</span>
                             ${depositsCount > 0 ? depositsHistory.map(dep => `
