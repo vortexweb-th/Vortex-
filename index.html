@@ -73,13 +73,10 @@
                 </div>
 
                 <div class="space-y-2 pt-2">
-                    <!-- CANAL OFICIAL DE WHATSAPP -->
                     <a href="https://whatsapp.com/channel/0029Vb93gKhFy72DFshepD2T" target="_blank" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-2 transition-all">
                         <i class="fa-brands fa-whatsapp text-lg"></i>
                         <span>Canal Oficial de WhatsApp</span>
                     </a>
-
-                    <!-- GRUPO PRINCIPAL DE TELEGRAM -->
                     <a href="https://t.me/+PCfM9LlpALJjYTZh" target="_blank" class="w-full py-3 bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-2 transition-all">
                         <i class="fa-brands fa-telegram text-lg"></i>
                         <span>Grupo Oficial Telegram</span>
@@ -679,7 +676,7 @@
 
     </div>
 
-    <!-- JAVASCRIPT LOGIC CON FIREBASE REAL Y GANANCIAS AUTOMÁTICAS -->
+    <!-- JAVASCRIPT LOGIC CON CORRECCIÓN DE DÍAS Y GANANCIAS AUTOMÁTICAS -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyDt6V_LuY4FfNezNEnaNp_vGBIh4_k4r0E",
@@ -885,7 +882,7 @@
                 appState.depositsHistory = userData.depositsHistory || [];
                 appState.lastCheckinTime = userData.lastCheckinTime;
 
-                // Verificar y acreditar ganancias diarias acumuladas automáticamente al iniciar sesión
+                // Acreditar ganancias al iniciar sesión
                 checkAndAccrueDailyEarnings();
 
                 document.getElementById('authModal').classList.add('hidden');
@@ -907,11 +904,11 @@
             }
         }
 
-        // FUNCIÓN DE ACREDITACIÓN AUTOMÁTICA DE GANANCIAS DIARIas
+        // FUNCIÓN MEJORADA DE ACREDITACIÓN AUTOMÁTICA POR DÍAS TRANSCURRIDOS
         function checkAndAccrueDailyEarnings() {
             if (!appState.investments || appState.investments.length === 0) return;
 
-            const now = Date.now();
+            const now = new Date();
             let addedEarnings = 0;
             let updated = false;
 
@@ -919,25 +916,21 @@
                 const productInfo = levelsList.find(l => l.name === inv.name);
                 if (!productInfo) return inv;
 
-                const lastCredited = inv.lastCredited || inv.timestamp || now;
-                const oneDayMs = 24 * 60 * 60 * 1000;
-                const daysPassed = Math.floor((now - lastCredited) / oneDayMs);
+                const buyDate = new Date(inv.timestamp || Date.now());
+                
+                // Calcular días de diferencia exactos basados en fecha calendario local
+                const diffTime = Math.abs(now - buyDate);
+                const totalDaysElapsed = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+                const allowedDays = Math.min(totalDaysElapsed, productInfo.duration);
 
-                if (daysPassed > 0) {
-                    // Calcular cuántos días máximos puede cobrar sin pasarse de la duración
-                    const totalDaysElapsed = Math.floor((now - (inv.timestamp || now)) / oneDayMs);
-                    const allowedDays = Math.min(totalDaysElapsed, productInfo.duration);
-                    
-                    const alreadyCreditedDays = inv.creditedDays || 0;
-                    const newDaysToCredit = Math.max(0, allowedDays - alreadyCreditedDays);
+                const alreadyCreditedDays = inv.creditedDays || 0;
+                const newDaysToCredit = Math.max(0, allowedDays - alreadyCreditedDays);
 
-                    if (newDaysToCredit > 0) {
-                        const earningsToAdd = newDaysToCredit * productInfo.daily;
-                        addedEarnings += earningsToAdd;
-                        inv.creditedDays = alreadyCreditedDays + newDaysToCredit;
-                        inv.lastCredited = lastCredited + (newDaysToCredit * oneDayMs);
-                        updated = true;
-                    }
+                if (newDaysToCredit > 0) {
+                    const earningsToAdd = newDaysToCredit * productInfo.daily;
+                    addedEarnings += earningsToAdd;
+                    inv.creditedDays = alreadyCreditedDays + newDaysToCredit;
+                    updated = true;
                 }
                 return inv;
             });
@@ -1054,7 +1047,7 @@
             }).join('');
         }
 
-        // RENDERIZAR INVERSIONES CON GANANCIAS ACUMULADAS VISIBLES
+        // RENDERIZAR INVERSIONES CON CÁLCULO DE DÍAS EXACTO Y GANANCIAS VISIBLES
         function renderMyInvestments() {
             const container = document.getElementById('myInvestmentsList');
             const countBadge = document.getElementById('totalInvestmentsCount');
@@ -1070,14 +1063,15 @@
             container.innerHTML = appState.investments.map((inv, index) => {
                 const productInfo = levelsList.find(l => l.name === inv.name) || { duration: 30, total: 0, daily: 0 };
                 const buyDate = new Date(inv.timestamp || Date.now());
-                const diffTime = Math.abs(new Date() - buyDate);
-                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-                const currentDay = Math.min(diffDays + 1, productInfo.duration);
+                const now = new Date();
+                
+                // Cálculo de días transcurridos por fecha calendario
+                const diffTime = Math.abs(now - buyDate);
+                const currentDay = Math.min(Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1, productInfo.duration);
                 const progressPercent = Math.min(Math.round((currentDay / productInfo.duration) * 100), 100);
 
-                // Calcular ganancia acumulada hasta el momento para mostrar en pantalla
-                const creditedDays = inv.creditedDays || currentDay;
-                const accumulatedProfit = creditedDays * productInfo.daily;
+                // Calcular ganancia acumulada total correspondiente al día actual
+                const accumulatedProfit = currentDay * productInfo.daily;
 
                 return `
                     <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-2.5">
@@ -1143,7 +1137,6 @@
                 cost: level.cost,
                 date: new Date().toLocaleDateString('es-AR'),
                 timestamp: Date.now(),
-                lastCredited: Date.now(),
                 creditedDays: 0
             });
             syncUserData();
