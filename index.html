@@ -389,7 +389,7 @@
                         <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                             <div class="flex items-center gap-2">
                                 <i class="fa-solid fa-chart-line text-vortex-red text-lg"></i>
-                                <h3 class="font-extrabold text-slate-800 text-base">Mis Inversiones Activas</h3>
+                                <h3 class="font-extrabold text-slate-800 text-base">Mis Inversiones Activas & Ganancias</h3>
                             </div>
                             <span id="totalInvestmentsCount" class="text-xs font-bold bg-vortex-lightRed text-vortex-red px-2.5 py-1 rounded-full border border-vortex-red/20">0 Activas</span>
                         </div>
@@ -462,7 +462,7 @@
                             </div>
                         </div>
 
-                        <!-- AVISO DE HORARIOS DE CARGA AGREGADO -->
+                        <!-- AVISO DE HORARIOS DE CARGA -->
                         <div class="bg-amber-50 border border-amber-200 p-3 rounded-xl text-amber-800 text-xs font-bold flex items-center gap-2">
                             <i class="fa-solid fa-clock text-amber-600 text-base"></i>
                             <span>Horario de Cargas: Lunes a Viernes de 10:00 a 17:00 hs.</span>
@@ -523,7 +523,7 @@
                             </div>
                         </div>
 
-                        <!-- AVISO DE HORARIOS DE RETIRO AGREGADO -->
+                        <!-- AVISO DE HORARIOS DE RETIRO -->
                         <div class="bg-amber-50 border border-amber-200 p-3 rounded-xl text-amber-800 text-xs font-bold flex items-center gap-2">
                             <i class="fa-solid fa-clock text-amber-600 text-base"></i>
                             <span>Horario de Retiros: Lunes a Viernes de 10:00 a 17:00 hs.</span>
@@ -679,7 +679,7 @@
 
     </div>
 
-    <!-- JAVASCRIPT LOGIC CON FIREBASE REAL -->
+    <!-- JAVASCRIPT LOGIC CON FIREBASE REAL Y GANANCIAS AUTOMÁTICAS -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyDt6V_LuY4FfNezNEnaNp_vGBIh4_k4r0E",
@@ -885,6 +885,9 @@
                 appState.depositsHistory = userData.depositsHistory || [];
                 appState.lastCheckinTime = userData.lastCheckinTime;
 
+                // Verificar y acreditar ganancias diarias acumuladas automáticamente al iniciar sesión
+                checkAndAccrueDailyEarnings();
+
                 document.getElementById('authModal').classList.add('hidden');
                 document.getElementById('profilePhone').innerText = phone;
                 document.getElementById('refLinkInput').value = `https://vortex.app/ref?id=${phone}`;
@@ -901,6 +904,50 @@
                 }
             } catch (error) {
                 alert("Error al intentar iniciar sesión.");
+            }
+        }
+
+        // FUNCIÓN DE ACREDITACIÓN AUTOMÁTICA DE GANANCIAS DIARIas
+        function checkAndAccrueDailyEarnings() {
+            if (!appState.investments || appState.investments.length === 0) return;
+
+            const now = Date.now();
+            let addedEarnings = 0;
+            let updated = false;
+
+            appState.investments = appState.investments.map(inv => {
+                const productInfo = levelsList.find(l => l.name === inv.name);
+                if (!productInfo) return inv;
+
+                const lastCredited = inv.lastCredited || inv.timestamp || now;
+                const oneDayMs = 24 * 60 * 60 * 1000;
+                const daysPassed = Math.floor((now - lastCredited) / oneDayMs);
+
+                if (daysPassed > 0) {
+                    // Calcular cuántos días máximos puede cobrar sin pasarse de la duración
+                    const totalDaysElapsed = Math.floor((now - (inv.timestamp || now)) / oneDayMs);
+                    const allowedDays = Math.min(totalDaysElapsed, productInfo.duration);
+                    
+                    const alreadyCreditedDays = inv.creditedDays || 0;
+                    const newDaysToCredit = Math.max(0, allowedDays - alreadyCreditedDays);
+
+                    if (newDaysToCredit > 0) {
+                        const earningsToAdd = newDaysToCredit * productInfo.daily;
+                        addedEarnings += earningsToAdd;
+                        inv.creditedDays = alreadyCreditedDays + newDaysToCredit;
+                        inv.lastCredited = lastCredited + (newDaysToCredit * oneDayMs);
+                        updated = true;
+                    }
+                }
+                return inv;
+            });
+
+            if (updated && addedEarnings > 0) {
+                appState.balance += addedEarnings;
+                syncUserData();
+                setTimeout(() => {
+                    alert(`💰 ¡Tus inversiones generaron ganancias automáticas! Se acreditaron $${addedEarnings.toLocaleString('es-AR', {minimumFractionDigits: 2})} ARS a tu saldo.`);
+                }, 500);
             }
         }
 
@@ -1007,6 +1054,7 @@
             }).join('');
         }
 
+        // RENDERIZAR INVERSIONES CON GANANCIAS ACUMULADAS VISIBLES
         function renderMyInvestments() {
             const container = document.getElementById('myInvestmentsList');
             const countBadge = document.getElementById('totalInvestmentsCount');
@@ -1027,6 +1075,10 @@
                 const currentDay = Math.min(diffDays + 1, productInfo.duration);
                 const progressPercent = Math.min(Math.round((currentDay / productInfo.duration) * 100), 100);
 
+                // Calcular ganancia acumulada hasta el momento para mostrar en pantalla
+                const creditedDays = inv.creditedDays || currentDay;
+                const accumulatedProfit = creditedDays * productInfo.daily;
+
                 return `
                     <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-2.5">
                         <div class="flex justify-between items-center border-b border-slate-200/60 pb-2">
@@ -1036,6 +1088,17 @@
                             </div>
                             <span class="px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-full font-bold text-[10px] border border-emerald-200">
                                 D&iacute;a ${currentDay} / ${productInfo.duration}
+                            </span>
+                        </div>
+
+                        <!-- APARTADO DE GANANCIAS ACUMULADAS -->
+                        <div class="bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl flex justify-between items-center">
+                            <div>
+                                <span class="block text-[10px] font-bold text-emerald-800 uppercase">Ganancia Generada</span>
+                                <span class="text-sm font-black text-emerald-700">+$${accumulatedProfit.toLocaleString('es-AR', {minimumFractionDigits: 2})} ARS</span>
+                            </div>
+                            <span class="text-[10px] text-emerald-600 font-bold bg-white px-2 py-1 rounded-lg border border-emerald-200 shadow-sm">
+                                ⚡ Acreditada Automática
                             </span>
                         </div>
 
@@ -1079,10 +1142,12 @@
                 name: level.name,
                 cost: level.cost,
                 date: new Date().toLocaleDateString('es-AR'),
-                timestamp: Date.now()
+                timestamp: Date.now(),
+                lastCredited: Date.now(),
+                creditedDays: 0
             });
             syncUserData();
-            alert(`\u00A1Inversi\u00F3n exitosa en ${level.name}!`);
+            alert(`\u00A1Inversi\u00F3n exitosa en ${level.name}! Las ganancias diarias se acreditarán automáticamente.`);
             updateUI();
             renderLevels();
             renderMyInvestments();
