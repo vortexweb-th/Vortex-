@@ -73,10 +73,13 @@
                 </div>
 
                 <div class="space-y-2 pt-2">
+                    <!-- CANAL OFICIAL DE WHATSAPP -->
                     <a href="https://whatsapp.com/channel/0029Vb93gKhFy72DFshepD2T" target="_blank" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-2 transition-all">
                         <i class="fa-brands fa-whatsapp text-lg"></i>
                         <span>Canal Oficial de WhatsApp</span>
                     </a>
+
+                    <!-- GRUPO PRINCIPAL DE TELEGRAM -->
                     <a href="https://t.me/+PCfM9LlpALJjYTZh" target="_blank" class="w-full py-3 bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-2 transition-all">
                         <i class="fa-brands fa-telegram text-lg"></i>
                         <span>Grupo Oficial Telegram</span>
@@ -102,28 +105,6 @@
                 <button onclick="closeRewardModal()" class="w-full py-3 bg-vortex-red text-white font-bold rounded-xl shadow-md glow-red">
                     Entendido
                 </button>
-            </div>
-        </div>
-
-        <!-- MODAL DESCARGA APK OFICIAL -->
-        <div id="appDownloadModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-            <div class="bg-white w-full max-w-xs rounded-3xl p-6 shadow-2xl space-y-4 text-center relative overflow-hidden">
-                <div class="w-20 h-20 bg-vortex-lightRed text-vortex-red rounded-full flex items-center justify-center text-3xl mx-auto shadow-inner border border-vortex-red/25">
-                    <i class="fa-solid fa-mobile-screen-button"></i>
-                </div>
-                <div>
-                    <h3 class="text-lg font-black text-slate-800">Descargar Aplicaci&oacute;n</h3>
-                    <p class="text-xs text-slate-500 mt-1">Obt&eacute;n el archivo instalable APK de Vortex para Android.</p>
-                </div>
-                <div class="space-y-2 pt-2">
-                    <!-- REEMPLAZA ESTE ENLACE '#' CON TU LINK REAL DE DESCARGA APK (Google Drive, MediaFire, etc.) -->
-                    <a href="#" onclick="alert('Iniciando descarga directa de la App...'); closeAppModal();" class="w-full py-3 bg-vortex-red text-white font-bold text-xs rounded-xl shadow-md glow-red block text-center">
-                        📥 Descargar APK Oficial
-                    </a>
-                    <button onclick="closeAppModal()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all">
-                        Cerrar
-                    </button>
-                </div>
             </div>
         </div>
 
@@ -597,19 +578,6 @@
                         </div>
                     </div>
 
-                    <!-- BOTÓN DE APLICACIÓN -->
-                    <div class="bg-white rounded-2xl p-2 border border-slate-200 shadow-sm">
-                        <button onclick="openAppDownloadModal()" class="w-full p-4 bg-slate-50 hover:bg-slate-100 rounded-xl flex items-center justify-between text-slate-800 transition-all border border-slate-100">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-vortex-lightRed text-vortex-red flex items-center justify-center text-lg shadow-sm">
-                                    <i class="fa-solid fa-mobile-screen"></i>
-                                </div>
-                                <span class="font-extrabold text-sm text-slate-800">Aplicación</span>
-                            </div>
-                            <i class="fa-solid fa-chevron-right text-slate-400 text-xs"></i>
-                        </button>
-                    </div>
-
                     <!-- INFOGRAFÍA CORPORATIVA -->
                     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                         <div class="bg-slate-900 text-white p-5 border-b border-slate-800">
@@ -711,7 +679,7 @@
 
     </div>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- JAVASCRIPT LOGIC CON FIREBASE REAL Y GANANCIAS AUTOMÁTICAS -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyDt6V_LuY4FfNezNEnaNp_vGBIh4_k4r0E",
@@ -766,14 +734,6 @@
         function toggleSupportModal() {
             const modal = document.getElementById('supportModal');
             modal.classList.toggle('hidden');
-        }
-
-        function openAppDownloadModal() {
-            document.getElementById('appDownloadModal').classList.remove('hidden');
-        }
-
-        function closeAppModal() {
-            document.getElementById('appDownloadModal').classList.add('hidden');
         }
 
         async function loadCustomLevels() {
@@ -925,7 +885,7 @@
                 appState.depositsHistory = userData.depositsHistory || [];
                 appState.lastCheckinTime = userData.lastCheckinTime;
 
-                // ACREDITACIÓN AUTOMÁTICA Y CORRECCIÓN DE DÍAS EXACTOS
+                // Verificar y acreditar ganancias diarias acumuladas automáticamente al iniciar sesión
                 checkAndAccrueDailyEarnings();
 
                 document.getElementById('authModal').classList.add('hidden');
@@ -947,11 +907,11 @@
             }
         }
 
-        // CÁLCULO MEJORADO DE DÍAS Y GANANCIAS AUTOMÁTICAS
+        // FUNCIÓN DE ACREDITACIÓN AUTOMÁTICA DE GANANCIAS DIARIas
         function checkAndAccrueDailyEarnings() {
             if (!appState.investments || appState.investments.length === 0) return;
 
-            const now = new Date();
+            const now = Date.now();
             let addedEarnings = 0;
             let updated = false;
 
@@ -959,24 +919,25 @@
                 const productInfo = levelsList.find(l => l.name === inv.name);
                 if (!productInfo) return inv;
 
-                // Forzar lectura correcta de fecha de compra (si no tiene timestamp, se toma hoy o se calcula)
-                let buyDate = inv.timestamp ? new Date(inv.timestamp) : new Date();
-                
-                // Cálculo preciso de días naturales transcurridos desde las 00:00 hs
-                const d1 = new Date(buyDate.getFullYear(), buyDate.getMonth(), buyDate.getDate());
-                const d2 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-                const diffTime = d2 - d1;
-                const totalDaysElapsed = Math.max(1, Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1);
-                const allowedDays = Math.min(totalDaysElapsed, productInfo.duration);
+                const lastCredited = inv.lastCredited || inv.timestamp || now;
+                const oneDayMs = 24 * 60 * 60 * 1000;
+                const daysPassed = Math.floor((now - lastCredited) / oneDayMs);
 
-                const alreadyCreditedDays = inv.creditedDays || 0;
-                const newDaysToCredit = Math.max(0, allowedDays - alreadyCreditedDays);
+                if (daysPassed > 0) {
+                    // Calcular cuántos días máximos puede cobrar sin pasarse de la duración
+                    const totalDaysElapsed = Math.floor((now - (inv.timestamp || now)) / oneDayMs);
+                    const allowedDays = Math.min(totalDaysElapsed, productInfo.duration);
+                    
+                    const alreadyCreditedDays = inv.creditedDays || 0;
+                    const newDaysToCredit = Math.max(0, allowedDays - alreadyCreditedDays);
 
-                if (newDaysToCredit > 0) {
-                    const earningsToAdd = newDaysToCredit * productInfo.daily;
-                    addedEarnings += earningsToAdd;
-                    inv.creditedDays = alreadyCreditedDays + newDaysToCredit;
-                    updated = true;
+                    if (newDaysToCredit > 0) {
+                        const earningsToAdd = newDaysToCredit * productInfo.daily;
+                        addedEarnings += earningsToAdd;
+                        inv.creditedDays = alreadyCreditedDays + newDaysToCredit;
+                        inv.lastCredited = lastCredited + (newDaysToCredit * oneDayMs);
+                        updated = true;
+                    }
                 }
                 return inv;
             });
@@ -985,7 +946,7 @@
                 appState.balance += addedEarnings;
                 syncUserData();
                 setTimeout(() => {
-                    alert(`💰 ¡Ganancias automáticas acreditadas! Se sumaron $${addedEarnings.toLocaleString('es-AR', {minimumFractionDigits: 2})} ARS a tu saldo.`);
+                    alert(`💰 ¡Tus inversiones generaron ganancias automáticas! Se acreditaron $${addedEarnings.toLocaleString('es-AR', {minimumFractionDigits: 2})} ARS a tu saldo.`);
                 }, 500);
             }
         }
@@ -1093,7 +1054,7 @@
             }).join('');
         }
 
-        // RENDERIZAR INVERSIONES CON DÍAS ACTUALIZADOS
+        // RENDERIZAR INVERSIONES CON GANANCIAS ACUMULADAS VISIBLES
         function renderMyInvestments() {
             const container = document.getElementById('myInvestmentsList');
             const countBadge = document.getElementById('totalInvestmentsCount');
@@ -1108,16 +1069,15 @@
 
             container.innerHTML = appState.investments.map((inv, index) => {
                 const productInfo = levelsList.find(l => l.name === inv.name) || { duration: 30, total: 0, daily: 0 };
-                const buyDate = inv.timestamp ? new Date(inv.timestamp) : new Date();
-                const now = new Date();
-                
-                const d1 = new Date(buyDate.getFullYear(), buyDate.getMonth(), buyDate.getDate());
-                const d2 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-                const diffTime = d2 - d1;
-                const currentDay = Math.min(Math.max(1, Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1), productInfo.duration);
+                const buyDate = new Date(inv.timestamp || Date.now());
+                const diffTime = Math.abs(new Date() - buyDate);
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                const currentDay = Math.min(diffDays + 1, productInfo.duration);
                 const progressPercent = Math.min(Math.round((currentDay / productInfo.duration) * 100), 100);
 
-                const accumulatedProfit = currentDay * productInfo.daily;
+                // Calcular ganancia acumulada hasta el momento para mostrar en pantalla
+                const creditedDays = inv.creditedDays || currentDay;
+                const accumulatedProfit = creditedDays * productInfo.daily;
 
                 return `
                     <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-2.5">
@@ -1131,6 +1091,7 @@
                             </span>
                         </div>
 
+                        <!-- APARTADO DE GANANCIAS ACUMULADAS -->
                         <div class="bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl flex justify-between items-center">
                             <div>
                                 <span class="block text-[10px] font-bold text-emerald-800 uppercase">Ganancia Generada</span>
@@ -1182,6 +1143,7 @@
                 cost: level.cost,
                 date: new Date().toLocaleDateString('es-AR'),
                 timestamp: Date.now(),
+                lastCredited: Date.now(),
                 creditedDays: 0
             });
             syncUserData();
@@ -1242,21 +1204,9 @@
             }
 
             appState.keys -= 1;
+            const prizes = [150, 300, 500, 1000, 1500, 2500, 3500, 5000];
+            const reward = prizes[Math.floor(Math.random() * prizes.length)];
             
-            const randomPercent = Math.floor(Math.random() * 100) + 1;
-            let reward = 150;
-
-            if (randomPercent <= 10) { 
-                const highPrizes = [3000, 3500, 4000, 5000];
-                reward = highPrizes[Math.floor(Math.random() * highPrizes.length)];
-            } else if (randomPercent <= 50) { 
-                const midPrizes = [2000, 2200, 2500, 2800];
-                reward = midPrizes[Math.floor(Math.random() * midPrizes.length)];
-            } else { 
-                const lowPrizes = [150, 300, 500, 800, 1000, 1200, 1500, 1800];
-                reward = lowPrizes[Math.floor(Math.random() * lowPrizes.length)];
-            }
-
             appState.balance += reward;
             syncUserData();
             document.getElementById('rewardAmountText').innerText = `$${reward.toLocaleString('es-AR')} ARS`;
@@ -1463,6 +1413,7 @@
                             </button>
                         </div>
 
+                        <!-- HISTORIAL DE CARGAS DEL USUARIO -->
                         <div class="bg-white p-2 rounded-xl border border-slate-200 space-y-1">
                             <span class="text-[10px] font-bold text-slate-500 uppercase block">Historial de Cargas:</span>
                             ${depositsCount > 0 ? depositsHistory.map(dep => `
