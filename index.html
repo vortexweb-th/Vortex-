@@ -105,20 +105,21 @@
             </div>
         </div>
 
-        <!-- MODAL INSTALACIÓN PWA -->
+        <!-- MODAL DESCARGA APK OFICIAL -->
         <div id="appDownloadModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
             <div class="bg-white w-full max-w-xs rounded-3xl p-6 shadow-2xl space-y-4 text-center relative overflow-hidden">
-                <div class="w-20 h-20 bg-vortex-lightRed text-vortex-red rounded-full flex items-center justify-center text-3xl mx-auto shadow-inner border border-vortex-red/20">
+                <div class="w-20 h-20 bg-vortex-lightRed text-vortex-red rounded-full flex items-center justify-center text-3xl mx-auto shadow-inner border border-vortex-red/25">
                     <i class="fa-solid fa-mobile-screen-button"></i>
                 </div>
                 <div>
-                    <h3 class="text-lg font-black text-slate-800">Instalar Aplicaci&oacute;n Vortex</h3>
-                    <p class="text-xs text-slate-500 mt-1">Instal&aacute; la app directamente en la pantalla de inicio de tu celular para un acceso inmediato.</p>
+                    <h3 class="text-lg font-black text-slate-800">Descargar Aplicaci&oacute;n</h3>
+                    <p class="text-xs text-slate-500 mt-1">Obt&eacute;n el archivo instalable APK de Vortex para Android.</p>
                 </div>
                 <div class="space-y-2 pt-2">
-                    <button onclick="triggerPwaInstall()" class="w-full py-3 bg-vortex-red text-white font-bold text-xs rounded-xl shadow-md glow-red block text-center">
-                        📲 Instalar App en el Celular
-                    </button>
+                    <!-- REEMPLAZA ESTE ENLACE '#' CON TU LINK REAL DE DESCARGA APK (Google Drive, MediaFire, etc.) -->
+                    <a href="#" onclick="alert('Iniciando descarga directa de la App...'); closeAppModal();" class="w-full py-3 bg-vortex-red text-white font-bold text-xs rounded-xl shadow-md glow-red block text-center">
+                        📥 Descargar APK Oficial
+                    </a>
                     <button onclick="closeAppModal()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all">
                         Cerrar
                     </button>
@@ -596,7 +597,7 @@
                         </div>
                     </div>
 
-                    <!-- BOTÓN DE APLICACIÓN (PWA) -->
+                    <!-- BOTÓN DE APLICACIÓN -->
                     <div class="bg-white rounded-2xl p-2 border border-slate-200 shadow-sm">
                         <button onclick="openAppDownloadModal()" class="w-full p-4 bg-slate-50 hover:bg-slate-100 rounded-xl flex items-center justify-between text-slate-800 transition-all border border-slate-100">
                             <div class="flex items-center gap-3">
@@ -710,7 +711,7 @@
 
     </div>
 
-    <!-- JAVASCRIPT LOGIC CON INSTALACIÓN PWA AUTOMÁTICA -->
+    <!-- JAVASCRIPT LOGIC -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyDt6V_LuY4FfNezNEnaNp_vGBIh4_k4r0E",
@@ -727,13 +728,6 @@
 
         const ADMIN_PHONE = '11223344';
         const ADMIN_PIN = '0909';
-
-        let deferredPrompt = null;
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-        });
 
         let levelsList = [
             { id: 1, name: 'Producto 1', cost: 16000, duration: 15, daily: 1666.67, total: 25000, limit: 1, img: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=400&q=80' },
@@ -780,20 +774,6 @@
 
         function closeAppModal() {
             document.getElementById('appDownloadModal').classList.add('hidden');
-        }
-
-        async function triggerPwaInstall() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    deferredPrompt = null;
-                }
-                closeAppModal();
-            } else {
-                alert("Para instalar la app en tu dispositivo:\n\n1. Pulsa el botón de opciones (los tres puntos ⁝ arriba a la derecha en tu navegador).\n2. Selecciona 'Instalar aplicación' o 'Agregar a la pantalla principal'.");
-                closeAppModal();
-            }
         }
 
         async function loadCustomLevels() {
@@ -945,6 +925,7 @@
                 appState.depositsHistory = userData.depositsHistory || [];
                 appState.lastCheckinTime = userData.lastCheckinTime;
 
+                // ACREDITACIÓN AUTOMÁTICA Y CORRECCIÓN DE DÍAS EXACTOS
                 checkAndAccrueDailyEarnings();
 
                 document.getElementById('authModal').classList.add('hidden');
@@ -966,6 +947,7 @@
             }
         }
 
+        // CÁLCULO MEJORADO DE DÍAS Y GANANCIAS AUTOMÁTICAS
         function checkAndAccrueDailyEarnings() {
             if (!appState.investments || appState.investments.length === 0) return;
 
@@ -977,9 +959,14 @@
                 const productInfo = levelsList.find(l => l.name === inv.name);
                 if (!productInfo) return inv;
 
-                const buyDate = new Date(inv.timestamp || Date.now());
-                const diffTime = Math.abs(now - buyDate);
-                const totalDaysElapsed = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+                // Forzar lectura correcta de fecha de compra (si no tiene timestamp, se toma hoy o se calcula)
+                let buyDate = inv.timestamp ? new Date(inv.timestamp) : new Date();
+                
+                // Cálculo preciso de días naturales transcurridos desde las 00:00 hs
+                const d1 = new Date(buyDate.getFullYear(), buyDate.getMonth(), buyDate.getDate());
+                const d2 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                const diffTime = d2 - d1;
+                const totalDaysElapsed = Math.max(1, Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1);
                 const allowedDays = Math.min(totalDaysElapsed, productInfo.duration);
 
                 const alreadyCreditedDays = inv.creditedDays || 0;
@@ -998,7 +985,7 @@
                 appState.balance += addedEarnings;
                 syncUserData();
                 setTimeout(() => {
-                    alert(`💰 ¡Tus inversiones generaron ganancias automáticas! Se acreditaron $${addedEarnings.toLocaleString('es-AR', {minimumFractionDigits: 2})} ARS a tu saldo.`);
+                    alert(`💰 ¡Ganancias automáticas acreditadas! Se sumaron $${addedEarnings.toLocaleString('es-AR', {minimumFractionDigits: 2})} ARS a tu saldo.`);
                 }, 500);
             }
         }
@@ -1106,6 +1093,7 @@
             }).join('');
         }
 
+        // RENDERIZAR INVERSIONES CON DÍAS ACTUALIZADOS
         function renderMyInvestments() {
             const container = document.getElementById('myInvestmentsList');
             const countBadge = document.getElementById('totalInvestmentsCount');
@@ -1120,11 +1108,13 @@
 
             container.innerHTML = appState.investments.map((inv, index) => {
                 const productInfo = levelsList.find(l => l.name === inv.name) || { duration: 30, total: 0, daily: 0 };
-                const buyDate = new Date(inv.timestamp || Date.now());
+                const buyDate = inv.timestamp ? new Date(inv.timestamp) : new Date();
                 const now = new Date();
                 
-                const diffTime = Math.abs(now - buyDate);
-                const currentDay = Math.min(Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1, productInfo.duration);
+                const d1 = new Date(buyDate.getFullYear(), buyDate.getMonth(), buyDate.getDate());
+                const d2 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                const diffTime = d2 - d1;
+                const currentDay = Math.min(Math.max(1, Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1), productInfo.duration);
                 const progressPercent = Math.min(Math.round((currentDay / productInfo.duration) * 100), 100);
 
                 const accumulatedProfit = currentDay * productInfo.daily;
