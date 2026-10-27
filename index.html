@@ -105,20 +105,20 @@
             </div>
         </div>
 
-        <!-- MODAL DESCARGA DE APLICACIÓN -->
+        <!-- MODAL INSTALACIÓN PWA -->
         <div id="appDownloadModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
             <div class="bg-white w-full max-w-xs rounded-3xl p-6 shadow-2xl space-y-4 text-center relative overflow-hidden">
                 <div class="w-20 h-20 bg-vortex-lightRed text-vortex-red rounded-full flex items-center justify-center text-3xl mx-auto shadow-inner border border-vortex-red/20">
                     <i class="fa-solid fa-mobile-screen-button"></i>
                 </div>
                 <div>
-                    <h3 class="text-lg font-black text-slate-800">Descargar Aplicaci&oacute;n Vortex</h3>
-                    <p class="text-xs text-slate-500 mt-1">Instal&aacute; nuestra app oficial en tu dispositivo Android para un acceso m&aacute;s r&aacute;pido.</p>
+                    <h3 class="text-lg font-black text-slate-800">Instalar Aplicaci&oacute;n Vortex</h3>
+                    <p class="text-xs text-slate-500 mt-1">Instal&aacute; la app directamente en la pantalla de inicio de tu celular para un acceso inmediato.</p>
                 </div>
                 <div class="space-y-2 pt-2">
-                    <a href="#" onclick="alert('Iniciando descarga del archivo APK oficial...'); closeAppModal();" class="w-full py-3 bg-vortex-red text-white font-bold text-xs rounded-xl shadow-md glow-red block text-center">
-                        📥 Descargar APK Oficial
-                    </a>
+                    <button onclick="triggerPwaInstall()" class="w-full py-3 bg-vortex-red text-white font-bold text-xs rounded-xl shadow-md glow-red block text-center">
+                        📲 Instalar App en el Celular
+                    </button>
                     <button onclick="closeAppModal()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all">
                         Cerrar
                     </button>
@@ -596,7 +596,7 @@
                         </div>
                     </div>
 
-                    <!-- BOTÓN DE APLICACIÓN (ESTILO IDÉNTICO A LA REFERENCIA) -->
+                    <!-- BOTÓN DE APLICACIÓN (PWA) -->
                     <div class="bg-white rounded-2xl p-2 border border-slate-200 shadow-sm">
                         <button onclick="openAppDownloadModal()" class="w-full p-4 bg-slate-50 hover:bg-slate-100 rounded-xl flex items-center justify-between text-slate-800 transition-all border border-slate-100">
                             <div class="flex items-center gap-3">
@@ -710,7 +710,7 @@
 
     </div>
 
-    <!-- JAVASCRIPT LOGIC CON MODAL DE APLICACIÓN -->
+    <!-- JAVASCRIPT LOGIC CON INSTALACIÓN PWA AUTOMÁTICA -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyDt6V_LuY4FfNezNEnaNp_vGBIh4_k4r0E",
@@ -727,6 +727,13 @@
 
         const ADMIN_PHONE = '11223344';
         const ADMIN_PIN = '0909';
+
+        let deferredPrompt = null;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
 
         let levelsList = [
             { id: 1, name: 'Producto 1', cost: 16000, duration: 15, daily: 1666.67, total: 25000, limit: 1, img: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=400&q=80' },
@@ -773,6 +780,20 @@
 
         function closeAppModal() {
             document.getElementById('appDownloadModal').classList.add('hidden');
+        }
+
+        async function triggerPwaInstall() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    deferredPrompt = null;
+                }
+                closeAppModal();
+            } else {
+                alert("Para instalar la app en tu dispositivo:\n\n1. Pulsa el botón de opciones (los tres puntos ⁝ arriba a la derecha en tu navegador).\n2. Selecciona 'Instalar aplicación' o 'Agregar a la pantalla principal'.");
+                closeAppModal();
+            }
         }
 
         async function loadCustomLevels() {
