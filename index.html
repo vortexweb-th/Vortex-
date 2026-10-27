@@ -105,27 +105,6 @@
             </div>
         </div>
 
-        <!-- MODAL DESCARGA APK OFICIAL -->
-        <div id="appDownloadModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-            <div class="bg-white w-full max-w-xs rounded-3xl p-6 shadow-2xl space-y-4 text-center relative overflow-hidden">
-                <div class="w-20 h-20 bg-vortex-lightRed text-vortex-red rounded-full flex items-center justify-center text-3xl mx-auto shadow-inner border border-vortex-red/25">
-                    <i class="fa-solid fa-mobile-screen-button"></i>
-                </div>
-                <div>
-                    <h3 class="text-lg font-black text-slate-800">Descargar Aplicaci&oacute;n</h3>
-                    <p class="text-xs text-slate-500 mt-1">Obt&eacute;n el archivo instalable APK de Vortex para Android.</p>
-                </div>
-                <div class="space-y-2 pt-2">
-                    <a href="https://github.com/tu-usuario/tu-repositorio/releases/download/v1.0/vortex.apk" target="_blank" onclick="closeAppModal();" class="w-full py-3 bg-vortex-red text-white font-bold text-xs rounded-xl shadow-md glow-red block text-center">
-                        📥 Descargar APK Oficial
-                    </a>
-                    <button onclick="closeAppModal()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all">
-                        Cerrar
-                    </button>
-                </div>
-            </div>
-        </div>
-
         <!-- AUTH MODAL (LOGIN / REGISTRO) -->
         <div id="authModal" class="fixed inset-0 bg-white z-50 flex flex-col justify-between p-6 overflow-y-auto">
             <div class="pt-6">
@@ -601,19 +580,6 @@
                         </div>
                     </div>
 
-                    <!-- BOTÓN DE APLICACIÓN -->
-                    <div class="bg-white rounded-2xl p-2 border border-slate-200 shadow-sm">
-                        <button onclick="openAppDownloadModal()" class="w-full p-4 bg-slate-50 hover:bg-slate-100 rounded-xl flex items-center justify-between text-slate-800 transition-all border border-slate-100">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-vortex-lightRed text-vortex-red flex items-center justify-center text-lg shadow-sm">
-                                    <i class="fa-solid fa-mobile-screen"></i>
-                                </div>
-                                <span class="font-extrabold text-sm text-slate-800">Aplicación</span>
-                            </div>
-                            <i class="fa-solid fa-chevron-right text-slate-400 text-xs"></i>
-                        </button>
-                    </div>
-
                     <!-- INFOGRAFÍA CORPORATIVA -->
                     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                         <div class="bg-slate-900 text-white p-5 border-b border-slate-800">
@@ -772,14 +738,6 @@
             modal.classList.toggle('hidden');
         }
 
-        function openAppDownloadModal() {
-            document.getElementById('appDownloadModal').classList.remove('hidden');
-        }
-
-        function closeAppModal() {
-            document.getElementById('appDownloadModal').classList.add('hidden');
-        }
-
         async function loadCustomLevels() {
             try {
                 const snapshot = await db.collection('productos').get();
@@ -929,7 +887,6 @@
                 appState.depositsHistory = userData.depositsHistory || [];
                 appState.lastCheckinTime = userData.lastCheckinTime;
 
-                // CORRECCIÓN AUTOMÁTICA DE INVERSIONES ANTIGUAS
                 fixOldInvestmentsOnLogin();
 
                 document.getElementById('authModal').classList.add('hidden');
@@ -951,14 +908,12 @@
             }
         }
 
-        // REPARAR INVERSIONES VIEJAS SIN TIMESTAMP
         function fixOldInvestmentsOnLogin() {
             if (!appState.investments || appState.investments.length === 0) return;
             let modified = false;
 
             appState.investments = appState.investments.map(inv => {
                 if (!inv.timestamp) {
-                    // Si no tiene marca de tiempo, le asignamos el 23 de octubre de 2026 para que compute los días reales
                     const oldDate = new Date(2026, 9, 23).getTime(); 
                     inv.timestamp = oldDate;
                     modified = true;
@@ -972,7 +927,6 @@
             checkAndAccrueDailyEarnings();
         }
 
-        // CÁLCULO DE DÍAS Y GANANCIAS AUTOMÁTICO
         function checkAndAccrueDailyEarnings() {
             if (!appState.investments || appState.investments.length === 0) return;
 
@@ -1018,7 +972,6 @@
             }
         }
 
-        // BOTÓN MANUAL PARA FORZAR EL CÁLCULO AL INSTANTE
         function forceRefreshEarnings() {
             checkAndAccrueDailyEarnings();
             updateUI();
@@ -1128,7 +1081,6 @@
             }).join('');
         }
 
-        // RENDERIZAR INVERSIONES CON CÁLCULO DE DÍAS EXACTOS
         function renderMyInvestments() {
             const container = document.getElementById('myInvestmentsList');
             const countBadge = document.getElementById('totalInvestmentsCount');
@@ -1441,7 +1393,6 @@
             }
         }
 
-        /* LÓGICA DEL PANEL DE ADMINISTRACIÓN */
         function loadAdminData() {
             loadAllUsersAdmin();
             loadPendingDeposits();
