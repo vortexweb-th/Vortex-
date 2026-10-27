@@ -105,6 +105,27 @@
             </div>
         </div>
 
+        <!-- MODAL DESCARGA DE APLICACIÓN -->
+        <div id="appDownloadModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+            <div class="bg-white w-full max-w-xs rounded-3xl p-6 shadow-2xl space-y-4 text-center relative overflow-hidden">
+                <div class="w-20 h-20 bg-vortex-lightRed text-vortex-red rounded-full flex items-center justify-center text-3xl mx-auto shadow-inner border border-vortex-red/20">
+                    <i class="fa-solid fa-mobile-screen-button"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-black text-slate-800">Descargar Aplicaci&oacute;n Vortex</h3>
+                    <p class="text-xs text-slate-500 mt-1">Instal&aacute; nuestra app oficial en tu dispositivo Android para un acceso m&aacute;s r&aacute;pido.</p>
+                </div>
+                <div class="space-y-2 pt-2">
+                    <a href="#" onclick="alert('Iniciando descarga del archivo APK oficial...'); closeAppModal();" class="w-full py-3 bg-vortex-red text-white font-bold text-xs rounded-xl shadow-md glow-red block text-center">
+                        📥 Descargar APK Oficial
+                    </a>
+                    <button onclick="closeAppModal()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- AUTH MODAL (LOGIN / REGISTRO) -->
         <div id="authModal" class="fixed inset-0 bg-white z-50 flex flex-col justify-between p-6 overflow-y-auto">
             <div class="pt-6">
@@ -575,6 +596,19 @@
                         </div>
                     </div>
 
+                    <!-- BOTÓN DE APLICACIÓN (ESTILO IDÉNTICO A LA REFERENCIA) -->
+                    <div class="bg-white rounded-2xl p-2 border border-slate-200 shadow-sm">
+                        <button onclick="openAppDownloadModal()" class="w-full p-4 bg-slate-50 hover:bg-slate-100 rounded-xl flex items-center justify-between text-slate-800 transition-all border border-slate-100">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-vortex-lightRed text-vortex-red flex items-center justify-center text-lg shadow-sm">
+                                    <i class="fa-solid fa-mobile-screen"></i>
+                                </div>
+                                <span class="font-extrabold text-sm text-slate-800">Aplicación</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slate-400 text-xs"></i>
+                        </button>
+                    </div>
+
                     <!-- INFOGRAFÍA CORPORATIVA -->
                     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                         <div class="bg-slate-900 text-white p-5 border-b border-slate-800">
@@ -676,7 +710,7 @@
 
     </div>
 
-    <!-- JAVASCRIPT LOGIC CON PROBABILIDAD CONTROLADA DEL COFRE -->
+    <!-- JAVASCRIPT LOGIC CON MODAL DE APLICACIÓN -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyDt6V_LuY4FfNezNEnaNp_vGBIh4_k4r0E",
@@ -731,6 +765,14 @@
         function toggleSupportModal() {
             const modal = document.getElementById('supportModal');
             modal.classList.toggle('hidden');
+        }
+
+        function openAppDownloadModal() {
+            document.getElementById('appDownloadModal').classList.remove('hidden');
+        }
+
+        function closeAppModal() {
+            document.getElementById('appDownloadModal').classList.add('hidden');
         }
 
         async function loadCustomLevels() {
@@ -1182,7 +1224,6 @@
             }, 1000);
         }
 
-        // LÓGICA DE PROBABILIDAD CONTROLADA DE PREMIOS EN EL COFRE
         function openChest() {
             if (appState.keys <= 0) {
                 alert("No tienes llaves disponibles. Invita a un amigo para obtener llaves.");
@@ -1191,20 +1232,16 @@
 
             appState.keys -= 1;
             
-            // Generar número aleatorio entre 1 y 100
             const randomPercent = Math.floor(Math.random() * 100) + 1;
             let reward = 150;
 
             if (randomPercent <= 10) { 
-                // 10% de probabilidad (1 de cada 10 usuarios): Rango $3.000 a $5.000 ARS
                 const highPrizes = [3000, 3500, 4000, 5000];
                 reward = highPrizes[Math.floor(Math.random() * highPrizes.length)];
             } else if (randomPercent <= 50) { 
-                // 40% de probabilidad (4 de cada 10 usuarios): Rango $2.000 a $2.900 ARS
                 const midPrizes = [2000, 2200, 2500, 2800];
                 reward = midPrizes[Math.floor(Math.random() * midPrizes.length)];
             } else { 
-                // 50% de probabilidad restante (Rango $150 a $1.900 ARS)
                 const lowPrizes = [150, 300, 500, 800, 1000, 1200, 1500, 1800];
                 reward = lowPrizes[Math.floor(Math.random() * lowPrizes.length)];
             }
