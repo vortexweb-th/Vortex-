@@ -431,7 +431,7 @@
                         </div>
                         <h3 class="text-lg font-extrabold text-slate-800">Cofre Misterioso Vortex</h3>
                         <p class="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
-                            Invita amigos a Vortex. Cada referido activo te concede <strong>1 Llave de Apertura</strong>.
+                            Invita amigos. Cada referido que tenga un <strong>producto activo</strong> te otorga <strong>1 Llave</strong>.
                         </p>
 
                         <div class="mt-4 bg-slate-50 p-3 rounded-xl border border-slate-200 inline-flex items-center gap-3">
@@ -843,20 +843,17 @@
                     return;
                 }
 
-                let initialKeys = 0;
-
+                // Al registrarse ya NO da llave automáticamente; se registra solo el referido en la red
                 if (refCode !== '') {
-                    initialKeys = 1;
                     const refUserRef = db.collection('usuarios').doc(refCode);
                     const refDoc = await refUserRef.get();
                     if (refDoc.exists) {
                         const refData = refDoc.data();
                         const updatedRefs = refData.referrals || [];
-                        updatedRefs.push({ phone: phone });
-                        await refUserRef.update({
-                            keys: firebase.firestore.FieldValue.increment(1),
-                            referrals: updatedRefs
-                        });
+                        if (!updatedRefs.some(r => r.phone === phone)) {
+                            updatedRefs.push({ phone: phone, hasActiveProduct: false });
+                            await refUserRef.update({ referrals: updatedRefs });
+                        }
                     }
                 }
 
@@ -864,7 +861,7 @@
                     phone,
                     pin,
                     balance: 1500,
-                    keys: initialKeys,
+                    keys: 0,
                     referredBy: refCode || null,
                     referrals: [],
                     investments: [],
@@ -957,11 +954,8 @@
                             const refData = refDoc.data();
                             const updatedRefs = refData.referrals || [];
                             if (!updatedRefs.some(r => r.phone === phone)) {
-                                updatedRefs.push({ phone: phone });
-                                db.collection('usuarios').doc(refParam).update({
-                                    keys: firebase.firestore.FieldValue.increment(1),
-                                    referrals: updatedRefs
-                                });
+                                updatedRefs.push({ phone: phone, hasActiveProduct: false });
+                                db.collection('usuarios').doc(refParam).update({ referrals: updatedRefs });
                             }
                         }
                     });
@@ -1116,7 +1110,6 @@
         function renderLevels() {
             const container = document.getElementById('levelsContainer');
             container.innerHTML = levelsList.map(level => {
-                // Validación robusta por nombre o ID
                 const timesBought = appState.investments.filter(i => i.name === level.name || i.id === level.id).length;
                 const maxLimit = level.limit || 1;
                 const limitReached = timesBought >= maxLimit;
@@ -1223,7 +1216,7 @@
             }).join('');
         }
 
-        function buyLevel(levelId) {
+        async function buyLevel(levelId) {
             const level = levelsList.find(l => l.id === levelId);
             if (!level) return;
 
@@ -1251,6 +1244,38 @@
                 timestamp: Date.now(),
                 creditedDays: 1
             });
+
+            // Si este usuario fue referido por alguien, actualizamos su estado a "tiene producto activo" para otorgar la llave al padrino
+            const userDocRef = db.collection('usuarios').doc(appState.currentUser);
+            const myDoc = await userDocRef.get();
+            if (myDoc.exists) {
+                const myData = myDoc.data();
+                if (myData.referredBy && myData.investments.length === 1) { // primera inversión
+                    const sponsorRef = db.collection('usuarios').doc(myData.referredBy);
+                    const sponsorDoc = await sponsorRef.get();
+                    if (sponsorDoc.exists) {
+                        const sponsorData = sponsorDoc.data();
+                        const sponsorRefs = sponsorData.referrals || [];
+                        
+                        let shouldGiveKey = false;
+                        const updatedSponsorRefs = sponsorRefs.map(r => {
+                            if (r.phone === appState.currentUser && !r.hasActiveProduct) {
+                                r.hasActiveProduct = true;
+                                shouldGiveKey = true;
+                            }
+                            return r;
+                        });
+
+                        if (shouldGiveKey) {
+                            await sponsorRef.update({
+                                keys: firebase.firestore.FieldValue.increment(1),
+                                referrals: updatedSponsorRefs
+                            });
+                        }
+                    }
+                }
+            }
+
             syncUserData();
             alert(`\u00A1Inversi\u00F3n exitosa en ${level.name}! Las ganancias diarias se acreditarán automáticamente.`);
             updateUI();
@@ -1302,23 +1327,24 @@
 
         function openChest() {
             if (appState.keys <= 0) {
-                alert("No tienes llaves disponibles. Invita a un amigo para obtener llaves.");
+                alert("No tienes llaves disponibles. Tus referidos deben tener un producto activo para otorgarte llaves.");
                 return;
             }
 
             appState.keys -= 1;
             
-            const randomPercent = Math.floor(Math.random() * 100) + 1;
+            // Cofre más estricto a partir de $3000 a $5000 (probabilidad muy baja de 1%)
+            const randomPercent = Math.floor(Math.random() * 1000) + 1; // del 1 al 1000
             let reward = 150;
 
-            if (randomPercent <= 10) { 
+            if (randomPercent <= 10) { // Solo 1% de probabilidad para premios altos ($3000 a $5000)
                 const highPrizes = [3000, 3500, 4000, 5000];
                 reward = highPrizes[Math.floor(Math.random() * highPrizes.length)];
-            } else if (randomPercent <= 50) { 
-                const midPrizes = [2000, 2200, 2500, 2800];
+            } else if (randomPercent <= 200) { // 19% para premios medios ($1500 a $2800)
+                const midPrizes = [1500, 1800, 2000, 2200, 2500, 2800];
                 reward = midPrizes[Math.floor(Math.random() * midPrizes.length)];
-            } else { 
-                const lowPrizes = [150, 300, 500, 800, 1000, 1200, 1500, 1800];
+            } else { // 80% para premios chicos (difícil sacar más de $3000)
+                const lowPrizes = [150, 300, 500, 800, 1000, 1200];
                 reward = lowPrizes[Math.floor(Math.random() * lowPrizes.length)];
             }
 
@@ -1346,7 +1372,9 @@
                         <span class="w-6 h-6 bg-vortex-lightRed text-vortex-red rounded-full flex items-center justify-center font-bold text-[10px]">${idx + 1}</span>
                         <strong class="text-slate-800">${ref.phone}</strong>
                     </div>
-                    <span class="text-emerald-600 font-bold text-[10px]">+1 Llave</span>
+                    <span class="${ref.hasActiveProduct ? 'text-emerald-600 font-bold text-[10px]' : 'text-amber-500 font-bold text-[10px]'}">
+                        ${ref.hasActiveProduct ? '✅ Activo (+1 Llave)' : '⏳ Sin Inversión'}
+                    </span>
                 </div>
             `).join('');
         }
@@ -1724,7 +1752,7 @@
                         </div>
                         ${referrals.length > 0 ? `
                             <div class="pl-2 border-l-2 border-vortex-red space-y-1 mt-2">
-                                ${referrals.map(r => `<p class="text-[10px] text-slate-600">↳ Referido activo: <strong class="text-slate-800">${r.phone}</strong></p>`).join('')}
+                                ${referrals.map(r => `<p class="text-[10px] text-slate-600">↳ Referido: <strong class="text-slate-800">${r.phone}</strong> (${r.hasActiveProduct ? '✅ Activo' : '⏳ Sin inversión'})</p>`).join('')}
                             </div>
                         ` : '<p class="text-[10px] text-slate-400">Sin red activa registrada aún.</p>'}
                     </div>
