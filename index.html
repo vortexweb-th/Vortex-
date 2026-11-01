@@ -774,7 +774,6 @@
         });
 
         function setupRefLink() {
-            // Usa automáticamente la URL actual del navegador (ej: tu enlace de GitHub Pages) para los referidos
             const currentBaseUrl = window.location.href.split('?')[0];
             if (appState.currentUser) {
                 document.getElementById('refLinkInput').value = `${currentBaseUrl}?ref=${appState.currentUser}`;
@@ -949,11 +948,9 @@
                 document.getElementById('profilePhone').innerText = phone;
                 setupRefLink();
 
-                // Detectar si entró mediante un enlace de referido por URL (ej: ?ref=11223344)
                 const urlParams = new URLSearchParams(window.location.search);
                 const refParam = urlParams.get('ref');
                 if (refParam && !userData.referredBy && refParam !== phone) {
-                    // Si el usuario es nuevo y vino con referido, lo registramos automáticamente
                     userRef.update({ referredBy: refParam });
                     db.collection('usuarios').doc(refParam).get().then(refDoc => {
                         if (refDoc.exists) {
@@ -1113,12 +1110,14 @@
             document.getElementById('userKeysText').innerText = `${appState.keys} Llaves`;
             renderReferralsList();
             renderMyInvestments();
+            renderLevels();
         }
 
         function renderLevels() {
             const container = document.getElementById('levelsContainer');
             container.innerHTML = levelsList.map(level => {
-                const timesBought = appState.investments.filter(i => i.name === level.name).length;
+                // Validación robusta por nombre o ID
+                const timesBought = appState.investments.filter(i => i.name === level.name || i.id === level.id).length;
                 const maxLimit = level.limit || 1;
                 const limitReached = timesBought >= maxLimit;
 
@@ -1171,7 +1170,7 @@
             countBadge.innerText = `${appState.investments.length} Activas`;
 
             container.innerHTML = appState.investments.map((inv, index) => {
-                const productInfo = levelsList.find(l => l.name === inv.name) || { duration: 30, total: 0, daily: 0 };
+                const productInfo = levelsList.find(l => l.name === inv.name || l.id === inv.id) || { duration: 30, total: 0, daily: 0 };
                 const buyDate = inv.timestamp ? new Date(inv.timestamp) : new Date(2026, 9, 23);
                 const now = new Date();
                 
@@ -1226,11 +1225,14 @@
 
         function buyLevel(levelId) {
             const level = levelsList.find(l => l.id === levelId);
-            const timesBought = appState.investments.filter(i => i.name === level.name).length;
+            if (!level) return;
+
+            const timesBought = appState.investments.filter(i => i.name === level.name || i.id === level.id).length;
             const maxLimit = level.limit || 1;
 
             if (timesBought >= maxLimit) {
                 alert(`Ya alcanzaste el l\u00EDmite de compras (${maxLimit}) para ${level.name}.`);
+                renderLevels();
                 return;
             }
 
@@ -1242,6 +1244,7 @@
 
             appState.balance -= level.cost;
             appState.investments.push({
+                id: level.id,
                 name: level.name,
                 cost: level.cost,
                 date: new Date().toLocaleDateString('es-AR'),
@@ -1251,8 +1254,6 @@
             syncUserData();
             alert(`\u00A1Inversi\u00F3n exitosa en ${level.name}! Las ganancias diarias se acreditarán automáticamente.`);
             updateUI();
-            renderLevels();
-            renderMyInvestments();
         }
 
         function claimDailyCheckin() {
