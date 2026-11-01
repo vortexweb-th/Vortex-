@@ -493,18 +493,23 @@
 
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2 text-xs">
                             <div class="flex justify-between items-center pb-2 border-b border-slate-200/60">
-                                <span class="text-slate-500">Banco:</span>
-                                <span class="font-bold text-slate-800">Mercado Pago / CVU Oficial</span>
+                                <span class="text-slate-500">Titular:</span>
+                                <span class="font-bold text-slate-800">Lucas Emiliano Torrez</span>
                             </div>
                             <div class="flex justify-between items-center pb-2 border-b border-slate-200/60">
-                                <span class="text-slate-500">Titular:</span>
-                                <span class="font-bold text-slate-800">VORTEX S.A.</span>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-slate-500">Alias CBU:</span>
+                                <span class="text-slate-500">Alias CBU/CVU:</span>
                                 <div class="flex items-center gap-1.5">
-                                    <span class="font-extrabold text-vortex-red font-mono">vortex.oficial.ars</span>
+                                    <span class="font-extrabold text-vortex-red font-mono">vortexweb</span>
                                     <button onclick="copyAlias()" class="text-slate-400 hover:text-slate-700">
+                                        <i class="fa-regular fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center pt-1">
+                                <span class="text-slate-500">CVU:</span>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="font-extrabold text-slate-700 font-mono text-[10px]">0000085700204135917684</span>
+                                    <button onclick="copyCvu()" class="text-slate-400 hover:text-slate-700">
                                         <i class="fa-regular fa-copy"></i>
                                     </button>
                                 </div>
@@ -734,7 +739,7 @@
         const ADMIN_PIN = '0909';
 
         let levelsList = [
-            { id: 1, name: 'Producto 1', cost: 16000, duration: 15, daily: 1666.67, total: 25000, limit: 1, img: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=400&q=80' },
+            { id: 1, name: 'Producto 1', cost: 16000, duration: 15, daily: 1666.67, total: 25000, limit: 1, img: 'https://i.ibb.co/ks1cdwTf/cac815e0254e7a78f2cd0e86dffd7930.jpg' },
             { id: 2, name: 'Producto 2', cost: 35000, duration: 30, daily: 1500.00, total: 45000, limit: 1, img: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80' },
             { id: 3, name: 'Producto 3', cost: 55000, duration: 45, daily: 1555.56, total: 70000, limit: 1, img: 'https://i.ibb.co/RkNVV64t/IMG-ac754688-96ad-46b3-9845-54a5d6708d34.jpg' },
             { id: 4, name: 'Producto 4', cost: 85000, duration: 60, daily: 1916.67, total: 115000, limit: 1, img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80' },
@@ -744,7 +749,7 @@
             { id: 8, name: 'Producto 8', cost: 280000, duration: 130, daily: 2692.31, total: 350000, limit: 2, img: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=400&q=80' },
             { id: 9, name: 'Producto 9', cost: 360000, duration: 150, daily: 2933.33, total: 440000, limit: 2, img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80' },
             { id: 10, name: 'Producto 10', cost: 450000, duration: 170, daily: 3176.47, total: 540000, limit: 3, img: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=400&q=80' },
-            { id: 11, name: 'Producto 11', cost: 550000, duration: 190, daily: 3421.05, total: 650000, limit: 3, img: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=400&q=80' },
+            { id: 11, name: 'Producto 11', cost: 550000, duration: 190, daily: 3421.05, total: 650000, limit: 3, img: 'https://i.ibb.co/v6HYrKYT/d25db5faca5c4e8c39ee2b41c633ff95.jpg' },
             { id: 12, name: 'Producto 12', cost: 660000, duration: 210, daily: 3666.67, total: 770000, limit: 3, img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=400&q=80' }
         ];
 
@@ -1743,8 +1748,13 @@
         }
 
         function copyAlias() {
-            navigator.clipboard.writeText('vortex.oficial.ars');
-            alert('Alias CBU copiado: vortex.oficial.ars');
+            navigator.clipboard.writeText('vortexweb');
+            alert('Alias copiado: vortexweb');
+        }
+
+        function copyCvu() {
+            navigator.clipboard.writeText('0000085700204135917684');
+            alert('CVU copiado al portapapeles.');
         }
 
         function copyRefLink() {
