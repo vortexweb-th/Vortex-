@@ -770,7 +770,16 @@
             renderLevels();
             updateUI();
             startCheckinTimer();
+            setupRefLink();
         });
+
+        function setupRefLink() {
+            // Usa automáticamente la URL actual del navegador (ej: tu enlace de GitHub Pages) para los referidos
+            const currentBaseUrl = window.location.href.split('?')[0];
+            if (appState.currentUser) {
+                document.getElementById('refLinkInput').value = `${currentBaseUrl}?ref=${appState.currentUser}`;
+            }
+        }
 
         function toggleSupportModal() {
             const modal = document.getElementById('supportModal');
@@ -875,7 +884,7 @@
 
                 document.getElementById('authModal').classList.add('hidden');
                 document.getElementById('profilePhone').innerText = phone;
-                document.getElementById('refLinkInput').value = `https://vortex.app/ref?id=${phone}`;
+                setupRefLink();
 
                 checkAdminStatus();
                 alert("¡Cuenta creada exitosamente en Firebase! Se han acreditado $1.500 ARS de bono.");
@@ -938,7 +947,28 @@
 
                 document.getElementById('authModal').classList.add('hidden');
                 document.getElementById('profilePhone').innerText = phone;
-                document.getElementById('refLinkInput').value = `https://vortex.app/ref?id=${phone}`;
+                setupRefLink();
+
+                // Detectar si entró mediante un enlace de referido por URL (ej: ?ref=11223344)
+                const urlParams = new URLSearchParams(window.location.search);
+                const refParam = urlParams.get('ref');
+                if (refParam && !userData.referredBy && refParam !== phone) {
+                    // Si el usuario es nuevo y vino con referido, lo registramos automáticamente
+                    userRef.update({ referredBy: refParam });
+                    db.collection('usuarios').doc(refParam).get().then(refDoc => {
+                        if (refDoc.exists) {
+                            const refData = refDoc.data();
+                            const updatedRefs = refData.referrals || [];
+                            if (!updatedRefs.some(r => r.phone === phone)) {
+                                updatedRefs.push({ phone: phone });
+                                db.collection('usuarios').doc(refParam).update({
+                                    keys: firebase.firestore.FieldValue.increment(1),
+                                    referrals: updatedRefs
+                                });
+                            }
+                        }
+                    });
+                }
 
                 checkAdminStatus();
                 updateUI();
@@ -1731,7 +1761,7 @@
             ['inicio', 'mis-inversiones', 'cofre', 'cargar', 'retirar', 'perfil'].filter(t => document.getElementById(`tab-${t}`)).forEach(t => {
                 const elem = document.getElementById(`tab-${t}`);
                 if (elem) elem.classList.add('hidden');
-                const navElem = document.getElementById(`nav-${t}`);
+                const navElem = document.getElementById(`nav-${tab}`);
                 if (navElem) {
                     navElem.classList.remove('text-vortex-red');
                     navElem.classList.add('text-slate-400');
