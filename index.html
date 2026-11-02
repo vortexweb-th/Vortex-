@@ -134,7 +134,7 @@
             </div>
         </div>
 
-        <!-- AUTH MODAL (LOGIN / REGISTRO) -->
+        <!-- AUTH MODAL (LOGIN / REGISTRO CORREGIDO CON TAGS FORM) -->
         <div id="authModal" class="fixed inset-0 bg-white z-50 flex flex-col justify-between p-6 overflow-y-auto">
             <div class="pt-6">
                 <div class="flex items-center justify-center gap-3 mb-6">
@@ -157,36 +157,36 @@
                 </div>
 
                 <!-- FORMULARIO DE INGRESO -->
-                <div id="loginForm" class="space-y-4">
+                <form id="loginForm" onsubmit="handleLoginDirect(event)" class="space-y-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Tel&eacute;fono M&oacute;vil</label>
-                        <input type="text" id="loginPhone" placeholder="Ej: 11223344" class="w-full px-4 py-3.5 bg-slate-100 border border-slate-200 rounded-xl font-medium text-slate-800 text-sm focus:outline-none focus:border-vortex-red">
+                        <input type="text" id="loginPhone" required placeholder="Ej: 11223344" class="w-full px-4 py-3.5 bg-slate-100 border border-slate-200 rounded-xl font-medium text-slate-800 text-sm focus:outline-none focus:border-vortex-red">
                     </div>
 
                     <div>
                         <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Contrase&ntilde;a</label>
-                        <input type="password" id="loginPin" placeholder="****" class="w-full px-4 py-3.5 bg-slate-100 border border-slate-200 rounded-xl font-medium text-slate-800 text-sm focus:outline-none focus:border-vortex-red">
+                        <input type="password" id="loginPin" required placeholder="****" class="w-full px-4 py-3.5 bg-slate-100 border border-slate-200 rounded-xl font-medium text-slate-800 text-sm focus:outline-none focus:border-vortex-red">
                     </div>
 
-                    <button type="button" onclick="handleLoginDirect()" class="w-full py-4 bg-vortex-red text-white font-bold rounded-xl shadow-lg glow-red active:scale-95 transition-all">
+                    <button type="submit" id="submitLoginBtn" class="w-full py-4 bg-vortex-red text-white font-bold rounded-xl shadow-lg glow-red active:scale-95 transition-all">
                         Iniciar Sesi&oacute;n
                     </button>
-                </div>
+                </form>
 
                 <!-- FORMULARIO DE REGISTRO -->
-                <div id="registerForm" class="space-y-3 hidden">
+                <form id="registerForm" onsubmit="handleRegisterDirect(event)" class="space-y-3 hidden">
                     <div class="bg-vortex-lightRed/80 p-3 rounded-xl border border-vortex-red/20 text-center">
                         <p class="text-xs text-vortex-darkRed font-extrabold">&iexcl;Recibe $1.500 ARS de Bono de Bienvenida gratis al registrarte!</p>
                     </div>
 
                     <div>
                         <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Tel&eacute;fono M&oacute;vil</label>
-                        <input type="tel" id="regPhone" placeholder="Ej: 1122334455" class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl font-medium text-slate-800 text-sm focus:outline-none focus:border-vortex-red">
+                        <input type="tel" id="regPhone" required placeholder="Ej: 1122334455" class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl font-medium text-slate-800 text-sm focus:outline-none focus:border-vortex-red">
                     </div>
 
                     <div>
                         <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Crear Contrase&ntilde;a</label>
-                        <input type="password" id="regPin" placeholder="****" class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl font-medium text-slate-800 text-sm focus:outline-none focus:border-vortex-red">
+                        <input type="password" id="regPin" required placeholder="****" class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl font-medium text-slate-800 text-sm focus:outline-none focus:border-vortex-red">
                     </div>
 
                     <div>
@@ -194,10 +194,10 @@
                         <input type="text" id="regRefCode" placeholder="Sin código o autocompletado" class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl font-medium text-slate-800 text-sm focus:outline-none focus:border-vortex-red">
                     </div>
 
-                    <button type="button" onclick="handleRegisterDirect()" class="w-full py-3.5 bg-vortex-red text-white font-bold rounded-xl shadow-lg glow-red active:scale-95 transition-all">
+                    <button type="submit" id="submitRegisterBtn" class="w-full py-3.5 bg-vortex-red text-white font-bold rounded-xl shadow-lg glow-red active:scale-95 transition-all">
                         Crear Cuenta + Obten&eacute; $1.500
                     </button>
-                </div>
+                </form>
             </div>
 
             <div class="text-center pb-4">
@@ -736,7 +736,7 @@
             updateUI();
             startCheckinTimer();
             setupRefLink();
-            checkUrlRefParam(); // Detecta y autocompleta el código si viene por enlace
+            checkUrlRefParam();
         });
 
         function setupRefLink() {
@@ -746,7 +746,6 @@
             }
         }
 
-        // Función que detecta automáticamente el código de referido en la URL
         function checkUrlRefParam() {
             const urlParams = new URLSearchParams(window.location.search);
             const refParam = urlParams.get('ref');
@@ -754,7 +753,6 @@
                 const refInput = document.getElementById('regRefCode');
                 if (refInput) {
                     refInput.value = refParam;
-                    // Opcionalmente abre directo la pestaña de registro para facilitarles el proceso
                     toggleAuthTab('register');
                 }
             }
@@ -802,15 +800,21 @@
             }
         }
 
-        async function handleRegisterDirect() {
+        async function handleRegisterDirect(e) {
+            if (e) e.preventDefault();
+
             const phone = document.getElementById('regPhone').value.trim();
             const pin = document.getElementById('regPin').value.trim();
-            const refCode = document.getElementById('regRefCode').value.trim(); // Si está vacío, se registra sin código igual
+            const refCode = document.getElementById('regRefCode').value.trim();
+            const btn = document.getElementById('submitRegisterBtn');
 
             if (!phone || !pin) {
                 alert('Por favor ingresa un teléfono y contraseña.');
                 return;
             }
+
+            btn.disabled = true;
+            btn.innerText = "Procesando...";
 
             try {
                 const userRef = db.collection('usuarios').doc(phone);
@@ -820,10 +824,11 @@
                     alert('⚠️ Este número de teléfono ya está registrado. Por favor inicia sesión.');
                     toggleAuthTab('login');
                     document.getElementById('loginPhone').value = phone;
+                    btn.disabled = false;
+                    btn.innerText = "Crear Cuenta + Obtené $1.500";
                     return;
                 }
 
-                // Si ingresó o se autocompletó un código de referido válido (y no se intenta referir a sí mismo)
                 if (refCode !== '' && refCode !== phone) {
                     const refUserRef = db.collection('usuarios').doc(refCode);
                     const refDoc = await refUserRef.get();
@@ -863,22 +868,31 @@
                 setupRefLink();
 
                 checkAdminStatus();
-                alert("¡Cuenta creada exitosamente en Firebase! Se han acreditado $1.500 ARS de bono.");
+                alert("¡Cuenta creada exitosamente! Se han acreditado $1.500 ARS de bono.");
                 updateUI();
                 loadUserHistory();
             } catch (error) {
                 alert("Error de conexión con la base de datos.");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Crear Cuenta + Obtené $1.500";
             }
         }
 
-        async function handleLoginDirect() {
+        async function handleLoginDirect(e) {
+            if (e) e.preventDefault();
+
             const phone = document.getElementById('loginPhone').value.trim();
             const pin = document.getElementById('loginPin').value.trim();
+            const btn = document.getElementById('submitLoginBtn');
 
             if (!phone || !pin) {
                 alert('Por favor completa todos los campos.');
                 return;
             }
+
+            btn.disabled = true;
+            btn.innerText = "Ingresando...";
 
             try {
                 const userRef = db.collection('usuarios').doc(phone);
@@ -902,12 +916,16 @@
 
                 if (!doc.exists) {
                     alert('Este número no está registrado. Por favor crea una cuenta.');
+                    btn.disabled = false;
+                    btn.innerText = "Iniciar Sesión";
                     return;
                 }
 
                 const userData = doc.data();
                 if (userData.pin !== pin) {
                     alert('Contraseña incorrecta.');
+                    btn.disabled = false;
+                    btn.innerText = "Iniciar Sesión";
                     return;
                 }
 
@@ -937,6 +955,9 @@
                 }
             } catch (error) {
                 alert("Error al intentar iniciar sesión.");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Iniciar Sesión";
             }
         }
 
@@ -1727,7 +1748,7 @@
             const newLevel = {
                 id: Date.now(),
                 name: document.getElementById('newLevelName').value.trim(),
-                cost: parseFloat(document.getElementById('newLevelCost'].value),
+                cost: parseFloat(document.getElementById('newLevelCost').value),
                 daily: parseFloat(document.getElementById('newLevelDaily').value),
                 duration: parseInt(document.getElementById('newLevelDuration').value),
                 total: parseFloat(document.getElementById('newLevelTotal').value),
