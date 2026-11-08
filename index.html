@@ -134,7 +134,7 @@
             </div>
         </div>
 
-        <!-- AUTH MODAL (LOGIN / REGISTRO CORREGIDO CON TAGS FORM) -->
+        <!-- AUTH MODAL (LOGIN / REGISTRO) -->
         <div id="authModal" class="fixed inset-0 bg-white z-50 flex flex-col justify-between p-6 overflow-y-auto">
             <div class="pt-6">
                 <div class="flex items-center justify-center gap-3 mb-6">
@@ -451,9 +451,10 @@
                         </div>
 
                         <div class="mt-4">
+                            <!-- TEXTO INCENTIVO ACTUALIZADO HASTA $100.000 -->
                             <button id="openChestBtn" onclick="openChest()" class="w-full py-3.5 bg-vortex-red text-white font-bold rounded-xl shadow-md glow-red active:scale-95 transition-all flex items-center justify-center gap-2">
                                 <i class="fa-solid fa-unlock-keyhole"></i>
-                                <span>Abrir Cofre ($150 - $5.000 ARS)</span>
+                                <span>Abrir Cofre (¡Gana hasta $100.000 ARS!)</span>
                             </button>
                         </div>
                     </div>
@@ -1209,7 +1210,7 @@
             const maxLimit = level.limit || 1;
 
             if (timesBought >= maxLimit) {
-                alert(`Ya alcanzaste el l\u00EDmite de compras (${maxLimit}) para ${level.name}.`);
+                alert(`Ya alcanzaste el l\u00EDmite de compras (${maxLimit}) for ${level.name}.`);
                 renderLevels();
                 return;
             }
@@ -1309,6 +1310,7 @@
             }, 1000);
         }
 
+        // LÓGICA DE PREMIOS DEL COFRE (NUEVO RANGO $1.000 a $5.000 con distribución ponderada)
         function openChest() {
             if (appState.keys <= 0) {
                 alert("No tienes llaves disponibles. Tus referidos deben tener un producto activo para otorgarte llaves.");
@@ -1317,18 +1319,25 @@
 
             appState.keys -= 1;
             
-            const randomPercent = Math.floor(Math.random() * 1000) + 1;
-            let reward = 150;
+            const rand = Math.random() * 100; // Número aleatorio entre 0 y 100
+            let reward = 1000;
 
-            if (randomPercent <= 10) { 
-                const highPrizes = [3000, 3500, 4000, 5000];
-                reward = highPrizes[Math.floor(Math.random() * highPrizes.length)];
-            } else if (randomPercent <= 200) { 
-                const midPrizes = [1500, 1800, 2000, 2200, 2500, 2800];
-                reward = midPrizes[Math.floor(Math.random() * midPrizes.length)];
-            } else { 
-                const lowPrizes = [150, 300, 500, 800, 1000, 1200];
-                reward = lowPrizes[Math.floor(Math.random() * lowPrizes.length)];
+            if (rand < 0.5) {
+                // 0.5% de probabilidad: El premio máximo de $5.000 (muy difícil de sacar)
+                reward = 5000;
+            } else if (rand < 5) {
+                // 4.5% de probabilidad: Premios altos entre $4.000 y $4.900
+                reward = Math.floor(Math.random() * 10) * 10 + 4000; // Ej: 4100, 4500, 4800
+            } else if (rand < 20) {
+                // 15% de probabilidad: Premios medios-altos entre $2.500 y $3.900
+                reward = Math.floor(Math.random() * 15) * 100 + 2500;
+            } else if (rand < 55) {
+                // 35% de probabilidad: Premios medios entre $1.500 y $2.400
+                reward = Math.floor(Math.random() * 10) * 100 + 1500;
+            } else {
+                // 45% de probabilidad: Premios fáciles y frecuentes entre $1.000 y $1.490 ($1.100, $1.200, etc.)
+                let steps = [1000, 1100, 1200, 1250, 1300, 1350, 1400, 1450, 1490];
+                reward = steps[Math.floor(Math.random() * steps.length)];
             }
 
             appState.balance += reward;
